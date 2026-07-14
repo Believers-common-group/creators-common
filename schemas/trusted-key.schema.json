@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/trusted-key.schema.json",
+  "title": "Creators Common Trusted Key",
+  "description": "Registry record for a public verification key, its owner, permitted purposes, validity, custody assertions and lifecycle status.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "keyId", "keyVersion", "algorithm", "publicKey", "fingerprint", "owner", "status", "purposes", "validFrom", "issuer", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "keyId": {"type": "string", "pattern": "^CC-TK-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "keyVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "algorithm": {"type": "string", "enum": ["Ed25519", "ES256", "RS256"]},
+    "publicKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "encoding", "value"],
+      "properties": {
+        "format": {"type": "string", "enum": ["raw", "spki-pem", "jwk"]},
+        "encoding": {"type": "string", "enum": ["base64url", "pem", "json"]},
+        "value": {"type": "string", "minLength": 16, "maxLength": 16384}
+      }
+    },
+    "fingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": {"type": "string", "const": "sha-256"},
+        "value": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "owner": {"$ref": "#/$defs/party"},
+    "status": {"type": "string", "enum": ["generated", "registered", "active", "suspended", "revoked", "expired", "retired"]},
+    "purposes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "enum": ["record-envelope-signing", "policy-signing", "licence-signing", "evidence-signing", "api-authentication", "test-vector"]}
+    },
+    "validFrom": {"type": "string", "format": "date-time"},
+    "validUntil": {"type": "string", "format": "date-time"},
+    "activatedAt": {"type": "string", "format": "date-time"},
+    "suspendedAt": {"type": "string", "format": "date-time"},
+    "revokedAt": {"type": "string", "format": "date-time"},
+    "retiredAt": {"type": "string", "format": "date-time"},
+    "statusReason": {"type": "string", "maxLength": 3000},
+    "previousKeyRef": {"type": "string", "maxLength": 200},
+    "successorKeyRef": {"type": "string", "maxLength": 200},
+    "custody": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "privateKeyExportable"],
+      "properties": {
+        "mode": {"type": "string", "enum": ["hardware-bound", "hsm", "managed-service", "software", "external", "unknown"]},
+        "privateKeyExportable": {"type": "boolean"},
+        "providerRef": {"type": "string", "maxLength": 500},
+        "attestationRef": {"type": "string", "maxLength": 1000},
+        "notes": {"type": "string", "maxLength": 3000}
+      }
+    },
+    "lifecycleEventRefs": {"$ref": "#/$defs/idList"},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["partyId", "name", "partyType"],
+      "properties": {
+        "partyId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 300},
+        "partyType": {"type": "string", "enum": ["person", "institution", "collective", "public-body", "service"]}
+      }
+    },
+    "idList": {"type": "array", "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 3, "maxLength": 200}},
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 500}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"$ref": "#/$defs/idList"}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

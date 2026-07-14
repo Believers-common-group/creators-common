@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "0.1.0",
+  "operationId": "CC-SY-OP-MATERIAL-TITLE-001",
+  "recordVersion": "0.1.0",
+  "clientOperationId": "client-op-material-title-001",
+  "idempotencyKey": "idem-material-title-20260714-001",
+  "sessionRef": "CC-SY-CS-MATERIAL-DEMO-001",
+  "assetDraftId": "CC-AD-MATERIAL-DEMO-001",
+  "actorId": "CC-CR-DEMO-MOLECULAR-001",
+  "baseRevision": 0,
+  "operationType": "patch",
+  "patches": [
+    {
+      "op": "replace",
+      "path": "/title",
+      "value": "Recycled composite shell demonstration"
+    }
+  ],
+  "recordRefs": [
+    "CC-MS-RECYCLED-COMPOSITE-001"
+  ],
+  "status": "accepted",
+  "resultingRevision": 1,
+  "reasonCodes": [
+    "REVISION-MATCH",
+    "IDEMPOTENCY-KEY-NEW",
+    "WARDEN-CONTEXT-VALID"
+  ],
+  "occurredAt": "2026-07-14T11:11:00Z",
+  "submittedAt": "2026-07-14T11:11:01Z",
+  "issuer": {
+    "issuerId": "CC-SVC-SYNNERGYZE-ASSET-DRAFT",
+    "name": "Synnergyze Asset Draft Service",
+    "authorityRef": "docs/integrations/synnergyze/CC-SYNNERGYZE-ASSET-DRAFT-API-V0.1.md"
+  }
+}

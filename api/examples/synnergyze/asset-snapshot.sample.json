@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "0.1.0",
+  "snapshotId": "CC-SY-SN-MATERIAL-001",
+  "recordVersion": "0.1.0",
+  "assetDraftId": "CC-AD-MATERIAL-DEMO-001",
+  "revision": 1,
+  "lastEventRef": "CC-SY-EV-MATERIAL-001",
+  "canonicalization": "CC-CJSON-0.1",
+  "state": {
+    "assetDraftId": "CC-AD-MATERIAL-DEMO-001",
+    "revision": 1,
+    "title": "Recycled composite shell demonstration",
+    "materialSpecificationRefs": ["CC-MS-RECYCLED-COMPOSITE-001"],
+    "workspace": {"activeLab": "material", "canvasMode": "graph"}
+  },
+  "stateDigest": {
+    "algorithm": "sha-256",
+    "value": "2fb2dea5d848810689b82e5654feb861858caefa28940d657fc68402446672a0"
+  },
+  "createdAt": "2026-07-14T11:12:00Z",
+  "issuer": {
+    "issuerId": "CC-SVC-SYNNERGYZE-SNAPSHOT",
+    "name": "Synnergyze Snapshot Service",
+    "authorityRef": "docs/integrations/synnergyze/CC-SYNNERGYZE-ASSET-DRAFT-API-V0.1.md"
+  }
+}

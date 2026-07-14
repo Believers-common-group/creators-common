@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "0.1.0",
+  "sessionId": "CC-SY-CS-MATERIAL-DEMO-001",
+  "recordVersion": "0.1.0",
+  "assetDraftId": "CC-AD-MATERIAL-DEMO-001",
+  "actorId": "CC-CR-DEMO-MOLECULAR-001",
+  "deviceId": "CC-DEVICE-SYNTHETIC-001",
+  "role": "editor",
+  "status": "active",
+  "baseRevision": 0,
+  "capabilities": ["read", "comment", "edit-properties", "attach-evidence", "request-review"],
+  "wardenDecisionRef": "CC-WD-MATERIAL-REVIEW-001",
+  "presencePolicy": {
+    "storage": "ephemeral-only",
+    "authorshipEffect": "none",
+    "retainCursorData": false,
+    "notes": "Cursor and typing-presence data are not retained and do not create a Contribution Record."
+  },
+  "joinedAt": "2026-07-14T11:10:00Z",
+  "lastSeenAt": "2026-07-14T11:11:00Z",
+  "expiresAt": "2026-07-14T12:10:00Z",
+  "issuer": {
+    "issuerId": "CC-SVC-SYNNERGYZE-ASSET-DRAFT",
+    "name": "Synnergyze Asset Draft Service",
+    "authorityRef": "docs/integrations/synnergyze/CC-SYNNERGYZE-ASSET-DRAFT-API-V0.1.md"
+  },
+  "createdAt": "2026-07-14T11:10:00Z",
+  "updatedAt": "2026-07-14T11:11:00Z"
+}

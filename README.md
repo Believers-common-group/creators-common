@@ -2,6 +2,7 @@
 
 **Canonical release:** CC-CANON-V0.2  
 **Schema release:** CC-SCHEMAS-V0.1  
+**Fixture release:** CC-FIXTURES-V0.1  
 **Repository status:** Controlled baseline for review  
 **Institutional home:** Believers Common ecosystem
 
@@ -55,7 +56,7 @@ A machine-readable and human-readable statement of permitted users, territory, d
 
 ## Machine-readable registry contracts
 
-The first JSON Schema Draft 2020-12 contracts are now included under [`schemas/`](schemas/):
+The first JSON Schema Draft 2020-12 contracts are included under [`schemas/`](schemas/):
 
 - [Creator Passport schema](schemas/creator-passport.schema.json)
 - [Creation Passport schema](schemas/creation-passport.schema.json)
@@ -64,6 +65,26 @@ The first JSON Schema Draft 2020-12 contracts are now included under [`schemas/`
 - [Schema architecture and implementation notes](schemas/README.md)
 
 These schemas establish structural contracts for registry services. Schema conformance does not by itself establish authorship, ownership, scientific validity, safety, regulatory status or legal enforceability.
+
+## Conformance fixtures and validation
+
+A synthetic, cross-linked record set is included under [`examples/records/`](examples/records/):
+
+- [Creator Passport fixture](examples/records/creator-passport.sample.json)
+- [qPCR Creation Passport fixture](examples/records/creation-passport.qpcr-programme.sample.json)
+- [Contribution Record fixture](examples/records/contribution-record.sample.json)
+- [Research Licence Record fixture](examples/records/licence-record.research.sample.json)
+- [Fixture policy](examples/README.md)
+
+The repository validator at [`tools/validate_registry.py`](tools/validate_registry.py):
+
+1. validates every governed schema against JSON Schema Draft 2020-12;
+2. checks schema `$id` uniqueness;
+3. validates every example record with format checking enabled;
+4. rejects duplicate governed record identifiers; and
+5. verifies local cross-references between the linked Creator, Creation, Contribution and Licence records.
+
+The root workflow at [`.github/workflows/validate-registry.yml`](.github/workflows/validate-registry.yml) executes these checks for relevant pull requests and branch updates.
 
 ## Creation maturity lifecycle
 
@@ -96,6 +117,7 @@ A creation may contain registered sub-creations with different creators, owners,
 - [Creators Common Canon V0.2](docs/canon/CC-CANON-V0.2.md)
 - [qPCR Creator Programme V0.1](docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md)
 - [Registry Schemas V0.1](schemas/README.md)
+- [Registry Fixtures V0.1](examples/README.md)
 
 ## First programme: Molecular Sciences
 
@@ -115,25 +137,28 @@ The programme is initially restricted to research-use and other lawfully permitt
 
 ## Release status
 
-CC-CANON-V0.2 and CC-SCHEMAS-V0.1 are initial controlled architecture baselines. They are suitable for repository design, data-model development, programme formation, governance review and prototype implementation. They are not, by themselves, legal assignments, patent filings, copyright registrations, regulated-product authorisations, clinical approvals or diagnostic validations.
+CC-CANON-V0.2, CC-SCHEMAS-V0.1 and CC-FIXTURES-V0.1 are initial controlled architecture baselines. They are suitable for repository design, data-model development, programme formation, governance review, schema-conformance testing and prototype implementation. They are not, by themselves, legal assignments, patent filings, copyright registrations, regulated-product authorisations, clinical approvals or diagnostic validations.
 
 ## Repository direction
 
 ### Implemented in the current baseline
 
+- canonical governance architecture;
 - creator and creation passport schemas;
 - contribution and licence record schemas;
-- canonical governance architecture;
 - first discipline programme for qPCR and molecular sciences;
+- synthetic linked registry fixtures;
+- automated schema, identifier and cross-reference validation;
+- repository-level GitHub Actions workflow;
 - public discovery landing page.
 
 ### Next implementation layers
 
-- signed record envelopes and content-hash rules;
-- RiverOS evidence and retention contracts;
+- signed record envelopes and canonical content-hash rules;
+- RiverOS evidence-event and retention contracts;
 - Warden policy-decision and restricted-access contracts;
 - EmpireOS licence issuance and lifecycle events;
-- sample records, conformance fixtures and automated schema validation;
+- positive and negative conformance test suites;
 - guild and programme templates;
 - creator and creation registration workflows;
-- Synnergyze APIs and Virtual Silk Road discovery projections.
+- Synnergyze registry APIs and Virtual Silk Road discovery projections.

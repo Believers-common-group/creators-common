@@ -13,9 +13,6 @@
     "partyType": "service",
     "authorityRef": "docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md"
   },
-  "requestedByRefs": [
-    "CC-INST-CREATORS-COMMON"
-  ],
   "changes": {
     "priorLicenceStatus": "active",
     "resultingLicenceStatus": "suspended",

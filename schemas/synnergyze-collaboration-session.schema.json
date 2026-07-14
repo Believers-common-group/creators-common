@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/synnergyze-collaboration-session.schema.json",
+  "title": "Synnergyze Collaboration Session",
+  "description": "A bounded Asset Lab collaboration session connecting an authenticated actor, device context, Warden decision and draft revision without treating transient presence as authorship.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "sessionId", "recordVersion", "assetDraftId", "actorId", "role", "status", "baseRevision", "capabilities", "presencePolicy", "joinedAt", "expiresAt", "issuer", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "sessionId": {"type": "string", "pattern": "^CC-SY-CS-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "assetDraftId": {"type": "string", "pattern": "^CC-AD-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "actorId": {"type": "string", "minLength": 3, "maxLength": 200},
+    "deviceId": {"type": "string", "maxLength": 200},
+    "role": {"type": "string", "enum": ["owner", "editor", "reviewer", "observer"]},
+    "status": {"type": "string", "enum": ["active", "closed", "expired", "revoked"]},
+    "baseRevision": {"type": "integer", "minimum": 0},
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "enum": ["read", "comment", "edit-properties", "edit-structure", "attach-evidence", "request-review", "request-release", "resolve-conflict"]}
+    },
+    "wardenDecisionRef": {"type": "string", "pattern": "^CC-WD-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "presencePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["storage", "authorshipEffect"],
+      "properties": {
+        "storage": {"type": "string", "enum": ["ephemeral-only", "session-summary"]},
+        "authorshipEffect": {"type": "string", "const": "none"},
+        "retainCursorData": {"type": "boolean"},
+        "notes": {"type": "string", "maxLength": 1000}
+      }
+    },
+    "joinedAt": {"type": "string", "format": "date-time"},
+    "lastSeenAt": {"type": "string", "format": "date-time"},
+    "expiresAt": {"type": "string", "format": "date-time"},
+    "closedAt": {"type": "string", "format": "date-time"},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuerId", "name"],
+      "properties": {
+        "issuerId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 240},
+        "authorityRef": {"type": "string", "maxLength": 500}
+      }
+    }
+  }
+}

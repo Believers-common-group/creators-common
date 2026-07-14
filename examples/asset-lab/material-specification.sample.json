@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "0.1.0",
+  "materialSpecificationId": "CC-MS-RECYCLED-COMPOSITE-001",
+  "recordVersion": "0.1.0",
+  "assetDraftId": "CC-AD-MATERIAL-DEMO-001",
+  "name": "Recovered fibre composite",
+  "family": "Composite",
+  "grade": "RFC-D01",
+  "description": "Synthetic recovered-textile-fibre and bio-based-binder material definition.",
+  "composition": [
+    {
+      "substance": "Recovered textile fibre",
+      "proportion": "72",
+      "unit": "percent",
+      "sourceType": "post-consumer-recycled"
+    },
+    {
+      "substance": "Bio-based binder",
+      "proportion": "28",
+      "unit": "percent",
+      "sourceType": "bio-based"
+    }
+  ],
+  "properties": [
+    {
+      "name": "Target density",
+      "value": "0.94",
+      "unit": "g/cm3",
+      "status": "target"
+    }
+  ],
+  "circularity": {
+    "recycledContentPercent": "72",
+    "recoverability": "moderate",
+    "recoveryRoute": "Mechanical size reduction and controlled composite reprocessing."
+  },
+  "hazardClassification": {
+    "riskLevel": "unassessed",
+    "hazardCodes": [],
+    "restrictedUse": false
+  },
+  "status": "draft",
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/product/CC-ASSET-LAB-PRD-V0.1.md"
+  },
+  "createdAt": "2026-07-14T09:30:00Z",
+  "updatedAt": "2026-07-14T09:30:00Z"
+}

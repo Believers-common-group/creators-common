@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "0.1.0",
+  "keyEventId": "CC-KE-CREATORS-COMMON-REGISTER-001",
+  "recordVersion": "0.1.0",
+  "sequence": 1,
+  "eventType": "register",
+  "status": "applied",
+  "keyRef": "CC-TK-CREATORS-COMMON-ED25519-001",
+  "effectiveAt": "2026-01-01T00:00:00Z",
+  "actor": {
+    "partyId": "CC-INST-WARDEN",
+    "name": "Warden",
+    "partyType": "institution"
+  },
+  "reasonCodes": [
+    "INITIAL-TEST-KEY"
+  ],
+  "reason": "Register the synthetic predecessor verification key for conformance testing.",
+  "basisRefs": [
+    "CC-SA-CREATORS-COMMON-ENVELOPE-001"
+  ],
+  "issuer": {
+    "issuerId": "CC-INST-WARDEN",
+    "name": "Warden",
+    "authorityRef": "docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      "CC-TK-CREATORS-COMMON-ED25519-001"
+    ],
+    "changeReason": "Initial synthetic key registration"
+  },
+  "createdAt": "2026-07-14T10:24:00Z"
+}

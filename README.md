@@ -1,17 +1,13 @@
 # Creators Common
 
 **Canonical release:** CC-CANON-V0.2  
-**Core schema release:** CC-SCHEMAS-V0.2  
+**Core schema release:** CC-SCHEMAS-V0.3  
 **Asset Lab release:** CC-ASSET-LAB-V0.1  
 **Governance schema release:** CC-GOVERNANCE-SCHEMAS-V0.1  
 **Trust schema release:** CC-TRUST-SCHEMAS-V0.2  
-**Fixture release:** CC-FIXTURES-V0.5  
-**Integrity architecture:** CC-SIGNED-ENVELOPES-V0.1  
-**Evidence architecture:** CC-RIVEROS-EVIDENCE-CONTRACTS-V0.1  
-**Warden architecture:** CC-WARDEN-POLICY-CONTRACTS-V0.1  
-**EmpireOS architecture:** CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1  
-**Trust architecture:** CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1  
-**Advanced trust architecture:** CC-HARDWARE-CUSTODY-AND-MULTI-ALGORITHM-SIGNATURES-V0.1  
+**Synnergyze API release:** CC-SYNNERGYZE-ASSET-DRAFT-API-V0.1  
+**Registration workflow release:** CC-CREATOR-AND-CREATION-REGISTRATION-V0.1  
+**Fixture release:** CC-FIXTURES-V0.6  
 **Repository status:** Controlled baseline for review  
 **Institutional home:** Believers Common ecosystem
 
@@ -38,24 +34,24 @@ It does not replace patent offices, copyright systems, universities, professiona
 |---|---|
 | **Believers Common** | Constitutional governance, ethics, custodianship, dispute resolution and public-interest safeguards |
 | **Creators Common** | Creator identity, contribution records, creation registration, provenance, attribution, licensing instructions and economic participation |
-| **DigitalMe** | Portable identity for creators, reviewers, operators and institutions |
-| **Synnergyze** | Registry infrastructure, Asset Lab services, workflows, integrations, usage metering and royalty accounting |
+| **DigitalMe** | Portable identity, role intent, consent and delegated permissions for creators, reviewers, operators and institutions |
+| **Synnergyze** | Registry infrastructure, Asset Lab services, workflow orchestration, collaboration, persistence and API integration |
 | **RiverOS** | Evidence events, timestamps, artefact digests, event chains, retention and disposition |
-| **Warden** | Contextual policy evaluation, field-level access, release gates, signer authority, key status and restricted-use controls |
+| **Warden** | Contextual policy evaluation, field-level access, registration review, release gates, signer authority and restricted-use controls |
 | **EmpireOS** | Append-only issuance and lifecycle control of governed licences and affiliations |
-| **Virtual Silk Road** | Discovery, collaboration, controlled distribution, manufacturing access and commercial exchange |
+| **Virtual Silk Road** | Separate discovery, collaboration, controlled distribution, manufacturing access and commercial exchange projection |
 
 ## Governed record families
 
 ### Core registry and evidence
 
-- **Creator Passport (`CC-CR`)** — identity, capabilities, affiliations, contributions and portfolio.
-- **Creation Passport (`CC-CP`)** — purpose, creators, ownership, evidence, maturity, restrictions, economics and lineage.
-- **Contribution Record (`CC-CO`)** — contributor action, evidence, review, attribution and agreed rights.
-- **Licence Record (`CC-LR`)** — parties, permitted use, territory, duration, obligations, economics and suspension controls.
-- **Signed Record Envelope (`CC-EN`)** — deterministic payload digest, signature assertions and verification references.
-- **RiverOS Evidence Event (`CC-RV-EV`)** — actors, governed subjects, evidence artefacts, decisions, timestamps and chain references.
-- **RiverOS Retention Policy (`CC-RV-RP`)** — retention triggers, review periods, legal holds and disposition.
+- **Creator Passport (`CC-CR`)**
+- **Creation Passport (`CC-CP`)**
+- **Contribution Record (`CC-CO`)**
+- **Licence Record (`CC-LR`)**
+- **Signed Record Envelope (`CC-EN`)**
+- **RiverOS Evidence Event (`CC-RV-EV`)**
+- **RiverOS Retention Policy (`CC-RV-RP`)**
 
 ### Asset Lab authoring
 
@@ -70,18 +66,32 @@ It does not replace patent offices, copyright systems, universities, professiona
 
 ### Governance and licence lifecycle
 
-- **Warden Access Policy (`CC-WA`)** — field-level subject, resource, action, purpose, context and obligation rules.
-- **Warden Policy Decision (`CC-WD`)** — one contextual permit, deny, conditional permit or indeterminate decision.
-- **EmpireOS Licence Lifecycle Event (`CC-EO-LE`)** — append-only issue, amend, renew, suspend, resume, expire, terminate, revoke or supersede event.
+- **Warden Access Policy (`CC-WA`)**
+- **Warden Policy Decision (`CC-WD`)**
+- **EmpireOS Licence Lifecycle Event (`CC-EO-LE`)**
 
 ### Trust, custody and signatures
 
-- **Trusted Key (`CC-TK`)** — public verification key, fingerprint, owner, purpose, custody, validity and status.
-- **Signer Authority (`CC-SA`)** — keys, record types, actions, scopes, purposes and environments a signer may use.
-- **Key Lifecycle Event (`CC-KE`)** — registration, activation, rotation, suspension, revocation, expiry or retirement.
-- **Signature Verification (`CC-SV`)** — cryptographic result, trust result and final disposition.
-- **Key Custody Attestation (`CC-KA`)** — provider, device, boundary, fingerprint and non-exportability assertions.
-- **Signing Operation (`CC-SO`)** — authority, attestation, signed-message digest, signature, context, result and verification linkage.
+- **Trusted Key (`CC-TK`)**
+- **Signer Authority (`CC-SA`)**
+- **Key Lifecycle Event (`CC-KE`)**
+- **Signature Verification (`CC-SV`)**
+- **Key Custody Attestation (`CC-KA`)**
+- **Signing Operation (`CC-SO`)**
+
+### Synnergyze collaboration and persistence
+
+- **Collaboration Session (`CC-SY-CS`)**
+- **Asset Operation (`CC-SY-OP`)**
+- **Asset Event (`CC-SY-EV`)**
+- **Asset Snapshot (`CC-SY-SN`)**
+
+### Creator and Creation registration
+
+- **Creator Registration Application (`CC-REG-CR`)**
+- **Creation Registration Application (`CC-REG-CP`)**
+- **Registration Review (`CC-REG-RV`)**
+- **Registration Event (`CC-REG-EV`)**
 
 ## Creators Common Asset Lab
 
@@ -98,11 +108,12 @@ Creator identity
   -> Contribution attribution
   -> Warden field-level access and release checks
   -> Release Gate
+  -> Creation Registration Application
   -> Creation Passport
   -> Signed Record Envelope
   -> Trusted-key, custody and signer-authority verification
   -> EmpireOS licence lifecycle
-  -> Virtual Silk Road projection
+  -> separate Virtual Silk Road projection
 ```
 
 V0.1 creation modes are material and process development, physical-product assembly, and research-use qPCR assay development.
@@ -112,6 +123,61 @@ V0.1 creation modes are material and process development, physical-product assem
 - [Read the Asset Lab UI contract](docs/architecture/CC-ASSET-LAB-UI-CONTRACT-V0.1.md)
 
 The prototype does not store production data or issue real approvals.
+
+## Synnergyze Asset Draft API
+
+The first Synnergyze API contract provides governed collaboration and persistence for Asset Lab.
+
+```text
+DigitalMe actor
+  -> Warden-bounded Collaboration Session
+  -> idempotent Asset Operation
+  -> optimistic revision check
+  -> append-only Asset Event
+  -> deterministic Asset Snapshot
+  -> controlled release request
+```
+
+It requires stable idempotency keys, `If-Match` revision checks, explicit conflict outcomes and deterministic `CC-CJSON-0.1` snapshot digests. Transient cursor and typing presence are ephemeral and have no authorship effect.
+
+- [Synnergyze Asset Draft API OpenAPI 3.1](api/openapi/synnergyze-asset-draft-api-v0.1.json)
+- [Synnergyze Asset Draft API architecture](docs/integrations/synnergyze/CC-SYNNERGYZE-ASSET-DRAFT-API-V0.1.md)
+
+## Creator and Creation registration
+
+Registration begins with DigitalMe identity and explicit consent, not with public listing.
+
+```text
+DigitalMe identity + role intent + consent
+  -> Creator Registration Application
+  -> evidence and duplicate review
+  -> Warden decision
+  -> human Registration Review
+  -> Creator Passport issuance event
+
+Registered Creator Passport + Asset Draft
+  -> Creation Registration Application
+  -> authorship, rights, safety and evidence review
+  -> Warden decision
+  -> human Registration Review
+  -> Creation Passport issuance event
+```
+
+The workflow enforces:
+
+- no actor claim without a DigitalMe reference;
+- no public projection without explicit consent;
+- no accepted registration without sufficient evidence and human review;
+- no verified status without a Warden decision;
+- RiverOS evidence for every material status transition;
+- separation of sponsorship, ownership and authorship; and
+- no automatic Virtual Silk Road listing after passport issuance.
+
+Registration Events may only set public projection to `none`, `prepare-eligible` or `remove`. VSR publication remains a separate governed workflow.
+
+- [Creator and Creation Registration workflow](docs/workflows/CC-CREATOR-AND-CREATION-REGISTRATION-V0.1.md)
+- [Registration API OpenAPI 3.1](api/openapi/creators-common-registration-api-v0.1.json)
+- [API contract index](api/README.md)
 
 ## Warden and EmpireOS
 
@@ -144,11 +210,7 @@ Implemented verification profiles:
 - **ES256** — P-256, SHA-256 and 64-byte JOSE `r || s` signature;
 - **RS256** — RSA key of at least 2048 bits, PKCS1-v1_5 padding and SHA-256.
 
-For ES256 and RS256, the key fingerprint is `SHA-256(DER SubjectPublicKeyInfo)`.
-
 Cryptographic validity and trust validity are evaluated separately. A mathematically valid signature fails overall verification when the key is revoked, expired, suspended or unauthorised.
-
-Key Custody Attestations and Signing Operations record boundary and execution evidence without publishing private-key material. Synthetic attestations are confined to the named conformance purpose and environment and cannot be represented as production hardware verification.
 
 - [Signed Record Envelopes V0.1](docs/architecture/CC-SIGNED-ENVELOPES-V0.1.md)
 - [Trusted Keys and Signatures V0.1](docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md)
@@ -156,33 +218,29 @@ Key Custody Attestations and Signing Operations record boundary and execution ev
 
 ## Machine-readable contracts
 
-The JSON Schema Draft 2020-12 contracts under [`schemas/`](schemas/) cover **twenty-four record families**:
+The JSON Schema Draft 2020-12 contracts under [`schemas/`](schemas/) cover **thirty-two record families**:
 
 - seven core registry, integrity and RiverOS records;
 - eight Asset Lab authoring records;
-- two Warden policy records;
-- one EmpireOS lifecycle record; and
-- six trusted-key, custody and signature records.
+- three Warden and EmpireOS records;
+- six trusted-key, custody and signature records;
+- four Synnergyze collaboration and persistence records; and
+- four Creator and Creation registration records.
 
 See the [schema index and design rules](schemas/README.md).
 
-Schema conformance does not establish authorship, ownership, scientific validity, safety, regulatory status, identity assurance, hardware certification, signature authority, policy correctness or legal enforceability.
-
 ## Conformance validation
 
-`tools/validate_registry.py` validates the original twenty-two schemas and linked Core, Asset Lab, RiverOS, Warden, EmpireOS and Ed25519 fixtures.
+The GitHub Actions workflow runs:
 
-`tools/validate_advanced_trust.py` validates:
+- `tools/validate_registry.py`;
+- `tools/validate_advanced_trust.py`;
+- `tools/validate_synnergyze_asset_api.py`; and
+- `tools/validate_registration_workflows.py`.
 
-- the Key Custody Attestation and Signing Operation schemas;
-- P-256 and RSA key-type and size requirements;
-- DER SubjectPublicKeyInfo fingerprints;
-- valid and tampered ES256 vectors;
-- valid and tampered RS256 vectors;
-- synthetic non-exportable custody assertions; and
-- hardware-bound signing-operation evidence.
+Together they validate schemas, linked fixtures, governed references, digests, signature profiles, collaboration persistence, consent, human review, registration event chains, passport issuance and both OpenAPI 3.1 contracts.
 
-The GitHub Actions workflow runs both validators. No production private key is committed.
+No production private key is committed.
 
 ## Creation maturity lifecycle
 
@@ -208,8 +266,10 @@ The GitHub Actions workflow runs both validators. No production private key is c
 - [EmpireOS Licence Lifecycle V0.1](docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md)
 - [Trusted Keys and Signatures V0.1](docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md)
 - [Hardware Custody and Multi-Algorithm Signatures V0.1](docs/security/CC-HARDWARE-CUSTODY-AND-MULTI-ALGORITHM-SIGNATURES-V0.1.md)
+- [Synnergyze Asset Draft API V0.1](docs/integrations/synnergyze/CC-SYNNERGYZE-ASSET-DRAFT-API-V0.1.md)
+- [Creator and Creation Registration V0.1](docs/workflows/CC-CREATOR-AND-CREATION-REGISTRATION-V0.1.md)
 - [Registry Schemas](schemas/README.md)
-- [Registry Fixtures](examples/README.md)
+- [API Contracts](api/README.md)
 
 ## Governance principles
 
@@ -220,19 +280,21 @@ The GitHub Actions workflow runs both validators. No production private key is c
 5. Warden decisions remain connected to policy, actor, action, resource and obligations.
 6. Proposed EmpireOS events do not change licences.
 7. Cryptographic validity does not equal current trust or legal authority.
-8. Revoked, expired or unauthorised keys fail overall verification.
-9. Private keys are not registry records.
-10. Synthetic hardware attestations cannot be promoted to production truth.
-11. Release gates, licences, signatures, attestations and policy decisions do not substitute for legal, safety or regulatory approval.
-12. Historical evidence, event history and key lifecycle records must not be silently overwritten.
+8. Private keys are not registry records.
+9. Collaboration presence does not create authorship or economic rights.
+10. Consent is required before public identity or creation projection.
+11. Human review, Warden decision and RiverOS evidence are required for accepted registration.
+12. Passport issuance does not equal VSR publication.
+13. Historical evidence, review and event records must not be silently overwritten.
+14. Release gates, registrations, licences, signatures, attestations and policy decisions do not substitute for legal, safety or regulatory approval.
 
 ## Release status
 
-The documents, schemas, fixtures and prototypes are controlled architecture baselines for review and conformance testing. They are not legal assignments, patent filings, copyright registrations, production trust certificates, hardware certifications, production CAD or LIMS systems, scientific validations, executed licences, regulated-product authorisations, clinical approvals or diagnostic validations.
+The documents, schemas, fixtures, APIs and prototypes are controlled architecture baselines for review and conformance testing. They are not legal assignments, patent filings, copyright registrations, production trust certificates, hardware certifications, production databases, identity certifications, scientific validations, executed licences, regulated-product authorisations, clinical approvals or diagnostic validations.
 
 ## Next implementation layers
 
-- Synnergyze Asset Draft APIs and collaborative persistence;
-- creator and creation registration workflows;
 - Virtual Silk Road public and member discovery projections;
-- production hardware-attestation chain verification, trusted time and dual-control signing.
+- production hardware-attestation chain verification and trusted time;
+- Synnergyze multi-user conflict and offline replay conformance suites; and
+- registration duplicate-detection, dispute and revocation workflows.

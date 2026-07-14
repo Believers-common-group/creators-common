@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/riveros-evidence-event.schema.json",
+  "title": "RiverOS Evidence Event",
+  "description": "A timestamped event connecting actors, governed subjects, evidence artefacts, policy decisions, retention duties and chain references.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "eventId", "eventVersion", "eventType", "status", "occurredAt", "recordedAt", "actor", "subjects", "evidence", "retentionPolicyRef", "issuer", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "eventId": {"type": "string", "pattern": "^CC-RV-EV-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "eventVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "eventType": {"type": "string", "enum": ["capture", "register", "attest", "verify", "validate", "issue", "amend", "supersede", "suspend", "revoke", "access", "disclose", "retain", "archive", "destroy"]},
+    "status": {"type": "string", "enum": ["draft", "recorded", "accepted", "rejected", "superseded", "voided"]},
+    "occurredAt": {"type": "string", "format": "date-time"},
+    "recordedAt": {"type": "string", "format": "date-time"},
+    "actor": {"$ref": "#/$defs/party"},
+    "subjects": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["recordType", "recordId"],
+        "properties": {
+          "recordType": {"type": "string", "enum": ["creator", "creation", "contribution", "licence", "record-envelope", "riveros-evidence-event", "riveros-retention-policy"]},
+          "recordId": {"type": "string", "minLength": 3, "maxLength": 200},
+          "recordVersion": {"type": "string", "maxLength": 80},
+          "relationship": {"type": "string", "enum": ["primary-subject", "supports", "supersedes", "derives-from", "authorises", "restricts", "preserves"]}
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifacts"],
+      "properties": {
+        "artifacts": {"type": "array", "minItems": 1, "maxItems": 2000, "items": {"$ref": "#/$defs/artifact"}},
+        "statement": {"type": "string", "maxLength": 10000},
+        "qualityStatus": {"type": "string", "enum": ["unassessed", "captured", "reviewed", "accepted", "rejected", "disputed"]},
+        "limitations": {"type": "string", "maxLength": 5000}
+      }
+    },
+    "policyDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "decision": {"type": "string", "enum": ["allow", "deny", "allow-with-conditions", "escalate", "not-applicable"]},
+        "policyRef": {"type": "string", "maxLength": 1000},
+        "decidedBy": {"$ref": "#/$defs/party"},
+        "decidedAt": {"type": "string", "format": "date-time"},
+        "conditions": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 1000}}
+      }
+    },
+    "retentionPolicyRef": {"type": "string", "minLength": 3, "maxLength": 200},
+    "envelopeRef": {"type": "string", "maxLength": 200},
+    "chain": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "previousEventRef": {"type": "string", "maxLength": 200},
+        "previousEventDigest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "sequence": {"type": "integer", "minimum": 0}
+      }
+    },
+    "classification": {"type": "string", "enum": ["public", "member", "restricted", "confidential"]},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["partyId", "name", "partyType"],
+      "properties": {
+        "partyId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 300},
+        "partyType": {"type": "string", "enum": ["person", "institution", "collective", "system", "public-body"]},
+        "authorityRef": {"type": "string", "maxLength": 1000}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "mediaType"],
+      "properties": {
+        "ref": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "label": {"type": "string", "maxLength": 240},
+        "mediaType": {"type": "string", "minLength": 3, "maxLength": 120},
+        "digestAlgorithm": {"type": "string", "enum": ["sha-256", "sha-384", "sha-512"]},
+        "digestValue": {"type": "string", "pattern": "^[a-f0-9]{64,128}$"},
+        "capturedAt": {"type": "string", "format": "date-time"},
+        "visibility": {"type": "string", "enum": ["public", "member", "restricted", "confidential"]}
+      },
+      "allOf": [
+        {"if": {"required": ["digestAlgorithm"]}, "then": {"required": ["digestValue"]}},
+        {"if": {"required": ["digestValue"]}, "then": {"required": ["digestAlgorithm"]}}
+      ]
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuerId", "name"],
+      "properties": {
+        "issuerId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 240},
+        "authorityRef": {"type": "string", "maxLength": 500}
+      }
+    }
+  }
+}

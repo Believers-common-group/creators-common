@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "0.1.0",
+  "creationClaimId": "CC-CL-RECYCLED-CONTENT-001",
+  "recordVersion": "0.1.0",
+  "assetDraftId": "CC-AD-MATERIAL-DEMO-001",
+  "subjectRefs": [
+    "CC-MS-RECYCLED-COMPOSITE-001",
+    "CC-AV-HIGH-RECYCLED-001"
+  ],
+  "statement": "The demonstration material variant is designed to contain 76 percent recovered textile fibre by declared composition.",
+  "claimType": "circularity",
+  "status": "proposed",
+  "ownerCreatorId": "CC-CR-DEMO-MOLECULAR-001",
+  "supportingValidationRefs": [
+    "CC-VR-FLEXURAL-DEMO-001"
+  ],
+  "evidenceRefs": [
+    {
+      "ref": "examples/asset-lab/material-specification.sample.json",
+      "label": "Synthetic material specification",
+      "mediaType": "application/json",
+      "visibility": "public"
+    }
+  ],
+  "limitations": "This is a design and composition fixture. It does not establish measured recycled content, certification or product performance.",
+  "excludedUses": [
+    "certified environmental claim",
+    "regulated product declaration",
+    "commercial marketing reliance"
+  ],
+  "reviewerRef": "CC-INST-CREATORS-COMMON",
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/product/CC-ASSET-LAB-PRD-V0.1.md"
+  },
+  "createdAt": "2026-07-14T10:00:00Z",
+  "updatedAt": "2026-07-14T10:00:00Z"
+}

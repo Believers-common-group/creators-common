@@ -4,13 +4,14 @@
 **Core schema release:** CC-SCHEMAS-V0.2  
 **Asset Lab release:** CC-ASSET-LAB-V0.1  
 **Governance schema release:** CC-GOVERNANCE-SCHEMAS-V0.1  
-**Trust schema release:** CC-TRUST-SCHEMAS-V0.1  
+**Trust schema release:** CC-TRUST-SCHEMAS-V0.2  
 **Fixture release:** CC-FIXTURES-V0.5  
 **Integrity architecture:** CC-SIGNED-ENVELOPES-V0.1  
 **Evidence architecture:** CC-RIVEROS-EVIDENCE-CONTRACTS-V0.1  
 **Warden architecture:** CC-WARDEN-POLICY-CONTRACTS-V0.1  
 **EmpireOS architecture:** CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1  
 **Trust architecture:** CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1  
+**Advanced trust architecture:** CC-HARDWARE-CUSTODY-AND-MULTI-ALGORITHM-SIGNATURES-V0.1  
 **Repository status:** Controlled baseline for review  
 **Institutional home:** Believers Common ecosystem
 
@@ -20,16 +21,16 @@
 
 ## Purpose
 
-Creators Common exists to ensure that every meaningful creation can answer:
+Creators Common ensures that a creation can answer:
 
-- Who conceived, designed, engineered, validated and improved it?
-- What evidence supports the claims made for it?
-- Which controlled version is being used?
-- Who owns, governs, licenses or preserves it?
-- Who is entitled to attribution, compensation and continuing participation?
-- Under what conditions may it be accessed, reproduced, manufactured, modified, deployed or distributed?
+- who conceived, designed, engineered, validated and improved it;
+- what evidence supports its claims;
+- which controlled version is being used;
+- who owns, governs, licenses or preserves it;
+- who is entitled to attribution and economic participation; and
+- under what conditions it may be accessed, reproduced, manufactured, modified, deployed or distributed.
 
-Creators Common does **not** replace patent offices, copyright systems, universities, professional bodies, laboratories, standards organisations or regulators. It provides the operational provenance and governance layer connecting creators, institutions, evidence, products, licences and authorised uses throughout the creation lifecycle.
+It does not replace patent offices, copyright systems, universities, professional bodies, laboratories, standards organisations or regulators. It provides the operational provenance and governance layer connecting creators, institutions, evidence, products, licences and authorised uses.
 
 ## Institutional architecture
 
@@ -39,50 +40,52 @@ Creators Common does **not** replace patent offices, copyright systems, universi
 | **Creators Common** | Creator identity, contribution records, creation registration, provenance, attribution, licensing instructions and economic participation |
 | **DigitalMe** | Portable identity for creators, reviewers, operators and institutions |
 | **Synnergyze** | Registry infrastructure, Asset Lab services, workflows, integrations, usage metering and royalty accounting |
-| **RiverOS** | Evidence events, timestamps, artefact digests, event chains, retention and disposition records |
+| **RiverOS** | Evidence events, timestamps, artefact digests, event chains, retention and disposition |
 | **Warden** | Contextual policy evaluation, field-level access, release gates, signer authority, key status and restricted-use controls |
 | **EmpireOS** | Append-only issuance and lifecycle control of governed licences and affiliations |
 | **Virtual Silk Road** | Discovery, collaboration, controlled distribution, manufacturing access and commercial exchange |
 
-## Governed registry objects
+## Governed record families
 
-### Core records
+### Core registry and evidence
 
-- **Creator Passport** — identity, capabilities, affiliations, contributions, reviewer roles and portfolio.
-- **Creation Passport** — controlled identity, purpose, creators, ownership, evidence, maturity, restrictions, economics and lineage.
-- **Contribution Record** — precise contributor action, evidence, review, attribution and agreed rights.
-- **Licence Record** — permitted users, territory, duration, field of use, obligations, royalties, derivative rights and suspension conditions.
-- **Signed Record Envelope** — deterministic bytes, SHA-256 digest, signature assertions and verification references.
-- **RiverOS Evidence Event** — actors, governed subjects, evidence artefacts, decisions, timestamps and chain references.
-- **RiverOS Retention Policy** — retention triggers, review periods, legal holds and end-of-retention disposition.
+- **Creator Passport (`CC-CR`)** — identity, capabilities, affiliations, contributions and portfolio.
+- **Creation Passport (`CC-CP`)** — purpose, creators, ownership, evidence, maturity, restrictions, economics and lineage.
+- **Contribution Record (`CC-CO`)** — contributor action, evidence, review, attribution and agreed rights.
+- **Licence Record (`CC-LR`)** — parties, permitted use, territory, duration, obligations, economics and suspension controls.
+- **Signed Record Envelope (`CC-EN`)** — deterministic payload digest, signature assertions and verification references.
+- **RiverOS Evidence Event (`CC-RV-EV`)** — actors, governed subjects, evidence artefacts, decisions, timestamps and chain references.
+- **RiverOS Retention Policy (`CC-RV-RP`)** — retention triggers, review periods, legal holds and disposition.
 
-### Asset Lab authoring records
+### Asset Lab authoring
 
-- **Asset Draft (`CC-AD`)** — editable creation workspace before controlled release.
-- **Asset Component (`CC-AC`)** — part, assembly, panel, layer, ingredient group or logical module.
-- **Material Specification (`CC-MS`)** — composition, properties, circularity, hazards, standards and sourcing.
-- **Process Recipe (`CC-PR`)** — ordered production, laboratory, assembly or computational process.
-- **Asset Variant (`CC-AV`)** — controlled experimental or design alternative.
-- **Validation Run (`CC-VR`)** — method, execution, measurements, acceptance criteria and disposition.
-- **Creation Claim (`CC-CL`)** — bounded claim linked to evidence, validation, limitations and excluded uses.
-- **Release Gate (`CC-RG`)** — controlled decision for lifecycle advancement.
+- **Asset Draft (`CC-AD`)**
+- **Asset Component (`CC-AC`)**
+- **Material Specification (`CC-MS`)**
+- **Process Recipe (`CC-PR`)**
+- **Asset Variant (`CC-AV`)**
+- **Validation Run (`CC-VR`)**
+- **Creation Claim (`CC-CL`)**
+- **Release Gate (`CC-RG`)**
 
-### Governance records
+### Governance and licence lifecycle
 
-- **Warden Access Policy (`CC-WA`)** — field-level subject, resource, action, purpose, context, obligation and conflict rules.
+- **Warden Access Policy (`CC-WA`)** — field-level subject, resource, action, purpose, context and obligation rules.
 - **Warden Policy Decision (`CC-WD`)** — one contextual permit, deny, conditional permit or indeterminate decision.
-- **EmpireOS Licence Lifecycle Event (`CC-EO-LE`)** — append-only issuance, amendment, renewal, suspension, expiry, termination, revocation or supersession event.
+- **EmpireOS Licence Lifecycle Event (`CC-EO-LE`)** — append-only issue, amend, renew, suspend, resume, expire, terminate, revoke or supersede event.
 
-### Trust records
+### Trust, custody and signatures
 
-- **Trusted Key (`CC-TK`)** — public verification key, fingerprint, owner, permitted purpose, custody assertion, validity and status.
-- **Signer Authority (`CC-SA`)** — record types, signing actions, scopes, purposes and environments authorised for specified keys.
-- **Key Lifecycle Event (`CC-KE`)** — append-only registration, activation, rotation, suspension, revocation, expiry or retirement event.
-- **Signature Verification (`CC-SV`)** — cryptographic result, trust result and final verification disposition.
+- **Trusted Key (`CC-TK`)** — public verification key, fingerprint, owner, purpose, custody, validity and status.
+- **Signer Authority (`CC-SA`)** — keys, record types, actions, scopes, purposes and environments a signer may use.
+- **Key Lifecycle Event (`CC-KE`)** — registration, activation, rotation, suspension, revocation, expiry or retirement.
+- **Signature Verification (`CC-SV`)** — cryptographic result, trust result and final disposition.
+- **Key Custody Attestation (`CC-KA`)** — provider, device, boundary, fingerprint and non-exportability assertions.
+- **Signing Operation (`CC-SO`)** — authority, attestation, signed-message digest, signature, context, result and verification linkage.
 
 ## Creators Common Asset Lab
 
-Asset Lab is the governed authoring interface for creating assets. It takes interaction inspiration from material-exploration and composition workbenches, including the referenced OpenAI Material Lab study, but is not represented as an OpenAI integration, endorsement or copied interface.
+Asset Lab is the governed authoring interface for materials, physical products and research-use molecular assets. It takes interaction inspiration from material-exploration workbenches, including the referenced OpenAI Material Lab study, but is not represented as an OpenAI integration, endorsement or copied interface.
 
 ```text
 Creator identity
@@ -97,137 +100,89 @@ Creator identity
   -> Release Gate
   -> Creation Passport
   -> Signed Record Envelope
-  -> Trusted Key and Signer Authority verification
+  -> Trusted-key, custody and signer-authority verification
   -> EmpireOS licence lifecycle
   -> Virtual Silk Road projection
 ```
 
-### V0.1 creation modes
-
-1. Material specification and process development;
-2. Physical product and assembly development;
-3. Research-use qPCR assay and molecular workflow development.
-
-### Dashboard prototype
+V0.1 creation modes are material and process development, physical-product assembly, and research-use qPCR assay development.
 
 - [Open the Asset Lab prototype](app/asset-lab/index.html)
 - [Read the Asset Lab PRD](docs/product/CC-ASSET-LAB-PRD-V0.1.md)
 - [Read the Asset Lab UI contract](docs/architecture/CC-ASSET-LAB-UI-CONTRACT-V0.1.md)
 
-The prototype demonstrates the five-region workspace: Asset Header, Asset Tree, Creation Canvas, Property Inspector and Evidence Dock. It does not store production data or issue real approvals.
+The prototype does not store production data or issue real approvals.
 
-## Warden policy layer
+## Warden and EmpireOS
 
-Warden evaluates a specific subject, action, governed resource, field set and context against a referenced policy. A decision may be `permit`, `deny`, `permit-with-conditions`, `not-applicable` or `indeterminate`.
+Warden evaluates a specific subject, action, resource, field set and context. Conditional access may require RiverOS logging, approval, redaction, watermarking, purpose binding, expiry or no-export controls. A permit remains contextual and does not create authorship, ownership, validation, licensing or regulatory authority.
 
-Conditional access may require RiverOS logging, approval, redaction, watermarking, purpose binding, expiry or no-export controls. A permit is limited to the recorded context and does not create authorship, ownership, validation, licensing or regulatory authority.
-
-- [Warden Policy Contracts V0.1](docs/integrations/warden/CC-WARDEN-POLICY-CONTRACTS-V0.1.md)
-- [Warden Access Policy schema](schemas/warden-access-policy.schema.json)
-- [Warden Policy Decision schema](schemas/warden-policy-decision.schema.json)
-
-## EmpireOS licence lifecycle
-
-The Licence Record defines permission and terms. EmpireOS records append-only operational events:
+EmpireOS records append-only licence events:
 
 ```text
 issue -> amend / renew -> suspend / resume -> expire / terminate / revoke / supersede
 ```
 
-Every post-issuance event carries the previous event identifier, a monotonically increasing sequence, the same Licence Record identifier, field-level changes, reasons, decision bases and occurrence/effective timestamps. A `proposed` event does not change a licence.
+A `proposed` event does not change a licence.
 
+- [Warden Policy Contracts V0.1](docs/integrations/warden/CC-WARDEN-POLICY-CONTRACTS-V0.1.md)
 - [EmpireOS Licence Lifecycle V0.1](docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md)
-- [EmpireOS Licence Event schema](schemas/empireos-licence-event.schema.json)
 
-## Trusted keys and signature verification
+## Integrity, custody and signature verification
 
-Creators Common now separates mathematical signature validity from current trust validity.
+### `CC-CJSON-0.1`
 
-```text
-Payload
-  -> CC-CJSON-0.1 canonical bytes
-  -> SHA-256 digest
-  -> CC-SIG-0.1 signed message
-  -> Ed25519 verification
-  -> Trusted Key status and validity
-  -> Signer Authority permissions
-  -> verified / failed
-```
+The canonical JSON profile rejects duplicate keys, non-standard constants and floating-point values in digest-bound payloads; recursively sorts object keys; preserves array order; serializes UTF-8 JSON without insignificant whitespace; and calculates SHA-256 over the canonical bytes.
 
-A signature is accepted only when:
+### `CC-SIG-0.1`
 
-1. the payload digest recalculates correctly;
-2. the Ed25519 signature verifies;
-3. the key fingerprint matches;
-4. the key is active and valid at verification time;
-5. the Signer Authority permits the key, record type, action, scope, purpose and environment;
-6. the verification record matches the envelope signature assertion.
+The LF-delimited signed message binds the envelope identifier and version, subject record type and identity, canonicalization profile, digest algorithm and payload digest.
 
-The repository includes one positive Ed25519 vector, one tampered-message negative vector and one cryptographically valid but revoked-key negative vector. The keys are public test fixtures, not production trust anchors, and no production private key is committed.
+Implemented verification profiles:
 
+- **Ed25519** — raw 32-byte public key;
+- **ES256** — P-256, SHA-256 and 64-byte JOSE `r || s` signature;
+- **RS256** — RSA key of at least 2048 bits, PKCS1-v1_5 padding and SHA-256.
+
+For ES256 and RS256, the key fingerprint is `SHA-256(DER SubjectPublicKeyInfo)`.
+
+Cryptographic validity and trust validity are evaluated separately. A mathematically valid signature fails overall verification when the key is revoked, expired, suspended or unauthorised.
+
+Key Custody Attestations and Signing Operations record boundary and execution evidence without publishing private-key material. Synthetic attestations are confined to the named conformance purpose and environment and cannot be represented as production hardware verification.
+
+- [Signed Record Envelopes V0.1](docs/architecture/CC-SIGNED-ENVELOPES-V0.1.md)
 - [Trusted Keys and Signatures V0.1](docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md)
-- [Trusted Key schema](schemas/trusted-key.schema.json)
-- [Signer Authority schema](schemas/signer-authority.schema.json)
-- [Key Lifecycle Event schema](schemas/key-lifecycle-event.schema.json)
-- [Signature Verification schema](schemas/signature-verification.schema.json)
+- [Hardware Custody and Multi-Algorithm Signatures V0.1](docs/security/CC-HARDWARE-CUSTODY-AND-MULTI-ALGORITHM-SIGNATURES-V0.1.md)
 
 ## Machine-readable contracts
 
-The JSON Schema Draft 2020-12 contracts under [`schemas/`](schemas/) cover **twenty-two record families**:
+The JSON Schema Draft 2020-12 contracts under [`schemas/`](schemas/) cover **twenty-four record families**:
 
 - seven core registry, integrity and RiverOS records;
 - eight Asset Lab authoring records;
 - two Warden policy records;
-- one EmpireOS licence lifecycle record;
-- four trusted-key and signature records.
+- one EmpireOS lifecycle record; and
+- six trusted-key, custody and signature records.
 
 See the [schema index and design rules](schemas/README.md).
 
-Schema conformance does not establish authorship, ownership, scientific validity, safety, regulatory status, identity assurance, signature authority, policy correctness or legal enforceability.
+Schema conformance does not establish authorship, ownership, scientific validity, safety, regulatory status, identity assurance, hardware certification, signature authority, policy correctness or legal enforceability.
 
-## Integrity profiles
+## Conformance validation
 
-### CC-CJSON-0.1
+`tools/validate_registry.py` validates the original twenty-two schemas and linked Core, Asset Lab, RiverOS, Warden, EmpireOS and Ed25519 fixtures.
 
-1. reject duplicate JSON keys and non-standard constants;
-2. reject floating-point values in digest-bound payloads;
-3. recursively sort object keys;
-4. preserve array order;
-5. serialise UTF-8 JSON without insignificant whitespace;
-6. calculate SHA-256 over the canonical bytes.
+`tools/validate_advanced_trust.py` validates:
 
-### CC-SIG-0.1
+- the Key Custody Attestation and Signing Operation schemas;
+- P-256 and RSA key-type and size requirements;
+- DER SubjectPublicKeyInfo fingerprints;
+- valid and tampered ES256 vectors;
+- valid and tampered RS256 vectors;
+- synthetic non-exportable custody assertions; and
+- hardware-bound signing-operation evidence.
 
-The signed LF-delimited UTF-8 message contains the envelope identifier and version, subject record type, identifier and version, canonicalisation profile, digest algorithm and digest value. There is no trailing line break.
-
-- [Signed Record Envelopes V0.1](docs/architecture/CC-SIGNED-ENVELOPES-V0.1.md)
-- [Trusted Keys and Signatures V0.1](docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md)
-
-## Conformance fixtures and validation
-
-Synthetic linked fixtures under [`examples/`](examples/) include:
-
-- core Creator, Creation, Contribution, Licence and Envelope records;
-- RiverOS Evidence Event and Retention Policy records;
-- an eight-record Asset Lab material-authoring chain;
-- a Warden policy and decision;
-- a four-event EmpireOS licence lifecycle chain;
-- active and revoked Ed25519 keys, signer authority and key lifecycle events;
-- positive, tampered-message and revoked-key signature vectors.
-
-The validator at [`tools/validate_registry.py`](tools/validate_registry.py):
-
-- validates all twenty-two schemas and every JSON fixture;
-- checks unique schema and governed-record identifiers;
-- verifies core, Asset Lab, Warden, EmpireOS and RiverOS references;
-- confirms envelope subject-to-payload consistency and SHA-256 digests;
-- verifies trusted-key fingerprints and key-event continuity;
-- evaluates signer permissions and key status;
-- performs Ed25519 verification under `CC-SIG-0.1`;
-- confirms issued envelopes have matching successful verification records;
-- rejects verified synthetic signatures and invalid trust vectors.
-
-The workflow at [`.github/workflows/validate-registry.yml`](.github/workflows/validate-registry.yml) runs these checks for relevant pull requests and branch updates. A successful run is required before merge.
+The GitHub Actions workflow runs both validators. No production private key is committed.
 
 ## Creation maturity lifecycle
 
@@ -247,13 +202,12 @@ The workflow at [`.github/workflows/validate-registry.yml`](.github/workflows/va
 
 - [Creators Common Canon V0.2](docs/canon/CC-CANON-V0.2.md)
 - [Asset Lab PRD V0.1](docs/product/CC-ASSET-LAB-PRD-V0.1.md)
-- [Asset Lab UI Contract V0.1](docs/architecture/CC-ASSET-LAB-UI-CONTRACT-V0.1.md)
 - [qPCR Creator Programme V0.1](docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md)
-- [Signed Record Envelopes V0.1](docs/architecture/CC-SIGNED-ENVELOPES-V0.1.md)
 - [RiverOS Evidence Contracts V0.1](docs/integrations/riveros/CC-RIVEROS-EVIDENCE-CONTRACTS-V0.1.md)
 - [Warden Policy Contracts V0.1](docs/integrations/warden/CC-WARDEN-POLICY-CONTRACTS-V0.1.md)
 - [EmpireOS Licence Lifecycle V0.1](docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md)
 - [Trusted Keys and Signatures V0.1](docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md)
+- [Hardware Custody and Multi-Algorithm Signatures V0.1](docs/security/CC-HARDWARE-CUSTODY-AND-MULTI-ALGORITHM-SIGNATURES-V0.1.md)
 - [Registry Schemas](schemas/README.md)
 - [Registry Fixtures](examples/README.md)
 
@@ -261,26 +215,24 @@ The workflow at [`.github/workflows/validate-registry.yml`](.github/workflows/va
 
 1. Sponsorship does not automatically constitute authorship.
 2. Company ownership does not erase individual contribution.
-3. A derivative creation must preserve lineage to its source records.
-4. Claims must remain connected to evidence and limitations.
-5. Sensitive source material may remain restricted while provenance and status remain discoverable.
-6. Warden decisions are contextual and remain connected to policy, actor, action, resource and obligations.
-7. Proposed EmpireOS events do not change licences.
-8. A digest detects change but does not prove factual truth.
-9. Cryptographic validity does not equal current trust or legal authority.
-10. Revoked, expired or unauthorised keys fail verification even when the signature mathematics is valid.
-11. Private keys are not registry records.
-12. Release gates, licences, signatures and policy decisions do not substitute for legal, safety or regulatory approval.
-13. Historical evidence, event history and key lifecycle records must not be silently overwritten.
+3. Derivative creations preserve lineage to source records.
+4. Claims remain connected to evidence and limitations.
+5. Warden decisions remain connected to policy, actor, action, resource and obligations.
+6. Proposed EmpireOS events do not change licences.
+7. Cryptographic validity does not equal current trust or legal authority.
+8. Revoked, expired or unauthorised keys fail overall verification.
+9. Private keys are not registry records.
+10. Synthetic hardware attestations cannot be promoted to production truth.
+11. Release gates, licences, signatures, attestations and policy decisions do not substitute for legal, safety or regulatory approval.
+12. Historical evidence, event history and key lifecycle records must not be silently overwritten.
 
 ## Release status
 
-The current documents, schemas, fixtures and prototypes are controlled architecture baselines for review and conformance testing. They are not legal assignments, patent filings, copyright registrations, production trust certificates, production CAD or LIMS systems, scientific validations, access-control certifications, executed licences, regulated-product authorisations, clinical approvals or diagnostic validations.
+The documents, schemas, fixtures and prototypes are controlled architecture baselines for review and conformance testing. They are not legal assignments, patent filings, copyright registrations, production trust certificates, hardware certifications, production CAD or LIMS systems, scientific validations, executed licences, regulated-product authorisations, clinical approvals or diagnostic validations.
 
 ## Next implementation layers
 
-- hardware-backed production key custody and attestation;
-- ES256 and RS256 verification profiles;
 - Synnergyze Asset Draft APIs and collaborative persistence;
 - creator and creation registration workflows;
-- Virtual Silk Road public and member discovery projections.
+- Virtual Silk Road public and member discovery projections;
+- production hardware-attestation chain verification, trusted time and dual-control signing.

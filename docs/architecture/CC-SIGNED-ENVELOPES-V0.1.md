@@ -2,94 +2,112 @@
 
 **Document ID:** CC-SIGNED-ENVELOPES-V0.1  
 **Status:** Controlled prototype architecture  
-**Applies to:** Creator, Creation, Contribution, Licence and RiverOS records
+**Applies to:** All governed Creators Common record families
 
 ## 1. Purpose
 
-A signed record envelope binds a governed record identity to:
+A Signed Record Envelope binds a governed record identity to:
 
 - a specific payload version;
 - deterministic canonical bytes;
 - a cryptographic content digest;
 - one or more signature assertions;
+- trusted-key and verification references;
 - issuer and lifecycle metadata.
 
-The envelope protects provenance and change detection. It does not, by itself, prove that a factual claim is true, that the signer had legal authority, or that the underlying creation is scientifically valid.
+The envelope protects provenance and change detection. It does not prove that a claim is true, that a signer owns the creation, that an institution has legal authority, or that the creation is scientifically or regulatorily valid.
 
 ## 2. Identifier family
 
-Signed envelopes use:
-
-`CC-EN-...`
-
-The envelope has its own version and lifecycle. It does not replace the identifier or version of the subject record.
+Signed envelopes use `CC-EN-...`. The envelope has its own version and lifecycle and never replaces the identifier or version of the subject record.
 
 ## 3. Envelope boundary
 
-The controlled envelope contains:
+A controlled envelope contains:
 
-1. **Subject** — record type, governed record ID and record version.
+1. **Subject** — record type, governed record identifier and record version.
 2. **Payload reference** — the exact JSON payload being bound.
-3. **Canonicalization profile** — the deterministic encoding rule.
+3. **Canonicalisation profile** — the deterministic encoding rule.
 4. **Digest** — SHA-256 of the canonical payload bytes.
-5. **Signature assertions** — signer, key reference, algorithm, scope and verification state.
+5. **Signature assertions** — signer, algorithm, message profile, key, scope, signed time and verification reference.
 6. **Envelope status** — draft, issued, superseded, revoked or archived.
-7. **Issuer metadata** — the authority that created the envelope record.
+7. **Issuer metadata** — the authority creating the envelope record.
 
-## 4. CC-CJSON-0.1 canonicalization profile
+## 4. CC-CJSON-0.1
 
-CC-CJSON-0.1 is the initial restricted canonical JSON profile used by this repository.
+The initial restricted canonical JSON profile:
 
-The algorithm is:
-
-1. Parse a UTF-8 JSON document as a JSON object.
-2. Reject duplicate object keys.
-3. Reject non-standard constants such as `NaN` and `Infinity`.
-4. Reject floating-point numbers in payloads intended for digest binding.
-5. Represent decimal measurements as normalized strings until a cross-language numeric profile is adopted.
-6. Sort object keys recursively in ascending Unicode order.
-7. Preserve array order exactly.
-8. Serialize without insignificant whitespace, using `,` and `:` separators.
-9. Preserve Unicode characters as UTF-8 rather than forcing ASCII escapes.
-10. Calculate SHA-256 over the resulting UTF-8 bytes.
-
-This profile is deliberately narrower than general JSON. The restriction avoids ambiguous floating-point serialization between implementations during the prototype phase.
-
-## 5. Digest rule
-
-For payload object `P`:
+1. parses a UTF-8 JSON object;
+2. rejects duplicate keys;
+3. rejects `NaN`, `Infinity` and other non-standard constants;
+4. rejects floating-point values in digest-bound payloads;
+5. represents decimal measurements as normalised strings;
+6. sorts object keys recursively;
+7. preserves array order;
+8. serialises without insignificant whitespace;
+9. preserves Unicode as UTF-8;
+10. calculates SHA-256 over the resulting bytes.
 
 ```text
-canonical_bytes = CC-CJSON-0.1(P)
+canonical_bytes = CC-CJSON-0.1(payload)
 payload_digest  = SHA-256(canonical_bytes)
 ```
 
-The hexadecimal digest is stored in lowercase.
+The lowercase hexadecimal digest is stored in the envelope. The validator recalculates local payload digests and rejects mismatches.
 
-The repository validator recalculates the digest for local JSON payload references and rejects mismatches.
+## 5. CC-SIG-0.1
 
-## 6. Signature scopes
+The implemented `payload-digest` signing profile uses this exact UTF-8 message:
 
-Two signature scopes are reserved:
+```text
+CC-SIG-0.1
+envelopeId=<envelope identifier>
+envelopeVersion=<envelope version>
+recordType=<subject record type>
+recordId=<subject record identifier>
+recordVersion=<subject record version>
+canonicalization=CC-CJSON-0.1
+digestAlgorithm=sha-256
+digestValue=<64-character lowercase hexadecimal digest>
+```
 
-### `payload-digest`
+Rules:
 
-The signer signs the digest and the minimum subject-binding context required by the issuing implementation.
+- lines are separated by one LF character;
+- there is no trailing line break;
+- values are copied exactly from the envelope;
+- message changes invalidate the signature;
+- the payload digest is verified before trust acceptance.
 
-### `envelope-without-signatures`
+The `envelope-without-signatures` scope remains reserved and is not yet implemented by the repository validator.
 
-The signer signs a canonical representation of the envelope with the `signatures` array excluded.
+## 6. Signature verification states
 
-A production profile must specify the exact signature input bytes, domain-separation string and key-resolution method. Until then, only `payload-digest` is demonstrated by the synthetic fixture.
+- **unverified** — an assertion exists but has not passed trusted verification;
+- **verified** — cryptographic verification and trust policy both passed;
+- **failed** — verification was attempted and failed;
+- **revoked** — relevant key, signer authority or acceptance was revoked.
 
-## 7. Signature verification states
+An `issued` envelope requires at least one verified signature and a matching `CC-SV` Signature Verification record. A `synthetic-test` assertion must never be marked verified.
 
-- **unverified** — a signature assertion is present but has not been verified against a trusted key.
-- **verified** — verification succeeded against an approved trust anchor and policy.
-- **failed** — verification was attempted and failed.
-- **revoked** — the relevant key, signer authority or signature acceptance was revoked.
+## 7. Verification order
 
-An envelope with status `issued` must have at least one verified signature. A `synthetic-test` signature must never be marked verified.
+The verifier must fail closed:
+
+1. validate the envelope and payload schemas;
+2. resolve and load the payload;
+3. recalculate the `CC-CJSON-0.1` digest;
+4. reconstruct the `CC-SIG-0.1` message;
+5. resolve the Trusted Key (`CC-TK`);
+6. verify its SHA-256 fingerprint;
+7. verify the signature mathematically;
+8. evaluate key status and validity time;
+9. resolve the Signer Authority (`CC-SA`);
+10. confirm record type, action, purpose, environment and scope;
+11. compare the result with the Signature Verification (`CC-SV`) record;
+12. emit RiverOS evidence where required.
+
+Cryptographic result and trust result remain separate. A mathematically valid signature from a revoked or unauthorised key fails overall verification.
 
 ## 8. Algorithm registry
 
@@ -101,7 +119,7 @@ The schema reserves:
 - external attestation;
 - synthetic test assertions.
 
-The presence of an algorithm name does not mean the repository currently performs that cryptographic verification. Production implementation requires a trusted key registry, key rotation, revocation, algorithm policy and secure signing service.
+The current validator performs Ed25519 verification. ES256, RS256 and external-attestation verification remain future implementation work.
 
 ## 9. Lifecycle
 
@@ -110,48 +128,46 @@ Draft → Issued → Superseded → Archived
              ↘ Revoked
 ```
 
-- **Draft:** digest and signature assertions may still be under review.
-- **Issued:** signature policy has passed and the envelope is accepted for governed use.
-- **Superseded:** a later envelope binds a later record version or corrected issuance.
-- **Revoked:** the envelope must no longer be relied upon for current authorization.
+- **Draft:** digest and assertions remain under review.
+- **Issued:** signature and trust policy passed for governed use.
+- **Superseded:** a later envelope binds a corrected or later record version.
+- **Revoked:** the envelope must not be relied upon for current authorisation.
 - **Archived:** retained for provenance and historical audit.
 
-Supersession never deletes the prior envelope or its evidence trail.
+Supersession and revocation do not delete prior evidence.
 
 ## 10. Institutional responsibilities
 
 | Layer | Responsibility |
 |---|---|
-| Creators Common | Defines the governed record and envelope semantics |
-| DigitalMe | Resolves signer identity and institutional affiliation |
-| RiverOS | Records envelope creation, verification, supersession and revocation events |
-| Warden | Applies key, algorithm, role and restricted-use policy |
-| EmpireOS | Issues governed licences that may reference verified envelopes |
-| Synnergyze | Hosts APIs, validation services and registry storage |
+| Creators Common | Defines record, envelope and signature semantics |
+| DigitalMe | Resolves signer identity and affiliation |
+| RiverOS | Records signing, verification, supersession and revocation evidence |
+| Warden | Governs trusted keys, signer authority, algorithms and restricted use |
+| EmpireOS | References verified envelopes during licence lifecycle operations |
+| Synnergyze | Hosts registry, verification and signing-service integrations |
 
-## 11. Synthetic fixture boundary
+## 11. Fixture boundary
 
-`examples/records/record-envelope.creation.sample.json` contains a `synthetic-test` signature. It demonstrates structure and digest binding only.
+The repository contains two envelope patterns:
 
-It is not:
+1. `examples/records/record-envelope.creation.sample.json` — draft structure and digest binding using an unverified `synthetic-test` assertion.
+2. `examples/trust/record-envelope.creation.ed25519.sample.json` — an issued Ed25519 test envelope backed by Trusted Key, Signer Authority and Signature Verification fixtures.
 
-- a valid digital signature;
-- evidence of a private-key operation;
-- a legal attestation;
-- a trusted timestamp;
-- a certificate;
-- proof of authorship, ownership or scientific validity.
+The Ed25519 vector demonstrates actual mathematical verification against a public test key. It does not establish production private-key custody, identity certification, legal attestation, trusted timestamping, ownership or scientific validity.
 
 ## 12. Production gates
 
-Before production issuance, the following must be completed:
+Before production issuance:
 
-- normative cross-language canonicalization test vectors;
-- key and signer registry;
-- key rotation and revocation contracts;
-- Warden algorithm and authority policies;
-- secure signing service or hardware-backed signing path;
-- signature-verification implementation;
-- trusted timestamp policy;
-- audit and incident-response procedures;
-- positive and negative cryptographic conformance tests.
+- use hardware-backed or HSM private-key custody;
+- authenticate key owners and signing authorities;
+- require Warden approval for high-impact authority grants;
+- establish secure timestamps and clock policy;
+- implement emergency suspension and revocation;
+- preserve RiverOS signing and verification evidence;
+- complete independent cryptographic review;
+- add ES256/RS256 profiles where required;
+- define incident response, compromise recovery and algorithm migration.
+
+See [Trusted Keys and Signatures V0.1](../security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md).

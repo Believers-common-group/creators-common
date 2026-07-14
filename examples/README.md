@@ -1,11 +1,12 @@
 # Creators Common registry examples
 
-**Fixture release:** CC-FIXTURES-V0.4  
+**Fixture release:** CC-FIXTURES-V0.5  
 **Asset Lab fixture release:** CC-ASSET-LAB-FIXTURES-V0.1  
 **Governance fixture release:** CC-GOVERNANCE-FIXTURES-V0.1  
+**Trust fixture release:** CC-TRUST-FIXTURES-V0.1  
 **Status:** Synthetic conformance data only
 
-The files under `examples/` are non-production fixtures for the machine-readable contracts in `schemas/`.
+The files under `examples/` are non-production fixtures for the contracts in `schemas/`.
 
 ## Linked fixture sets
 
@@ -17,7 +18,7 @@ Under `examples/records/`:
 - one Creation Passport (`CC-CP`);
 - one Contribution Record (`CC-CO`);
 - one Licence Record (`CC-LR`);
-- one Signed Record Envelope (`CC-EN`).
+- one draft synthetic Signed Record Envelope (`CC-EN`).
 
 ### RiverOS records
 
@@ -54,12 +55,27 @@ Under `examples/empireos/`:
 
 - one proposed issuance event;
 - one proposed amendment event;
-- one proposed suspension event; and
+- one proposed suspension event;
 - one proposed termination event.
 
-All four records use the `CC-EO-LE` event family and form a monotonically sequenced synthetic chain for the qPCR Research Licence fixture.
+All four use the `CC-EO-LE` family and form a monotonically sequenced synthetic chain for the qPCR Research Licence fixture.
 
-## Demonstrated registry chain
+### Trusted-key and signature records
+
+Under `examples/trust/`:
+
+- one revoked predecessor Ed25519 Trusted Key (`CC-TK`);
+- one active successor Ed25519 Trusted Key (`CC-TK`);
+- one Signer Authority (`CC-SA`);
+- registration, rotation and revocation Key Lifecycle Events (`CC-KE`);
+- one issued Ed25519 Record Envelope (`CC-EN`);
+- one positive Signature Verification vector (`CC-SV`);
+- one tampered-message negative vector (`CC-SV`);
+- one revoked-key negative vector (`CC-SV`).
+
+The public-key fixtures are test vectors. No production private key is included in the repository.
+
+## Demonstrated registry and trust chain
 
 ```text
 Creator Passport
@@ -82,41 +98,67 @@ Asset Draft
               ↓ controlled conversion
         Creation Passport
               ↓ CC-CJSON-0.1 + SHA-256
-        Signed Record Envelope
-              ↓ registration evidence
+        Record Envelope
+              ↓ CC-SIG-0.1
+        Trusted Key + Signer Authority
+              ↓ Ed25519 verification
+        Signature Verification
+              ↓ evidence and retention
         RiverOS Evidence Event
-              ↓ retention assignment
-        RiverOS Retention Policy
 
 Licence Record
       ↓
 EmpireOS issue → amend → suspend → terminate
+
+Trusted Key 001
+      ↓ register
+      ↓ rotate to Trusted Key 002
+      ↓ revoke predecessor
+Trusted Key 002 → active signing and verification
 ```
 
-## Digest fixture
+## Digest and signature fixtures
 
-The qPCR Creation Passport fixture is canonicalized with `CC-CJSON-0.1` and bound to the SHA-256 digest recorded in:
+The qPCR Creation Passport is canonicalised with `CC-CJSON-0.1`. Its SHA-256 digest is used by both the original draft envelope and the issued Ed25519 envelope.
 
-- `records/record-envelope.creation.sample.json`; and
-- `riveros/evidence-event.sample.json`.
+The `CC-SIG-0.1` positive vector signs a domain-separated message containing:
 
-The validator recalculates this digest. Any change to the Creation Passport fixture requires dependent digest values to be updated in the same controlled change.
+- envelope identifier and version;
+- subject record type, identifier and version;
+- canonicalisation profile;
+- digest algorithm and digest value.
 
-## Asset Lab fixture boundary
+The validator reconstructs the message and verifies the Ed25519 signature.
 
-The Asset Lab examples demonstrate record structure and cross-reference integrity only. References to recovered content, density, process temperature and validation disposition are synthetic values selected to exercise the contracts. They do not represent laboratory measurements, supplier declarations, certified environmental claims or production approval.
+### Positive vector
 
-## Warden fixture boundary
+The signature is mathematically valid, the successor key is active and the Signer Authority permits issuance of a Creation envelope for the stated purpose, environment and scope.
 
-The Warden policy is a draft synthetic policy and the associated decision is a conformance fixture. It does not prove identity assurance, actual device trust, production enforcement or lawful permission to access confidential information.
+### Tampered-message vector
 
-## EmpireOS fixture boundary
+The first hexadecimal character of the payload digest is changed while the original signature is retained. Cryptographic verification must fail.
 
-All EmpireOS lifecycle events are marked `proposed`. They demonstrate event structure and chain continuity only. They do not issue, amend, suspend or terminate a real licence.
+### Revoked-key vector
 
-## Signature boundary
+The signature is mathematically valid against the predecessor public key, but the key is revoked at verification time. Cryptographic validity is recorded as valid, trust validity as revoked and overall verification as failed.
 
-The signed-envelope fixture uses the algorithm value `synthetic-test` and is deliberately marked `unverified`. It is not a cryptographically valid signature and must never be marked verified.
+## Controlled fixture boundaries
+
+### Asset Lab
+
+Recovered content, density, process temperature and validation disposition are synthetic values selected to exercise the contracts. They are not measurements, supplier declarations, certified environmental claims or production approval.
+
+### Warden
+
+The access policy and decision are conformance fixtures. They do not prove identity assurance, device trust, production enforcement or lawful permission to access confidential information.
+
+### EmpireOS
+
+All lifecycle events are marked `proposed`. They do not issue, amend, suspend or terminate a real licence.
+
+### Cryptography
+
+The original `synthetic-test` envelope remains deliberately unverified. The Ed25519 envelope demonstrates the verification implementation using public test keys and deterministic fixture signatures. The records do not establish production key custody, trusted identity, legal authority or a trusted timestamp.
 
 ## Non-production notice
 
@@ -126,15 +168,13 @@ The fixtures are not evidence of:
 - authorship or ownership;
 - an executed licence or assignment;
 - scientific or laboratory validation;
-- safety acceptance;
-- certified material composition;
-- regulatory approval;
-- diagnostic authorisation;
-- a trusted access-control enforcement event;
+- safety acceptance or certified material composition;
+- regulatory or diagnostic authorisation;
+- trusted access-control enforcement;
+- production private-key custody;
 - a trusted timestamp;
-- a private-key operation;
 - a production retention policy.
 
-They must not be copied into a production registry without replacing synthetic identities, evidence references, measurements, review decisions, authority records, legal terms, cryptographic keys, policy-engine controls and jurisdiction-specific retention rules.
+They must not be copied into production without replacing synthetic identities, measurements, evidence, review decisions, authority records, legal terms, cryptographic keys, custody controls, policy-engine controls and jurisdiction-specific retention rules.
 
-Validation is performed by `tools/validate_registry.py` and the repository-level GitHub Actions workflow at `.github/workflows/validate-registry.yml`.
+Validation is performed by `tools/validate_registry.py` and `.github/workflows/validate-registry.yml`.

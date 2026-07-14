@@ -3,9 +3,12 @@
 **Canonical release:** CC-CANON-V0.2  
 **Core schema release:** CC-SCHEMAS-V0.2  
 **Asset Lab release:** CC-ASSET-LAB-V0.1  
-**Fixture release:** CC-FIXTURES-V0.3  
+**Governance schema release:** CC-GOVERNANCE-SCHEMAS-V0.1  
+**Fixture release:** CC-FIXTURES-V0.4  
 **Integrity architecture:** CC-SIGNED-ENVELOPES-V0.1  
 **Evidence architecture:** CC-RIVEROS-EVIDENCE-CONTRACTS-V0.1  
+**Warden architecture:** CC-WARDEN-POLICY-CONTRACTS-V0.1  
+**EmpireOS architecture:** CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1  
 **Repository status:** Controlled baseline for review  
 **Institutional home:** Believers Common ecosystem
 
@@ -22,9 +25,9 @@ Creators Common exists to ensure that every meaningful creation can answer:
 - Which controlled version is being used?
 - Who owns, governs, licenses or preserves it?
 - Who is entitled to attribution, compensation and continuing participation?
-- Under what conditions may it be reproduced, manufactured, modified, deployed or distributed?
+- Under what conditions may it be accessed, reproduced, manufactured, modified, deployed or distributed?
 
-Creators Common does **not** replace patent offices, copyright systems, universities, professional bodies, laboratories, standards organisations or regulatory authorities. It provides the operational provenance layer connecting creators, institutions, evidence, products, licences and authorised uses throughout the creation lifecycle.
+Creators Common does **not** replace patent offices, copyright systems, universities, professional bodies, laboratories, standards organisations or regulatory authorities. It provides the operational provenance and governance layer connecting creators, institutions, evidence, products, licences and authorised uses throughout the creation lifecycle.
 
 ## Institutional architecture
 
@@ -35,8 +38,8 @@ Creators Common does **not** replace patent offices, copyright systems, universi
 | **DigitalMe** | Portable identity for creators, reviewers, operators and institutions |
 | **Synnergyze** | Registry infrastructure, Asset Lab services, workflow orchestration, integrations, usage metering and royalty accounting |
 | **RiverOS** | Evidence events, timestamps, artefact digests, event chains, retention and disposition records |
-| **Warden** | Permission enforcement, safety gates, signer authority, restricted-use controls, suspension and exception handling |
-| **EmpireOS** | Issuance and lifecycle control of governed licences and affiliations |
+| **Warden** | Contextual policy evaluation, field-level access decisions, safety gates, restricted-use controls and exceptions |
+| **EmpireOS** | Append-only issuance and lifecycle control of governed licences and affiliations |
 | **Virtual Silk Road** | Discovery, collaboration, controlled distribution, manufacturing access and commercial exchange |
 
 ## Governed registry objects
@@ -62,6 +65,12 @@ Creators Common does **not** replace patent offices, copyright systems, universi
 - **Creation Claim (`CC-CL`)** — bounded claim linked to evidence, validation, limitations and excluded uses.
 - **Release Gate (`CC-RG`)** — controlled decision for lifecycle advancement.
 
+### Governance records
+
+- **Warden Access Policy (`CC-WA`)** — field-level rules for subject, resource, action, purpose, context, obligations and conflict resolution.
+- **Warden Policy Decision (`CC-WD`)** — one contextual permit, deny, conditional permit or indeterminate decision.
+- **EmpireOS Licence Lifecycle Event (`CC-EO-LE`)** — append-only issuance, amendment, renewal, suspension, expiry, termination, revocation or supersession event.
+
 ## Creators Common Asset Lab
 
 Asset Lab is the governed authoring interface for creating assets. It takes interaction inspiration from material-exploration and composition workbenches, including the referenced OpenAI Material Lab study, but is not represented as an OpenAI product integration, endorsement or copied interface.
@@ -77,10 +86,10 @@ Creator identity
   -> Creation Claims
   -> RiverOS evidence
   -> Contribution attribution
-  -> Warden and rights checks
+  -> Warden field-level access and release checks
   -> Release Gate
   -> Creation Passport
-  -> EmpireOS licence
+  -> EmpireOS licence lifecycle
   -> Virtual Silk Road projection
 ```
 
@@ -98,21 +107,51 @@ Creator identity
 
 The prototype demonstrates the five-region workspace: Asset Header, Asset Tree, Creation Canvas, Property Inspector and Evidence Dock. It does not store production data or issue real approvals.
 
+## Warden policy layer
+
+Warden evaluates a specific subject, action, governed resource, field set and context against a referenced access policy.
+
+A decision may be:
+
+- `permit`;
+- `deny`;
+- `permit-with-conditions`;
+- `not-applicable`; or
+- `indeterminate`.
+
+Conditional access may require RiverOS logging, human approval, redaction, watermarking, purpose binding, expiry or no-export controls. A permit is limited to the recorded context and does not create authorship, ownership, validation, licensing or regulatory authority.
+
+- [Warden Policy Contracts V0.1](docs/integrations/warden/CC-WARDEN-POLICY-CONTRACTS-V0.1.md)
+- [Warden Access Policy schema](schemas/warden-access-policy.schema.json)
+- [Warden Policy Decision schema](schemas/warden-policy-decision.schema.json)
+
+## EmpireOS licence lifecycle
+
+The Licence Record defines the permission and terms. EmpireOS records append-only events that govern its operational lifecycle:
+
+```text
+issue -> amend / renew -> suspend / resume -> expire / terminate / revoke / supersede
+```
+
+Every post-issuance event carries the previous event identifier, a monotonically increasing sequence, the same Licence Record identifier, field-level changes, reasons, decision bases and occurrence/effective timestamps.
+
+A `proposed` event does not change a licence. Authorised or effective events require separate approval and effective-time evidence.
+
+- [EmpireOS Licence Lifecycle V0.1](docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md)
+- [EmpireOS Licence Event schema](schemas/empireos-licence-event.schema.json)
+
 ## Machine-readable contracts
 
-The JSON Schema Draft 2020-12 contracts under [`schemas/`](schemas/) cover fifteen record families:
+The JSON Schema Draft 2020-12 contracts under [`schemas/`](schemas/) cover eighteen record families:
 
-- [Core schema index and design rules](schemas/README.md)
-- [Asset Draft schema](schemas/asset-draft.schema.json)
-- [Asset Component schema](schemas/asset-component.schema.json)
-- [Material Specification schema](schemas/material-specification.schema.json)
-- [Process Recipe schema](schemas/process-recipe.schema.json)
-- [Asset Variant schema](schemas/asset-variant.schema.json)
-- [Validation Run schema](schemas/validation-run.schema.json)
-- [Creation Claim schema](schemas/creation-claim.schema.json)
-- [Release Gate schema](schemas/release-gate.schema.json)
+- seven core registry, integrity and RiverOS records;
+- eight Asset Lab authoring records;
+- two Warden policy records; and
+- one EmpireOS licence lifecycle event record.
 
-Schema conformance does not by itself establish authorship, ownership, scientific validity, safety, regulatory status, signature authority or legal enforceability.
+See the [schema index and design rules](schemas/README.md).
+
+Schema conformance does not by itself establish authorship, ownership, scientific validity, safety, regulatory status, signature authority, policy correctness or legal enforceability.
 
 ## Integrity profile
 
@@ -136,23 +175,27 @@ Synthetic, cross-linked fixtures are maintained under [`examples/`](examples/):
 - core Creator, Creation, Contribution, Licence and Envelope records;
 - RiverOS Evidence Event and Retention Policy records;
 - an eight-record Asset Lab material-authoring chain;
+- a Warden access policy and contextual decision;
+- a four-event EmpireOS licence lifecycle chain;
 - [fixture policy and chain description](examples/README.md).
 
 The validator at [`tools/validate_registry.py`](tools/validate_registry.py):
 
-- validates all fifteen schemas;
+- validates all eighteen schemas;
 - checks unique schema `$id` values;
 - validates every JSON fixture with format checking;
 - rejects duplicate governed identifiers;
 - verifies local cross-record references;
 - validates Asset Lab authoring links;
+- checks Warden policy references and matched rule identifiers;
+- checks EmpireOS same-licence event continuity and sequence order;
 - confirms envelope subject-to-payload consistency;
 - recalculates CC-CJSON-0.1 SHA-256 digests;
 - verifies local evidence artefact digests;
 - rejects verified synthetic signatures; and
 - requires an issued envelope to contain a verified signature.
 
-The workflow at [`.github/workflows/validate-registry.yml`](.github/workflows/validate-registry.yml) is configured to run these checks for relevant pull requests and branch updates. A successful workflow run is required before this baseline should be marked ready for merge.
+The workflow at [`.github/workflows/validate-registry.yml`](.github/workflows/validate-registry.yml) runs these checks for relevant pull requests and branch updates. A successful workflow run is required before the baseline is ready for merge.
 
 ## Creation maturity lifecycle
 
@@ -176,6 +219,8 @@ The workflow at [`.github/workflows/validate-registry.yml`](.github/workflows/va
 - [qPCR Creator Programme V0.1](docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md)
 - [Signed Record Envelopes V0.1](docs/architecture/CC-SIGNED-ENVELOPES-V0.1.md)
 - [RiverOS Evidence Contracts V0.1](docs/integrations/riveros/CC-RIVEROS-EVIDENCE-CONTRACTS-V0.1.md)
+- [Warden Policy Contracts V0.1](docs/integrations/warden/CC-WARDEN-POLICY-CONTRACTS-V0.1.md)
+- [EmpireOS Licence Lifecycle V0.1](docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md)
 - [Registry Schemas](schemas/README.md)
 - [Registry Fixtures](examples/README.md)
 
@@ -186,23 +231,23 @@ The workflow at [`.github/workflows/validate-registry.yml`](.github/workflows/va
 3. A derivative creation must preserve lineage to its source records.
 4. Claims must remain connected to evidence and limitations.
 5. Sensitive source material may remain restricted while provenance and status remain discoverable.
-6. A release gate does not substitute for legal, safety or regulatory approval.
-7. A licence never substitutes for legally required certification, accreditation or registration.
-8. Historical evidence must not be silently overwritten.
-9. A digest demonstrates change detection, not factual truth.
-10. A signature assertion is not trusted until verified against approved authority and policy.
+6. A Warden decision is contextual and must remain connected to policy, actor, action, resource and obligations.
+7. A proposed EmpireOS event does not change a licence.
+8. A release gate does not substitute for legal, safety or regulatory approval.
+9. A licence never substitutes for legally required certification, accreditation or registration.
+10. Historical evidence and event history must not be silently overwritten.
+11. A digest demonstrates change detection, not factual truth.
+12. A signature assertion is not trusted until verified against approved authority and policy.
 
 ## Release status
 
-The current documents, schemas, fixtures and prototype are controlled architecture baselines for review and conformance testing. They are not legal assignments, patent filings, copyright registrations, trusted digital certificates, production CAD or LIMS systems, scientific validations, regulated-product authorisations, clinical approvals or diagnostic validations.
+The current documents, schemas, fixtures and prototype are controlled architecture baselines for review and conformance testing. They are not legal assignments, patent filings, copyright registrations, trusted digital certificates, production CAD or LIMS systems, scientific validations, access-control certifications, executed licences, regulated-product authorisations, clinical approvals or diagnostic validations.
 
 ## Next implementation layers
 
 - trusted key and signer-authority registry;
-- production signature verification and revocation;
-- Warden policy-decision and restricted-field access contracts;
-- EmpireOS licence issuance and lifecycle events;
-- positive and negative conformance vectors;
+- production signature verification, rotation and revocation;
+- positive and negative schema and cryptographic conformance vectors;
 - Synnergyze Asset Draft APIs and collaborative persistence;
 - creator and creation registration workflows;
 - Virtual Silk Road public and member discovery projections.

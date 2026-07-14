@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate Creators Common schemas, examples, digests and local references."""
+"""Validate Creators Common schemas, examples, digests and governed references."""
 
 from __future__ import annotations
 
@@ -32,6 +32,9 @@ SCHEMA_FILES = {
     "validation_run": SCHEMA_DIR / "validation-run.schema.json",
     "creation_claim": SCHEMA_DIR / "creation-claim.schema.json",
     "release_gate": SCHEMA_DIR / "release-gate.schema.json",
+    "warden_access_policy": SCHEMA_DIR / "warden-access-policy.schema.json",
+    "warden_policy_decision": SCHEMA_DIR / "warden-policy-decision.schema.json",
+    "empireos_licence_event": SCHEMA_DIR / "empireos-licence-event.schema.json",
 }
 
 RECORD_TYPE_TO_KIND = {
@@ -50,6 +53,9 @@ RECORD_TYPE_TO_KIND = {
     "validation-run": "validation_run",
     "creation-claim": "creation_claim",
     "release-gate": "release_gate",
+    "warden-access-policy": "warden_access_policy",
+    "warden-policy-decision": "warden_policy_decision",
+    "empireos-licence-event": "empireos_licence_event",
 }
 
 
@@ -91,12 +97,7 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def canonical_bytes(value: Any, path: str = "<root>") -> bytes:
-    """Return CC-CJSON-0.1 deterministic bytes.
-
-    Floating-point values are rejected in digest-bound payloads. Decimal
-    measurements should use normalized strings until a cross-language numeric
-    canonicalization profile is adopted.
-    """
+    """Return CC-CJSON-0.1 deterministic bytes."""
 
     if isinstance(value, float):
         raise ValueError(
@@ -126,6 +127,12 @@ def canonical_bytes(value: Any, path: str = "<root>") -> bytes:
 def record_kind(record: dict[str, Any]) -> str:
     if "envelopeId" in record:
         return "envelope"
+    if "decisionId" in record:
+        return "warden_policy_decision"
+    if "accessPolicyId" in record:
+        return "warden_access_policy"
+    if "licenceEventId" in record:
+        return "empireos_licence_event"
     if "eventId" in record:
         return "evidence_event"
     if "policyId" in record:
@@ -174,6 +181,9 @@ def governed_id(kind: str, record: dict[str, Any]) -> str:
         "validation_run": "validationRunId",
         "creation_claim": "creationClaimId",
         "release_gate": "releaseGateId",
+        "warden_access_policy": "accessPolicyId",
+        "warden_policy_decision": "decisionId",
+        "empireos_licence_event": "licenceEventId",
     }[kind]
     value = record.get(key)
     if not isinstance(value, str):
@@ -208,7 +218,6 @@ def validate_schemas() -> dict[str, dict[str, Any]]:
     duplicates = [schema_id for schema_id, count in Counter(ids).items() if count > 1]
     if duplicates:
         raise ValueError(f"duplicate schema $id values: {', '.join(sorted(duplicates))}")
-
     return schemas
 
 
@@ -243,7 +252,6 @@ def validate_examples(
             raise ValueError(f"duplicate governed record identifier: {record_id}")
         seen_ids.add(record_id)
         validated.append((path, kind, record))
-
     return validated
 
 
@@ -269,11 +277,14 @@ def check_local_cross_references(
     records: list[tuple[Path, str, dict[str, Any]]],
 ) -> None:
     by_kind: dict[str, set[str]] = {kind: set() for kind in SCHEMA_FILES}
+    records_by_id: dict[str, tuple[str, dict[str, Any]]] = {}
     all_governed_ids: set[str] = set()
+
     for _, kind, record in records:
         record_id = governed_id(kind, record)
         by_kind[kind].add(record_id)
         all_governed_ids.add(record_id)
+        records_by_id[record_id] = (kind, record)
 
     errors: list[str] = []
 
@@ -299,9 +310,8 @@ def check_local_cross_references(
         elif kind == "creation":
             for creator in record.get("creators", []):
                 require_local(creator["creatorId"], "creator", source)
-                contribution_ref = creator.get("contributionRef")
-                if contribution_ref:
-                    require_local(contribution_ref, "contribution", source)
+                if creator.get("contributionRef"):
+                    require_local(creator["contributionRef"], "contribution", source)
             for ref in record.get("contributionRefs", []):
                 require_local(ref, "contribution", source)
             for ref in record.get("licenceRefs", []):
@@ -400,12 +410,94 @@ def check_local_cross_references(
                 require_local(ref, "licence", source)
             if record.get("signedEnvelopeRef"):
                 require_local(record["signedEnvelopeRef"], "envelope", source)
+            if record.get("wardenDecisionRef"):
+                require_local(record["wardenDecisionRef"], "warden_policy_decision", source)
+
+        elif kind == "warden_access_policy":
+            for ref in record.get("scope", {}).get("recordRefs", []):
+                require_any_governed(ref, source)
+            for ref in record.get("review", {}).get("reviewerRefs", []):
+                require_any_governed(ref, source)
+            for rule in record["rules"]:
+                for ref in rule.get("subjectConditions", {}).get("subjectRefs", []):
+                    require_any_governed(ref, source)
+                for ref in rule.get("subjectConditions", {}).get("affiliationRefs", []):
+                    require_any_governed(ref, source)
+                for ref in rule.get("resourceConditions", {}).get("recordRefs", []):
+                    require_any_governed(ref, source)
+                for obligation in rule.get("obligations", []):
+                    for ref in obligation.get("approvalRefs", []):
+                        require_any_governed(ref, source)
+                    destination = obligation.get("destinationRef")
+                    if isinstance(destination, str) and destination.startswith("CC-"):
+                        require_any_governed(destination, source)
+
+        elif kind == "warden_policy_decision":
+            require_local(record["policyRef"], "warden_access_policy", source)
+            require_any_governed(record["subject"]["actorId"], source)
+            for ref in record["subject"].get("affiliationRefs", []):
+                require_any_governed(ref, source)
+            require_any_governed(record["resource"]["recordRef"], source)
+            if record.get("relatedEvidenceEventRef"):
+                require_local(record["relatedEvidenceEventRef"], "evidence_event", source)
+            if record.get("releaseGateRef"):
+                require_local(record["releaseGateRef"], "release_gate", source)
+            if record.get("licenceRef"):
+                require_local(record["licenceRef"], "licence", source)
+            for obligation in record["obligations"]:
+                for ref in obligation.get("approvalRefs", []):
+                    require_any_governed(ref, source)
+                destination = obligation.get("destinationRef")
+                if isinstance(destination, str) and destination.startswith("CC-"):
+                    require_any_governed(destination, source)
+
+            policy_entry = records_by_id.get(record["policyRef"])
+            if policy_entry:
+                _, policy = policy_entry
+                rule_ids = {rule["ruleId"] for rule in policy["rules"]}
+                missing_rules = set(record["matchedRuleRefs"]) - rule_ids
+                if missing_rules:
+                    errors.append(
+                        f"{source}: matched Warden rule(s) not present in policy "
+                        f"{record['policyRef']}: {', '.join(sorted(missing_rules))}"
+                    )
+
+        elif kind == "empireos_licence_event":
+            require_local(record["licenceId"], "licence", source)
+            for ref in record.get("requestedByRefs", []):
+                require_any_governed(ref, source)
+            for ref in record.get("approvedByRefs", []):
+                require_any_governed(ref, source)
+            for ref in record.get("decisionBasisRefs", []):
+                require_any_governed(ref, source)
+            if record.get("wardenDecisionRef"):
+                require_local(record["wardenDecisionRef"], "warden_policy_decision", source)
+            if record.get("riverosEvidenceEventRef"):
+                require_local(record["riverosEvidenceEventRef"], "evidence_event", source)
+
+            previous_ref = record.get("previousEventRef")
+            if previous_ref:
+                require_local(previous_ref, "empireos_licence_event", source)
+                previous_entry = records_by_id.get(previous_ref)
+                if previous_entry:
+                    previous_kind, previous = previous_entry
+                    if previous_kind != "empireos_licence_event":
+                        errors.append(f"{source}: previous event is not an EmpireOS licence event")
+                    else:
+                        if previous["licenceId"] != record["licenceId"]:
+                            errors.append(f"{source}: previous event belongs to another licence")
+                        if previous["sequence"] + 1 != record["sequence"]:
+                            errors.append(
+                                f"{source}: sequence {record['sequence']} does not follow "
+                                f"{previous_ref} sequence {previous['sequence']}"
+                            )
+            elif record["sequence"] != 1 or record["eventType"] != "issue":
+                errors.append(f"{source}: only issuance sequence 1 may omit previousEventRef")
 
         elif kind == "envelope":
             subject = record["subject"]
             subject_kind = RECORD_TYPE_TO_KIND[subject["recordType"]]
             require_local(subject["recordId"], subject_kind, source)
-
             payload = record["payload"]
             try:
                 target = resolve_local_ref(payload["ref"], source)

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/synnergyze-asset-event.schema.json",
+  "title": "Synnergyze Asset Event",
+  "description": "An append-only server event for the Asset Draft stream, recording acceptance, rejection, conflict, snapshot or release-request outcomes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "eventId", "recordVersion", "streamId", "sequence", "assetDraftId", "eventType", "actorId", "baseRevision", "resultingRevision", "idempotencyKey", "recordedAt", "issuer"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "eventId": {"type": "string", "pattern": "^CC-SY-EV-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "streamId": {"type": "string", "pattern": "^asset-draft:CC-AD-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "previousEventRef": {"type": "string", "pattern": "^CC-SY-EV-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "assetDraftId": {"type": "string", "pattern": "^CC-AD-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "operationRef": {"type": "string", "pattern": "^CC-SY-OP-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "eventType": {"type": "string", "enum": ["operation-accepted", "operation-rejected", "conflict-detected", "conflict-resolved", "snapshot-created", "review-requested", "release-requested"]},
+    "actorId": {"type": "string", "minLength": 3, "maxLength": 200},
+    "baseRevision": {"type": "integer", "minimum": 0},
+    "resultingRevision": {"type": "integer", "minimum": 0},
+    "idempotencyKey": {"type": "string", "minLength": 16, "maxLength": 200},
+    "changedPaths": {"type": "array", "uniqueItems": true, "maxItems": 500, "items": {"type": "string", "maxLength": 1000}},
+    "reasonCodes": {"type": "array", "uniqueItems": true, "maxItems": 100, "items": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{1,95}$"}},
+    "riverosEvidenceEventRef": {"type": "string", "pattern": "^CC-RV-EV-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "wardenDecisionRef": {"type": "string", "pattern": "^CC-WD-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordedAt": {"type": "string", "format": "date-time"},
+    "issuer": {"$ref": "#/$defs/issuer"}
+  },
+  "allOf": [
+    {"if": {"properties": {"sequence": {"minimum": 2}}, "required": ["sequence"]}, "then": {"required": ["previousEventRef"]}},
+    {"if": {"properties": {"eventType": {"enum": ["operation-accepted", "operation-rejected", "conflict-detected", "conflict-resolved"]}}, "required": ["eventType"]}, "then": {"required": ["operationRef"]}}
+  ],
+  "$defs": {
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuerId", "name"],
+      "properties": {
+        "issuerId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 240},
+        "authorityRef": {"type": "string", "maxLength": 500}
+      }
+    }
+  }
+}

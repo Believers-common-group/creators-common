@@ -79,7 +79,7 @@
         },
         {
           "type": "riveros-evidence",
-          "destinationRef": "CC-RV-RP-GOVERNED-RECORD-001",
+          "destinationRef": "CC-RV-RP-RESEARCH-EVIDENCE-001",
           "details": "Retain the decision evidence under the governed-record retention policy."
         },
         {

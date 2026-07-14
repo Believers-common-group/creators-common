@@ -1,0 +1,438 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/warden-policy-decision.schema.json",
+  "title": "Creators Common Warden Policy Decision",
+  "description": "A deterministic Warden decision for one subject, action, governed resource and field set under a referenced access policy.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "decisionId",
+    "recordVersion",
+    "requestId",
+    "policyRef",
+    "subject",
+    "resource",
+    "action",
+    "decision",
+    "matchedRuleRefs",
+    "obligations",
+    "evaluatedAt",
+    "evaluator",
+    "issuer",
+    "createdAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "decisionId": {
+      "type": "string",
+      "pattern": "^CC-WD-[A-Z0-9][A-Z0-9._-]{5,95}$"
+    },
+    "recordVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"
+    },
+    "requestId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    },
+    "policyRef": {
+      "type": "string",
+      "pattern": "^CC-WA-[A-Z0-9][A-Z0-9._-]{5,95}$"
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actorId",
+        "assuranceLevel"
+      ],
+      "properties": {
+        "actorId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "roles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160
+          }
+        },
+        "affiliationRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "assuranceLevel": {
+          "type": "string",
+          "enum": [
+            "anonymous",
+            "self-asserted",
+            "verified",
+            "strong",
+            "hardware-bound"
+          ]
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordRef",
+        "recordType",
+        "fieldPaths"
+      ],
+      "properties": {
+        "recordRef": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "recordType": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "fieldPaths": {
+          "$ref": "#/$defs/fieldPaths"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "member",
+            "restricted",
+            "confidential",
+            "secret"
+          ]
+        }
+      }
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "discover",
+        "view",
+        "read",
+        "write",
+        "annotate",
+        "export",
+        "decrypt",
+        "share",
+        "sign",
+        "review",
+        "approve",
+        "revoke",
+        "delete"
+      ]
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "environment": {
+          "type": "string",
+          "enum": [
+            "public-web",
+            "member-portal",
+            "asset-lab",
+            "laboratory",
+            "factory",
+            "mobile",
+            "api",
+            "administration"
+          ]
+        },
+        "jurisdiction": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "networkZone": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "deviceTrust": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "basic",
+            "managed",
+            "attested",
+            "hardware-bound"
+          ]
+        },
+        "occurredAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "permit",
+        "deny",
+        "permit-with-conditions",
+        "not-applicable",
+        "indeterminate"
+      ]
+    },
+    "matchedRuleRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 120
+      }
+    },
+    "reasonCodes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 120
+      }
+    },
+    "explanation": {
+      "type": "string",
+      "maxLength": 5000
+    },
+    "obligations": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/obligation"
+      }
+    },
+    "relatedEvidenceEventRef": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "releaseGateRef": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "licenceRef": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "validUntil": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evaluatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evaluator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "serviceId",
+        "policyEngineVersion"
+      ],
+      "properties": {
+        "serviceId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "policyEngineVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "rulesetDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "not-required",
+            "pending",
+            "accepted",
+            "overridden",
+            "expired"
+          ]
+        },
+        "reviewerRef": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "reviewedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "overrideReason": {
+          "type": "string",
+          "maxLength": 3000
+        }
+      }
+    },
+    "issuer": {
+      "$ref": "#/$defs/issuer"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "permit-with-conditions"
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "obligations": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "deny",
+              "indeterminate"
+            ]
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reasonCodes": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 5000,
+      "items": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 200
+      }
+    },
+    "fieldPaths": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "maxItems": 5000,
+      "items": {
+        "type": "string",
+        "pattern": "^\\$?(?:\\.[A-Za-z0-9_-]+|\\[[0-9*]+\\])+$"
+      }
+    },
+    "obligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "status"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "log-access",
+            "riveros-evidence",
+            "human-approval",
+            "redact-fields",
+            "watermark",
+            "expiry",
+            "purpose-binding",
+            "no-export",
+            "no-derivative",
+            "notify-custodian",
+            "custom"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "required",
+            "satisfied",
+            "waived",
+            "failed"
+          ]
+        },
+        "fieldPaths": {
+          "$ref": "#/$defs/fieldPaths"
+        },
+        "approvalRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "destinationRef": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "details": {
+          "type": "string",
+          "maxLength": 3000
+        }
+      }
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issuerId",
+        "name"
+      ],
+      "properties": {
+        "issuerId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "authorityRef": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    }
+  }
+}

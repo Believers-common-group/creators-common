@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
-"""Validate Creators Common schemas, examples, digests and governed references."""
+"""Validate Creators Common schemas, fixtures, digests, signatures and governed references."""
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import sys
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from cryptography.exceptions import InvalidSignature
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 from jsonschema import Draft202012Validator, FormatChecker
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,6 +39,10 @@ SCHEMA_FILES = {
     "warden_access_policy": SCHEMA_DIR / "warden-access-policy.schema.json",
     "warden_policy_decision": SCHEMA_DIR / "warden-policy-decision.schema.json",
     "empireos_licence_event": SCHEMA_DIR / "empireos-licence-event.schema.json",
+    "trusted_key": SCHEMA_DIR / "trusted-key.schema.json",
+    "signer_authority": SCHEMA_DIR / "signer-authority.schema.json",
+    "key_lifecycle_event": SCHEMA_DIR / "key-lifecycle-event.schema.json",
+    "signature_verification": SCHEMA_DIR / "signature-verification.schema.json",
 }
 
 RECORD_TYPE_TO_KIND = {
@@ -56,6 +64,35 @@ RECORD_TYPE_TO_KIND = {
     "warden-access-policy": "warden_access_policy",
     "warden-policy-decision": "warden_policy_decision",
     "empireos-licence-event": "empireos_licence_event",
+    "trusted-key": "trusted_key",
+    "signer-authority": "signer_authority",
+    "key-lifecycle-event": "key_lifecycle_event",
+    "signature-verification": "signature_verification",
+}
+
+ID_KEYS = {
+    "creator": "creatorId",
+    "creation": "creationId",
+    "contribution": "contributionId",
+    "licence": "licenceId",
+    "envelope": "envelopeId",
+    "evidence_event": "eventId",
+    "retention_policy": "policyId",
+    "asset_draft": "assetDraftId",
+    "asset_component": "assetComponentId",
+    "material_specification": "materialSpecificationId",
+    "process_recipe": "processRecipeId",
+    "asset_variant": "assetVariantId",
+    "validation_run": "validationRunId",
+    "creation_claim": "creationClaimId",
+    "release_gate": "releaseGateId",
+    "warden_access_policy": "accessPolicyId",
+    "warden_policy_decision": "decisionId",
+    "empireos_licence_event": "licenceEventId",
+    "trusted_key": "keyId",
+    "signer_authority": "authorityId",
+    "key_lifecycle_event": "keyEventId",
+    "signature_verification": "verificationId",
 }
 
 
@@ -124,70 +161,56 @@ def canonical_bytes(value: Any, path: str = "<root>") -> bytes:
     return encoded.encode("utf-8")
 
 
+def decode_base64url(value: str, source: str) -> bytes:
+    try:
+        padding = "=" * (-len(value) % 4)
+        return base64.urlsafe_b64decode(value + padding)
+    except Exception as exc:  # noqa: BLE001
+        raise ValueError(f"{source}: invalid base64url value") from exc
+
+
+def parse_datetime(value: str, source: str) -> datetime:
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ValueError(f"{source}: invalid RFC3339 timestamp {value}") from exc
+
+
 def record_kind(record: dict[str, Any]) -> str:
-    if "envelopeId" in record:
-        return "envelope"
-    if "decisionId" in record:
-        return "warden_policy_decision"
-    if "accessPolicyId" in record:
-        return "warden_access_policy"
-    if "licenceEventId" in record:
-        return "empireos_licence_event"
-    if "eventId" in record:
-        return "evidence_event"
-    if "policyId" in record:
-        return "retention_policy"
-    if "assetComponentId" in record:
-        return "asset_component"
-    if "materialSpecificationId" in record:
-        return "material_specification"
-    if "processRecipeId" in record:
-        return "process_recipe"
-    if "assetVariantId" in record:
-        return "asset_variant"
-    if "validationRunId" in record:
-        return "validation_run"
-    if "creationClaimId" in record:
-        return "creation_claim"
-    if "releaseGateId" in record:
-        return "release_gate"
-    if "assetDraftId" in record:
-        return "asset_draft"
-    if "creatorId" in record:
-        return "creator"
-    if "contributionId" in record:
-        return "contribution"
-    if "licenceId" in record:
-        return "licence"
+    for kind in (
+        "signature_verification",
+        "key_lifecycle_event",
+        "signer_authority",
+        "trusted_key",
+        "envelope",
+        "warden_policy_decision",
+        "warden_access_policy",
+        "empireos_licence_event",
+        "evidence_event",
+        "retention_policy",
+        "asset_component",
+        "material_specification",
+        "process_recipe",
+        "asset_variant",
+        "validation_run",
+        "creation_claim",
+        "release_gate",
+        "asset_draft",
+        "creator",
+        "contribution",
+        "licence",
+    ):
+        if ID_KEYS[kind] in record:
+            return kind
     if "creationId" in record and "passportVersion" in record:
         return "creation"
     raise ValueError("record type cannot be inferred from governed identifier fields")
 
 
 def governed_id(kind: str, record: dict[str, Any]) -> str:
-    key = {
-        "creator": "creatorId",
-        "creation": "creationId",
-        "contribution": "contributionId",
-        "licence": "licenceId",
-        "envelope": "envelopeId",
-        "evidence_event": "eventId",
-        "retention_policy": "policyId",
-        "asset_draft": "assetDraftId",
-        "asset_component": "assetComponentId",
-        "material_specification": "materialSpecificationId",
-        "process_recipe": "processRecipeId",
-        "asset_variant": "assetVariantId",
-        "validation_run": "validationRunId",
-        "creation_claim": "creationClaimId",
-        "release_gate": "releaseGateId",
-        "warden_access_policy": "accessPolicyId",
-        "warden_policy_decision": "decisionId",
-        "empireos_licence_event": "licenceEventId",
-    }[kind]
-    value = record.get(key)
+    value = record.get(ID_KEYS[kind])
     if not isinstance(value, str):
-        raise ValueError(f"{key} must be a string")
+        raise ValueError(f"{ID_KEYS[kind]} must be a string")
     return value
 
 
@@ -273,6 +296,109 @@ def check_digest(
         )
 
 
+def envelope_signature_message(envelope: dict[str, Any]) -> str:
+    subject = envelope["subject"]
+    payload = envelope["payload"]
+    return "\n".join(
+        [
+            "CC-SIG-0.1",
+            f"envelopeId={envelope['envelopeId']}",
+            f"envelopeVersion={envelope['envelopeVersion']}",
+            f"recordType={subject['recordType']}",
+            f"recordId={subject['recordId']}",
+            f"recordVersion={subject['recordVersion']}",
+            f"canonicalization={payload['canonicalization']}",
+            f"digestAlgorithm={payload['digest']['algorithm']}",
+            f"digestValue={payload['digest']['value']}",
+        ]
+    )
+
+
+def verify_ed25519(public_key_value: str, message: str, signature_value: str, source: str) -> bool:
+    public_key_bytes = decode_base64url(public_key_value, source)
+    signature_bytes = decode_base64url(signature_value, source)
+    if len(public_key_bytes) != 32:
+        raise ValueError(f"{source}: Ed25519 raw public key must be 32 bytes")
+    try:
+        Ed25519PublicKey.from_public_bytes(public_key_bytes).verify(
+            signature_bytes,
+            message.encode("utf-8"),
+        )
+        return True
+    except InvalidSignature:
+        return False
+
+
+def authority_allows(
+    authority: dict[str, Any],
+    *,
+    key_ref: str,
+    record_type: str,
+    action: str,
+    scope: str,
+    purpose: str,
+    environment: str | None,
+    verified_at: datetime,
+) -> bool:
+    if authority["status"] != "active" or key_ref not in authority["keyRefs"]:
+        return False
+    if verified_at < parse_datetime(authority["validFrom"], authority["authorityId"]):
+        return False
+    if authority.get("validUntil") and verified_at > parse_datetime(
+        authority["validUntil"], authority["authorityId"]
+    ):
+        return False
+
+    for permission in authority["permissions"]:
+        if record_type not in permission["recordTypes"]:
+            continue
+        if action not in permission["actions"] or scope not in permission["signatureScopes"]:
+            continue
+        if permission.get("purposes") and purpose not in permission["purposes"]:
+            continue
+        if permission.get("environments") and environment not in permission["environments"]:
+            continue
+        return True
+    return False
+
+
+def trust_result(
+    key: dict[str, Any],
+    authority: dict[str, Any],
+    context: dict[str, Any],
+    *,
+    key_ref: str,
+) -> str:
+    verified_at = parse_datetime(context["verifiedAt"], key["keyId"])
+    status = key["status"]
+    if status == "revoked":
+        return "revoked"
+    if status == "suspended":
+        return "suspended"
+    if status in {"expired", "retired"}:
+        return "expired"
+    if status != "active":
+        return "unknown"
+    if verified_at < parse_datetime(key["validFrom"], key["keyId"]):
+        return "not-yet-valid"
+    if key.get("validUntil") and verified_at > parse_datetime(key["validUntil"], key["keyId"]):
+        return "expired"
+    if "record-envelope-signing" not in key["purposes"]:
+        return "unauthorized"
+    if not authority_allows(
+        authority,
+        key_ref=key_ref,
+        record_type=context["recordType"],
+        action=context["action"],
+        scope=context["scope"],
+        purpose=context["purpose"],
+        environment=context.get("environment"),
+        verified_at=verified_at,
+    ):
+        return "unauthorized"
+    return "trusted"
+
+
 def check_local_cross_references(
     records: list[tuple[Path, str, dict[str, Any]]],
 ) -> None:
@@ -328,20 +454,17 @@ def check_local_cross_references(
             require_local(record["ownerCreatorId"], "creator", source)
             for ref in record.get("collaboratorRefs", []):
                 require_local(ref, "creator", source)
-            for ref in record.get("componentRefs", []):
-                require_local(ref, "asset_component", source)
-            for ref in record.get("materialSpecificationRefs", []):
-                require_local(ref, "material_specification", source)
-            for ref in record.get("processRecipeRefs", []):
-                require_local(ref, "process_recipe", source)
-            for ref in record.get("variantRefs", []):
-                require_local(ref, "asset_variant", source)
-            for ref in record.get("validationRunRefs", []):
-                require_local(ref, "validation_run", source)
-            for ref in record.get("claimRefs", []):
-                require_local(ref, "creation_claim", source)
-            for ref in record.get("releaseGateRefs", []):
-                require_local(ref, "release_gate", source)
+            for field, expected_kind in (
+                ("componentRefs", "asset_component"),
+                ("materialSpecificationRefs", "material_specification"),
+                ("processRecipeRefs", "process_recipe"),
+                ("variantRefs", "asset_variant"),
+                ("validationRunRefs", "validation_run"),
+                ("claimRefs", "creation_claim"),
+                ("releaseGateRefs", "release_gate"),
+            ):
+                for ref in record.get(field, []):
+                    require_local(ref, expected_kind, source)
             if record.get("creationPassportRef"):
                 require_local(record["creationPassportRef"], "creation", source)
 
@@ -362,25 +485,22 @@ def check_local_cross_references(
 
         elif kind == "process_recipe":
             require_local(record["assetDraftId"], "asset_draft", source)
-            for ref in record.get("inputRefs", []):
-                require_any_governed(ref, source)
-            for ref in record.get("outputRefs", []):
+            for ref in record.get("inputRefs", []) + record.get("outputRefs", []):
                 require_any_governed(ref, source)
 
         elif kind == "asset_variant":
             require_local(record["assetDraftId"], "asset_draft", source)
             if record.get("baseVariantRef"):
                 require_local(record["baseVariantRef"], "asset_variant", source)
-            for ref in record.get("componentRefs", []):
-                require_local(ref, "asset_component", source)
-            for ref in record.get("materialSpecificationRefs", []):
-                require_local(ref, "material_specification", source)
-            for ref in record.get("processRecipeRefs", []):
-                require_local(ref, "process_recipe", source)
-            for ref in record.get("validationRunRefs", []):
-                require_local(ref, "validation_run", source)
-            for ref in record.get("claimRefs", []):
-                require_local(ref, "creation_claim", source)
+            for field, expected_kind in (
+                ("componentRefs", "asset_component"),
+                ("materialSpecificationRefs", "material_specification"),
+                ("processRecipeRefs", "process_recipe"),
+                ("validationRunRefs", "validation_run"),
+                ("claimRefs", "creation_claim"),
+            ):
+                for ref in record.get(field, []):
+                    require_local(ref, expected_kind, source)
 
         elif kind == "validation_run":
             require_local(record["assetDraftId"], "asset_draft", source)
@@ -464,17 +584,13 @@ def check_local_cross_references(
 
         elif kind == "empireos_licence_event":
             require_local(record["licenceId"], "licence", source)
-            for ref in record.get("requestedByRefs", []):
-                require_any_governed(ref, source)
-            for ref in record.get("approvedByRefs", []):
-                require_any_governed(ref, source)
-            for ref in record.get("decisionBasisRefs", []):
-                require_any_governed(ref, source)
+            for field in ("requestedByRefs", "approvedByRefs", "decisionBasisRefs"):
+                for ref in record.get(field, []):
+                    require_any_governed(ref, source)
             if record.get("wardenDecisionRef"):
                 require_local(record["wardenDecisionRef"], "warden_policy_decision", source)
             if record.get("riverosEvidenceEventRef"):
                 require_local(record["riverosEvidenceEventRef"], "evidence_event", source)
-
             previous_ref = record.get("previousEventRef")
             if previous_ref:
                 require_local(previous_ref, "empireos_licence_event", source)
@@ -494,10 +610,173 @@ def check_local_cross_references(
             elif record["sequence"] != 1 or record["eventType"] != "issue":
                 errors.append(f"{source}: only issuance sequence 1 may omit previousEventRef")
 
+        elif kind == "trusted_key":
+            if record.get("previousKeyRef"):
+                require_local(record["previousKeyRef"], "trusted_key", source)
+            if record.get("successorKeyRef"):
+                require_local(record["successorKeyRef"], "trusted_key", source)
+            for ref in record.get("lifecycleEventRefs", []):
+                require_local(ref, "key_lifecycle_event", source)
+            public_key = record["publicKey"]
+            if record["algorithm"] == "Ed25519":
+                if public_key["format"] != "raw" or public_key["encoding"] != "base64url":
+                    errors.append(f"{source}: Ed25519 conformance keys must use raw base64url form")
+                else:
+                    try:
+                        public_bytes = decode_base64url(public_key["value"], source)
+                        if len(public_bytes) != 32:
+                            errors.append(f"{source}: Ed25519 public key must be 32 bytes")
+                        actual_fp = hashlib.sha256(public_bytes).hexdigest()
+                        if actual_fp != record["fingerprint"]["value"]:
+                            errors.append(
+                                f"{source}: key fingerprint mismatch; expected "
+                                f"{record['fingerprint']['value']}, calculated {actual_fp}"
+                            )
+                    except ValueError as exc:
+                        errors.append(str(exc))
+
+            matching_events = [
+                candidate
+                for candidate_kind, candidate in records_by_id.values()
+                if candidate_kind == "key_lifecycle_event"
+                and (
+                    candidate["keyRef"] == record["keyId"]
+                    or candidate.get("relatedKeyRef") == record["keyId"]
+                )
+            ]
+            if record["status"] == "revoked" and not any(
+                event["eventType"] == "revoke"
+                and event["keyRef"] == record["keyId"]
+                and event["status"] == "applied"
+                for event in matching_events
+            ):
+                errors.append(f"{source}: revoked key lacks an applied revocation event")
+            if record["status"] == "active" and not any(
+                event["status"] == "applied"
+                and (
+                    (event["eventType"] in {"register", "activate"} and event["keyRef"] == record["keyId"])
+                    or (event["eventType"] == "rotate" and event.get("relatedKeyRef") == record["keyId"])
+                )
+                for event in matching_events
+            ):
+                errors.append(f"{source}: active key lacks an applied registration, activation or rotation event")
+
+        elif kind == "signer_authority":
+            for ref in record["keyRefs"]:
+                require_local(ref, "trusted_key", source)
+            for ref in record.get("review", {}).get("reviewerRefs", []):
+                require_any_governed(ref, source)
+
+        elif kind == "key_lifecycle_event":
+            require_local(record["keyRef"], "trusted_key", source)
+            if record.get("relatedKeyRef"):
+                require_local(record["relatedKeyRef"], "trusted_key", source)
+            if record.get("wardenDecisionRef"):
+                require_local(record["wardenDecisionRef"], "warden_policy_decision", source)
+            if record.get("riverosEvidenceEventRef"):
+                require_local(record["riverosEvidenceEventRef"], "evidence_event", source)
+            for ref in record.get("basisRefs", []):
+                require_any_governed(ref, source)
+            previous_ref = record.get("previousEventRef")
+            if previous_ref:
+                require_local(previous_ref, "key_lifecycle_event", source)
+                previous_entry = records_by_id.get(previous_ref)
+                if previous_entry:
+                    previous_kind, previous = previous_entry
+                    if previous_kind != "key_lifecycle_event":
+                        errors.append(f"{source}: previous event is not a key lifecycle event")
+                    elif previous["sequence"] + 1 != record["sequence"]:
+                        errors.append(
+                            f"{source}: key-event sequence {record['sequence']} does not follow "
+                            f"{previous_ref} sequence {previous['sequence']}"
+                        )
+            elif record["sequence"] != 1 or record["eventType"] != "register":
+                errors.append(f"{source}: only registration sequence 1 may omit previousEventRef")
+
+        elif kind == "signature_verification":
+            require_local(record["keyRef"], "trusted_key", source)
+            require_local(record["authorityRef"], "signer_authority", source)
+            if record.get("envelopeRef"):
+                require_local(record["envelopeRef"], "envelope", source)
+
+            key_entry = records_by_id.get(record["keyRef"])
+            authority_entry = records_by_id.get(record["authorityRef"])
+            if key_entry and authority_entry:
+                key_kind, key = key_entry
+                authority_kind, authority = authority_entry
+                if key_kind != "trusted_key" or authority_kind != "signer_authority":
+                    errors.append(f"{source}: signature verification references wrong record families")
+                elif record["algorithm"] != key["algorithm"]:
+                    errors.append(f"{source}: verification algorithm does not match trusted key")
+                elif record["algorithm"] == "Ed25519":
+                    try:
+                        cryptographic_valid = verify_ed25519(
+                            key["publicKey"]["value"],
+                            record["signedMessage"],
+                            record["signatureValue"],
+                            source,
+                        )
+                        actual_crypto = "valid" if cryptographic_valid else "invalid"
+                        actual_trust = trust_result(
+                            key,
+                            authority,
+                            record["verificationContext"],
+                            key_ref=record["keyRef"],
+                        )
+                        actual_overall = (
+                            "verified"
+                            if actual_crypto == "valid" and actual_trust == "trusted"
+                            else "failed"
+                        )
+                        actual = {
+                            "cryptographicResult": actual_crypto,
+                            "trustResult": actual_trust,
+                            "overall": actual_overall,
+                        }
+                        for expected_field, actual_value in actual.items():
+                            if record["expected"][expected_field] != actual_value:
+                                errors.append(
+                                    f"{source}: expected {expected_field} "
+                                    f"{record['expected'][expected_field]}, calculated {actual_value}"
+                                )
+                            if record["observed"][expected_field] != actual_value:
+                                errors.append(
+                                    f"{source}: observed {expected_field} "
+                                    f"{record['observed'][expected_field]}, calculated {actual_value}"
+                                )
+
+                        if record.get("envelopeRef"):
+                            envelope_entry = records_by_id.get(record["envelopeRef"])
+                            if envelope_entry:
+                                envelope_kind, envelope = envelope_entry
+                                if envelope_kind != "envelope":
+                                    errors.append(f"{source}: envelopeRef is not a record envelope")
+                                else:
+                                    signature_matches = any(
+                                        signature["signatureId"] == record["signatureId"]
+                                        and signature.get("keyRef") == record["keyRef"]
+                                        and signature["signatureValue"] == record["signatureValue"]
+                                        for signature in envelope["signatures"]
+                                    )
+                                    if not signature_matches:
+                                        errors.append(
+                                            f"{source}: verification does not match an envelope signature assertion"
+                                        )
+                                    canonical_message = envelope_signature_message(envelope)
+                                    if record["vectorType"] in {"positive", "operational"} and (
+                                        record["signedMessage"] != canonical_message
+                                    ):
+                                        errors.append(
+                                            f"{source}: positive verification message does not match envelope"
+                                        )
+                    except ValueError as exc:
+                        errors.append(str(exc))
+
         elif kind == "envelope":
             subject = record["subject"]
             subject_kind = RECORD_TYPE_TO_KIND[subject["recordType"]]
             require_local(subject["recordId"], subject_kind, source)
+
             payload = record["payload"]
             try:
                 target = resolve_local_ref(payload["ref"], source)
@@ -523,16 +802,36 @@ def check_local_cross_references(
                     signature["algorithm"] == "synthetic-test"
                     and signature["verificationStatus"] == "verified"
                 ):
-                    errors.append(
-                        f"{source}: synthetic-test signature must not be marked verified"
-                    )
+                    errors.append(f"{source}: synthetic-test signature must not be marked verified")
+                if signature["algorithm"] in {"Ed25519", "ES256", "RS256"}:
+                    if signature.get("keyRef"):
+                        require_local(signature["keyRef"], "trusted_key", source)
+                    if signature.get("verificationRef"):
+                        require_local(
+                            signature["verificationRef"],
+                            "signature_verification",
+                            source,
+                        )
+                    if signature["verificationStatus"] == "verified":
+                        verification_entry = records_by_id.get(signature.get("verificationRef", ""))
+                        if verification_entry:
+                            verification_kind, verification = verification_entry
+                            if verification_kind != "signature_verification":
+                                errors.append(f"{source}: verificationRef is not a verification record")
+                            elif (
+                                verification.get("envelopeRef") != record["envelopeId"]
+                                or verification["signatureId"] != signature["signatureId"]
+                                or verification["observed"]["overall"] != "verified"
+                            ):
+                                errors.append(
+                                    f"{source}: verified signature is not supported by a matching "
+                                    "successful verification record"
+                                )
             if record["status"] == "issued" and not any(
                 signature["verificationStatus"] == "verified"
                 for signature in record["signatures"]
             ):
-                errors.append(
-                    f"{source}: issued envelope requires at least one verified signature"
-                )
+                errors.append(f"{source}: issued envelope requires at least one verified signature")
 
         elif kind == "evidence_event":
             for subject in record["subjects"]:

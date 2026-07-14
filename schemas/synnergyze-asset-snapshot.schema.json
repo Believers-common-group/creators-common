@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/synnergyze-asset-snapshot.schema.json",
+  "title": "Synnergyze Asset Snapshot",
+  "description": "A deterministic checkpoint for rebuilding an Asset Draft from an append-only event stream.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "snapshotId", "recordVersion", "assetDraftId", "revision", "lastEventRef", "canonicalization", "state", "stateDigest", "createdAt", "issuer"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "snapshotId": {"type": "string", "pattern": "^CC-SY-SN-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "assetDraftId": {"type": "string", "pattern": "^CC-AD-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "revision": {"type": "integer", "minimum": 0},
+    "lastEventRef": {"type": "string", "pattern": "^CC-SY-EV-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "canonicalization": {"type": "string", "const": "CC-CJSON-0.1"},
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assetDraftId", "revision", "title", "materialSpecificationRefs", "workspace"],
+      "properties": {
+        "assetDraftId": {"type": "string", "pattern": "^CC-AD-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+        "revision": {"type": "integer", "minimum": 0},
+        "title": {"type": "string", "minLength": 1, "maxLength": 500},
+        "materialSpecificationRefs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^CC-MS-[A-Z0-9][A-Z0-9._-]{5,95}$"}},
+        "workspace": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["activeLab", "canvasMode"],
+          "properties": {
+            "activeLab": {"type": "string", "enum": ["material", "product", "molecular", "electronics", "software", "media"]},
+            "canvasMode": {"type": "string", "enum": ["graph", "table", "comparison", "canvas", "workflow"]}
+          }
+        }
+      }
+    },
+    "stateDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": {"type": "string", "const": "sha-256"},
+        "value": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "createdAt": {"type": "string", "format": "date-time"},
+    "issuer": {"$ref": "#/$defs/issuer"}
+  },
+  "$defs": {
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuerId", "name"],
+      "properties": {
+        "issuerId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 240},
+        "authorityRef": {"type": "string", "maxLength": 500}
+      }
+    }
+  }
+}

@@ -24,6 +24,14 @@ SCHEMA_FILES = {
     "envelope": SCHEMA_DIR / "record-envelope.schema.json",
     "evidence_event": SCHEMA_DIR / "riveros-evidence-event.schema.json",
     "retention_policy": SCHEMA_DIR / "riveros-retention-policy.schema.json",
+    "asset_draft": SCHEMA_DIR / "asset-draft.schema.json",
+    "asset_component": SCHEMA_DIR / "asset-component.schema.json",
+    "material_specification": SCHEMA_DIR / "material-specification.schema.json",
+    "process_recipe": SCHEMA_DIR / "process-recipe.schema.json",
+    "asset_variant": SCHEMA_DIR / "asset-variant.schema.json",
+    "validation_run": SCHEMA_DIR / "validation-run.schema.json",
+    "creation_claim": SCHEMA_DIR / "creation-claim.schema.json",
+    "release_gate": SCHEMA_DIR / "release-gate.schema.json",
 }
 
 RECORD_TYPE_TO_KIND = {
@@ -34,6 +42,14 @@ RECORD_TYPE_TO_KIND = {
     "record-envelope": "envelope",
     "riveros-evidence-event": "evidence_event",
     "riveros-retention-policy": "retention_policy",
+    "asset-draft": "asset_draft",
+    "asset-component": "asset_component",
+    "material-specification": "material_specification",
+    "process-recipe": "process_recipe",
+    "asset-variant": "asset_variant",
+    "validation-run": "validation_run",
+    "creation-claim": "creation_claim",
+    "release-gate": "release_gate",
 }
 
 
@@ -75,11 +91,11 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def canonical_bytes(value: Any, path: str = "<root>") -> bytes:
-    """Return CC-CJSON-0.1 bytes.
+    """Return CC-CJSON-0.1 deterministic bytes.
 
-    The profile is intentionally limited to JSON values without floating-point
-    numbers. Decimal measurements should be represented as normalized strings
-    until a cross-language numeric canonicalization profile is adopted.
+    Floating-point values are rejected in digest-bound payloads. Decimal
+    measurements should use normalized strings until a cross-language numeric
+    canonicalization profile is adopted.
     """
 
     if isinstance(value, float):
@@ -114,6 +130,22 @@ def record_kind(record: dict[str, Any]) -> str:
         return "evidence_event"
     if "policyId" in record:
         return "retention_policy"
+    if "assetComponentId" in record:
+        return "asset_component"
+    if "materialSpecificationId" in record:
+        return "material_specification"
+    if "processRecipeId" in record:
+        return "process_recipe"
+    if "assetVariantId" in record:
+        return "asset_variant"
+    if "validationRunId" in record:
+        return "validation_run"
+    if "creationClaimId" in record:
+        return "creation_claim"
+    if "releaseGateId" in record:
+        return "release_gate"
+    if "assetDraftId" in record:
+        return "asset_draft"
     if "creatorId" in record:
         return "creator"
     if "contributionId" in record:
@@ -134,6 +166,14 @@ def governed_id(kind: str, record: dict[str, Any]) -> str:
         "envelope": "envelopeId",
         "evidence_event": "eventId",
         "retention_policy": "policyId",
+        "asset_draft": "assetDraftId",
+        "asset_component": "assetComponentId",
+        "material_specification": "materialSpecificationId",
+        "process_recipe": "processRecipeId",
+        "asset_variant": "assetVariantId",
+        "validation_run": "validationRunId",
+        "creation_claim": "creationClaimId",
+        "release_gate": "releaseGateId",
     }[kind]
     value = record.get(key)
     if not isinstance(value, str):
@@ -229,14 +269,21 @@ def check_local_cross_references(
     records: list[tuple[Path, str, dict[str, Any]]],
 ) -> None:
     by_kind: dict[str, set[str]] = {kind: set() for kind in SCHEMA_FILES}
+    all_governed_ids: set[str] = set()
     for _, kind, record in records:
-        by_kind[kind].add(governed_id(kind, record))
+        record_id = governed_id(kind, record)
+        by_kind[kind].add(record_id)
+        all_governed_ids.add(record_id)
 
     errors: list[str] = []
 
     def require_local(ref: str, expected_kind: str, source: str) -> None:
         if ref.startswith("CC-") and ref not in by_kind[expected_kind]:
             errors.append(f"{source}: unresolved local {expected_kind} reference {ref}")
+
+    def require_any_governed(ref: str, source: str) -> None:
+        if ref.startswith("CC-") and ref not in all_governed_ids:
+            errors.append(f"{source}: unresolved governed reference {ref}")
 
     for path, kind, record in records:
         source = str(path.relative_to(ROOT))
@@ -266,6 +313,93 @@ def check_local_cross_references(
 
         elif kind == "licence":
             require_local(record["creationId"], "creation", source)
+
+        elif kind == "asset_draft":
+            require_local(record["ownerCreatorId"], "creator", source)
+            for ref in record.get("collaboratorRefs", []):
+                require_local(ref, "creator", source)
+            for ref in record.get("componentRefs", []):
+                require_local(ref, "asset_component", source)
+            for ref in record.get("materialSpecificationRefs", []):
+                require_local(ref, "material_specification", source)
+            for ref in record.get("processRecipeRefs", []):
+                require_local(ref, "process_recipe", source)
+            for ref in record.get("variantRefs", []):
+                require_local(ref, "asset_variant", source)
+            for ref in record.get("validationRunRefs", []):
+                require_local(ref, "validation_run", source)
+            for ref in record.get("claimRefs", []):
+                require_local(ref, "creation_claim", source)
+            for ref in record.get("releaseGateRefs", []):
+                require_local(ref, "release_gate", source)
+            if record.get("creationPassportRef"):
+                require_local(record["creationPassportRef"], "creation", source)
+
+        elif kind == "asset_component":
+            require_local(record["assetDraftId"], "asset_draft", source)
+            if record.get("parentComponentRef"):
+                require_local(record["parentComponentRef"], "asset_component", source)
+            for ref in record.get("childComponentRefs", []):
+                require_local(ref, "asset_component", source)
+            for ref in record.get("materialSpecificationRefs", []):
+                require_local(ref, "material_specification", source)
+            for ref in record.get("processRecipeRefs", []):
+                require_local(ref, "process_recipe", source)
+
+        elif kind == "material_specification":
+            if record.get("assetDraftId"):
+                require_local(record["assetDraftId"], "asset_draft", source)
+
+        elif kind == "process_recipe":
+            require_local(record["assetDraftId"], "asset_draft", source)
+            for ref in record.get("inputRefs", []):
+                require_any_governed(ref, source)
+            for ref in record.get("outputRefs", []):
+                require_any_governed(ref, source)
+
+        elif kind == "asset_variant":
+            require_local(record["assetDraftId"], "asset_draft", source)
+            if record.get("baseVariantRef"):
+                require_local(record["baseVariantRef"], "asset_variant", source)
+            for ref in record.get("componentRefs", []):
+                require_local(ref, "asset_component", source)
+            for ref in record.get("materialSpecificationRefs", []):
+                require_local(ref, "material_specification", source)
+            for ref in record.get("processRecipeRefs", []):
+                require_local(ref, "process_recipe", source)
+            for ref in record.get("validationRunRefs", []):
+                require_local(ref, "validation_run", source)
+            for ref in record.get("claimRefs", []):
+                require_local(ref, "creation_claim", source)
+
+        elif kind == "validation_run":
+            require_local(record["assetDraftId"], "asset_draft", source)
+            if record.get("assetVariantRef"):
+                require_local(record["assetVariantRef"], "asset_variant", source)
+            for ref in record.get("subjectRefs", []):
+                require_any_governed(ref, source)
+            for ref in record.get("executedBy", {}).get("operatorIds", []):
+                require_local(ref, "creator", source)
+
+        elif kind == "creation_claim":
+            require_local(record["assetDraftId"], "asset_draft", source)
+            require_local(record["ownerCreatorId"], "creator", source)
+            for ref in record.get("subjectRefs", []):
+                require_any_governed(ref, source)
+            for ref in record.get("supportingValidationRefs", []):
+                require_local(ref, "validation_run", source)
+
+        elif kind == "release_gate":
+            require_local(record["assetDraftId"], "asset_draft", source)
+            if record.get("creationPassportRef"):
+                require_local(record["creationPassportRef"], "creation", source)
+            for check in record["checks"]:
+                for ref in check.get("requiredRecordRefs", []):
+                    require_any_governed(ref, source)
+            for ref in record.get("requiredLicenceRefs", []):
+                require_local(ref, "licence", source)
+            if record.get("signedEnvelopeRef"):
+                require_local(record["signedEnvelopeRef"], "envelope", source)
 
         elif kind == "envelope":
             subject = record["subject"]

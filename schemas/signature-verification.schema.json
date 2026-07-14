@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/signature-verification.schema.json",
+  "title": "Creators Common Signature Verification",
+  "description": "Verification result or conformance vector separating cryptographic validity from trust-policy validity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "verificationId", "recordVersion", "vectorType", "signatureId", "keyRef", "authorityRef", "algorithm", "messageProfile", "signedMessage", "signatureValue", "verificationContext", "expected", "observed", "verifier", "issuer", "createdAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "verificationId": {"type": "string", "pattern": "^CC-SV-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "vectorType": {"type": "string", "enum": ["positive", "negative", "operational"]},
+    "envelopeRef": {"type": "string", "maxLength": 200},
+    "signatureId": {"type": "string", "pattern": "^SIG-[A-Z0-9][A-Z0-9._-]{3,95}$"},
+    "keyRef": {"type": "string", "maxLength": 200},
+    "authorityRef": {"type": "string", "maxLength": 200},
+    "algorithm": {"type": "string", "enum": ["Ed25519", "ES256", "RS256"]},
+    "messageProfile": {"type": "string", "const": "CC-SIG-0.1"},
+    "signedMessage": {"type": "string", "minLength": 32, "maxLength": 16384},
+    "signatureValue": {"type": "string", "pattern": "^[A-Za-z0-9_-]{16,8192}$"},
+    "verificationContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "action", "scope", "purpose", "verifiedAt"],
+      "properties": {
+        "recordType": {"type": "string", "minLength": 1, "maxLength": 120},
+        "action": {"type": "string", "enum": ["sign", "issue", "countersign", "approve", "revoke"]},
+        "scope": {"type": "string", "enum": ["payload-digest", "envelope-without-signatures"]},
+        "purpose": {"type": "string", "minLength": 1, "maxLength": 200},
+        "environment": {"type": "string", "maxLength": 200},
+        "verifiedAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "expected": {"$ref": "#/$defs/result"},
+    "observed": {
+      "allOf": [
+        {"$ref": "#/$defs/result"},
+        {
+          "type": "object",
+          "properties": {
+            "reasonCodes": {"type": "array", "uniqueItems": true, "maxItems": 100, "items": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{1,95}$"}},
+            "details": {"type": "string", "maxLength": 3000}
+          }
+        }
+      ]
+    },
+    "testMutation": {"type": "string", "maxLength": 3000},
+    "verifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["serviceId", "implementationVersion"],
+      "properties": {
+        "serviceId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "implementationVersion": {"type": "string", "minLength": 1, "maxLength": 80}
+      }
+    },
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cryptographicResult", "trustResult", "overall"],
+      "properties": {
+        "cryptographicResult": {"type": "string", "enum": ["valid", "invalid", "unsupported", "error"]},
+        "trustResult": {"type": "string", "enum": ["trusted", "revoked", "expired", "not-yet-valid", "suspended", "unauthorized", "unknown"]},
+        "overall": {"type": "string", "enum": ["verified", "failed", "indeterminate"]},
+        "reasonCodes": {"type": "array", "uniqueItems": true, "maxItems": 100, "items": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{1,95}$"}},
+        "details": {"type": "string", "maxLength": 3000}
+      }
+    },
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 500}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"type": "array", "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 1, "maxLength": 1000}}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

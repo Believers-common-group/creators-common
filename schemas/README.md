@@ -1,13 +1,15 @@
 # Creators Common Registry Schemas
 
-**Core schema release:** CC-SCHEMAS-V0.2  
+**Core schema release:** CC-SCHEMAS-V0.3  
 **Asset Lab schema release:** CC-ASSET-LAB-SCHEMAS-V0.1  
 **Governance schema release:** CC-GOVERNANCE-SCHEMAS-V0.1  
 **Trust schema release:** CC-TRUST-SCHEMAS-V0.2  
+**Synnergyze schema release:** CC-SYNNERGYZE-SCHEMAS-V0.1  
+**Registration schema release:** CC-REGISTRATION-SCHEMAS-V0.1  
 **Status:** Draft controlled contracts for implementation and review  
 **JSON Schema dialect:** Draft 2020-12
 
-This directory converts the Creators Common Canon and its Asset Lab, RiverOS, Warden, EmpireOS and trust integrations into machine-readable contracts.
+This directory converts the Creators Common Canon and its Asset Lab, RiverOS, Warden, EmpireOS, trust, Synnergyze and registration integrations into machine-readable contracts.
 
 ## Core registry, integrity and evidence schemas
 
@@ -53,6 +55,24 @@ This directory converts the Creators Common Canon and its Asset Lab, RiverOS, Wa
 | [`key-custody-attestation.schema.json`](key-custody-attestation.schema.json) | Key Custody Attestation | Security-boundary, provider, device, fingerprint and non-exportability assertions |
 | [`signing-operation.schema.json`](signing-operation.schema.json) | Signing Operation | Signing request, authority, custody evidence, message digest, signature and verification linkage |
 
+## Synnergyze collaboration and persistence schemas
+
+| Schema | Registry object | Purpose |
+|---|---|---|
+| [`synnergyze-collaboration-session.schema.json`](synnergyze-collaboration-session.schema.json) | Collaboration Session | DigitalMe actor, Warden context, capabilities, base revision and ephemeral presence policy |
+| [`synnergyze-asset-operation.schema.json`](synnergyze-asset-operation.schema.json) | Asset Operation | Idempotent client operation, base revision, patch set and acceptance result |
+| [`synnergyze-asset-event.schema.json`](synnergyze-asset-event.schema.json) | Asset Event | Append-only operation, conflict, review and release-request history |
+| [`synnergyze-asset-snapshot.schema.json`](synnergyze-asset-snapshot.schema.json) | Asset Snapshot | Deterministic materialized state, revision, last-event reference and digest |
+
+## Creator and Creation registration schemas
+
+| Schema | Registry object | Purpose |
+|---|---|---|
+| [`creator-registration-application.schema.json`](creator-registration-application.schema.json) | Creator Registration Application | DigitalMe identity reference, role intent, consent, evidence, visibility and requested Creator Passport |
+| [`creation-registration-application.schema.json`](creation-registration-application.schema.json) | Creation Registration Application | Creator claims, rights disclosure, safety status, evidence and requested Creation Passport |
+| [`registration-review.schema.json`](registration-review.schema.json) | Registration Review | Human review, evidence sufficiency, permission check, visibility disposition and Warden/RiverOS references |
+| [`registration-event.schema.json`](registration-event.schema.json) | Registration Event | Append-only submission, review, acceptance, rejection, withdrawal and passport-issuance history |
+
 ## Identifier families
 
 - Creator Passport: `CC-CR-...`
@@ -79,6 +99,14 @@ This directory converts the Creators Common Canon and its Asset Lab, RiverOS, Wa
 - Signature Verification: `CC-SV-...`
 - Key Custody Attestation: `CC-KA-...`
 - Signing Operation: `CC-SO-...`
+- Collaboration Session: `CC-SY-CS-...`
+- Asset Operation: `CC-SY-OP-...`
+- Asset Event: `CC-SY-EV-...`
+- Asset Snapshot: `CC-SY-SN-...`
+- Creator Registration Application: `CC-REG-CR-...`
+- Creation Registration Application: `CC-REG-CP-...`
+- Registration Review: `CC-REG-RV-...`
+- Registration Event: `CC-REG-EV-...`
 
 Identifiers are permanent. Corrections and substantive changes create controlled versions or append-only events; they do not silently overwrite historical evidence.
 
@@ -96,12 +124,6 @@ Implemented verification profiles:
 
 For ES256 and RS256, public-key fingerprints are `SHA-256(DER SubjectPublicKeyInfo)`.
 
-See:
-
-- [`CC-SIGNED-ENVELOPES-V0.1`](../docs/architecture/CC-SIGNED-ENVELOPES-V0.1.md)
-- [`CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1`](../docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md)
-- [`CC-HARDWARE-CUSTODY-AND-MULTI-ALGORITHM-SIGNATURES-V0.1`](../docs/security/CC-HARDWARE-CUSTODY-AND-MULTI-ALGORITHM-SIGNATURES-V0.1.md)
-
 ## Design rules
 
 1. Schema validation confirms structural conformance, not truth, ownership or regulatory approval.
@@ -114,24 +136,19 @@ See:
 8. A mathematically valid signature made with a revoked, expired or unauthorized key fails overall verification.
 9. Synthetic custody attestations are restricted to named conformance purposes and environments.
 10. Private keys are not registry records and must not be committed to the repository.
-11. A licence, policy decision, signature, attestation or release gate does not substitute for legally required approval, certification, accreditation or authorization.
+11. Collaboration presence does not create authorship, ownership or economic rights.
+12. A registration acceptance requires explicit consent, sufficient evidence, human review, Warden decision and RiverOS evidence.
+13. Passport issuance does not create a Virtual Silk Road listing.
+14. A licence, policy decision, signature, attestation, registration or release gate does not substitute for legally required approval, certification, accreditation or authorization.
 
 ## Automated validation
 
-`tools/validate_registry.py` validates the original twenty-two registry, Asset Lab, RiverOS, Warden, EmpireOS and trust schemas and their linked fixtures.
+The GitHub Actions workflow runs four validator suites:
 
-`tools/validate_advanced_trust.py` additionally validates:
-
-- the Key Custody Attestation and Signing Operation schemas;
-- P-256 and RSA public-key type and size requirements;
-- DER SubjectPublicKeyInfo fingerprints;
-- valid and tampered ES256 vectors;
-- valid and tampered RS256 vectors;
-- synthetic non-exportable custody assertions;
-- hardware-bound signing-operation evidence; and
-- fail-closed confinement of synthetic attestations to the conformance environment.
-
-The GitHub Actions workflow runs both validators.
+- `tools/validate_registry.py` — original registry, Asset Lab, RiverOS, Warden, EmpireOS and Ed25519 contracts;
+- `tools/validate_advanced_trust.py` — custody, ES256 and RS256 contracts and vectors;
+- `tools/validate_synnergyze_asset_api.py` — collaboration schemas, persistence invariants and Asset Draft OpenAPI contract; and
+- `tools/validate_registration_workflows.py` — registration applications, human reviews, event chains, linked passports, consent boundaries and Registration OpenAPI contract.
 
 ## Controlled implementation sequence
 
@@ -147,12 +164,13 @@ The GitHub Actions workflow runs both validators.
 8. Ed25519 verification with positive and negative conformance vectors.
 9. Key Custody Attestation and Signing Operation contracts.
 10. ES256 and RS256 verification with positive and negative vectors.
+11. Synnergyze Asset Draft API and collaborative persistence contracts.
+12. Creator and Creation registration workflows.
 
 ### Next
 
-11. Synnergyze Asset Draft APIs and collaborative persistence.
-12. Creator and Creation registration workflows.
-13. Virtual Silk Road discovery projections.
+13. Virtual Silk Road public and member discovery projections.
 14. Production hardware attestation-chain verification and trusted-time integration.
+15. Multi-user conflict and offline replay conformance suites.
 
 These schemas are an architecture baseline and are not legal advice, intellectual-property registration, scientific validation, identity certification, hardware certification, safety approval or regulated-product authorization.

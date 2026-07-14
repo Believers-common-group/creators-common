@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "0.1.0",
+  "eventId": "CC-RV-EV-QPCR-PROGRAMME-001",
+  "eventVersion": "0.1.0",
+  "eventType": "register",
+  "status": "recorded",
+  "occurredAt": "2026-07-14T07:10:00Z",
+  "recordedAt": "2026-07-14T07:10:05Z",
+  "actor": {
+    "partyId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common Registry",
+    "partyType": "system",
+    "authorityRef": "docs/canon/CC-CANON-V0.2.md"
+  },
+  "subjects": [
+    {
+      "recordType": "creation",
+      "recordId": "CC-CP-QPCR-CREATOR-PROGRAMME-001",
+      "recordVersion": "0.1.0",
+      "relationship": "primary-subject"
+    },
+    {
+      "recordType": "record-envelope",
+      "recordId": "CC-EN-QPCR-CREATION-001",
+      "recordVersion": "0.1.0",
+      "relationship": "supports"
+    }
+  ],
+  "evidence": {
+    "artifacts": [
+      {
+        "ref": "examples/records/creation-passport.qpcr-programme.sample.json",
+        "label": "qPCR Creation Passport fixture",
+        "mediaType": "application/json",
+        "digestAlgorithm": "sha-256",
+        "digestValue": "fd09c2f02fd10d7bdfa3a200aab390794f495783ce74a2d8a8a8f66813cd66bd",
+        "capturedAt": "2026-07-14T07:10:00Z",
+        "visibility": "public"
+      },
+      {
+        "ref": "examples/records/record-envelope.creation.sample.json",
+        "label": "Synthetic signed record envelope",
+        "mediaType": "application/json",
+        "capturedAt": "2026-07-14T07:10:00Z",
+        "visibility": "public"
+      }
+    ],
+    "statement": "The synthetic qPCR Creation Passport was registered with a deterministic content digest and a non-production signature assertion.",
+    "qualityStatus": "reviewed",
+    "limitations": "Signature verification is intentionally unverified because this fixture does not contain a production trust anchor or private-key operation."
+  },
+  "policyDecision": {
+    "decision": "allow-with-conditions",
+    "policyRef": "docs/canon/CC-CANON-V0.2.md",
+    "decidedBy": {
+      "partyId": "CC-INST-CREATORS-COMMON",
+      "name": "Creators Common",
+      "partyType": "institution"
+    },
+    "decidedAt": "2026-07-14T07:10:00Z",
+    "conditions": [
+      "Record remains synthetic",
+      "No diagnostic or regulated-use claim",
+      "No signature-validity claim until a trusted key registry is integrated"
+    ]
+  },
+  "retentionPolicyRef": "CC-RV-RP-RESEARCH-EVIDENCE-001",
+  "envelopeRef": "CC-EN-QPCR-CREATION-001",
+  "chain": {"sequence": 0},
+  "classification": "public",
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/integrations/riveros/CC-RIVEROS-EVIDENCE-CONTRACTS-V0.1.md"
+  },
+  "createdAt": "2026-07-14T07:10:05Z",
+  "updatedAt": "2026-07-14T07:10:05Z"
+}

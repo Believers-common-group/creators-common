@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/key-lifecycle-event.schema.json",
+  "title": "Creators Common Key Lifecycle Event",
+  "description": "Append-only event for registration, activation, rotation, suspension, reinstatement, revocation, expiry or retirement of a trusted key.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "keyEventId", "recordVersion", "sequence", "eventType", "status", "keyRef", "effectiveAt", "actor", "issuer", "createdAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "keyEventId": {"type": "string", "pattern": "^CC-KE-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "previousEventRef": {"type": "string", "maxLength": 200},
+    "eventType": {"type": "string", "enum": ["register", "activate", "rotate", "suspend", "reinstate", "revoke", "expire", "retire"]},
+    "status": {"type": "string", "enum": ["proposed", "applied", "rejected", "superseded"]},
+    "keyRef": {"type": "string", "maxLength": 200},
+    "relatedKeyRef": {"type": "string", "maxLength": 200},
+    "effectiveAt": {"type": "string", "format": "date-time"},
+    "actor": {"$ref": "#/$defs/party"},
+    "reasonCodes": {"type": "array", "uniqueItems": true, "maxItems": 100, "items": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{1,95}$"}},
+    "reason": {"type": "string", "maxLength": 3000},
+    "basisRefs": {"type": "array", "uniqueItems": true, "maxItems": 500, "items": {"type": "string", "minLength": 1, "maxLength": 1000}},
+    "wardenDecisionRef": {"type": "string", "maxLength": 200},
+    "riverosEvidenceEventRef": {"type": "string", "maxLength": 200},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"eventType": {"const": "rotate"}}, "required": ["eventType"]},
+      "then": {"required": ["relatedKeyRef"]}
+    },
+    {
+      "if": {"properties": {"sequence": {"minimum": 2}}, "required": ["sequence"]},
+      "then": {"required": ["previousEventRef"]}
+    }
+  ],
+  "$defs": {
+    "party": {"type": "object", "additionalProperties": false, "required": ["partyId", "name", "partyType"], "properties": {"partyId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 300}, "partyType": {"type": "string", "enum": ["person", "institution", "collective", "public-body", "service"]}}},
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 500}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"type": "array", "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 1, "maxLength": 1000}}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

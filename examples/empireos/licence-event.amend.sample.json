@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "0.1.0",
+  "licenceEventId": "CC-EO-LE-QPCR-AMEND-001",
+  "recordVersion": "0.1.0",
+  "licenceId": "CC-LR-QPCR-RESEARCH-001",
+  "sequence": 2,
+  "previousEventRef": "CC-EO-LE-QPCR-ISSUE-001",
+  "eventType": "amend",
+  "status": "proposed",
+  "actor": {
+    "partyId": "CC-SVC-EMPIREOS",
+    "name": "EmpireOS Licence Service",
+    "partyType": "service",
+    "authorityRef": "docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md"
+  },
+  "changes": {
+    "priorLicenceStatus": "active",
+    "resultingLicenceStatus": "active",
+    "fieldChanges": [
+      {
+        "path": "$.fieldOfUse.included[0]",
+        "operation": "replace",
+        "priorValue": "research-use qPCR programme evaluation",
+        "newValue": "research-use qPCR and governed registry evaluation",
+        "reason": "Demonstrate a bounded field-of-use amendment."
+      }
+    ],
+    "conditions": [
+      "No change is effective until separately authorised."
+    ]
+  },
+  "decisionBasisRefs": [
+    "CC-LR-QPCR-RESEARCH-001",
+    "CC-EO-LE-QPCR-ISSUE-001"
+  ],
+  "occurredAt": "2026-07-14T10:21:00Z",
+  "issuer": {
+    "issuerId": "CC-INST-EMPIREOS",
+    "name": "EmpireOS",
+    "authorityRef": "docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      "CC-EO-LE-QPCR-ISSUE-001"
+    ],
+    "changeReason": "Synthetic amendment event fixture"
+  },
+  "createdAt": "2026-07-14T10:21:00Z"
+}

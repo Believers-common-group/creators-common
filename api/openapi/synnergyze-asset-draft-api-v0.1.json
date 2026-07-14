@@ -1,0 +1,420 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Synnergyze Asset Draft API",
+    "version": "0.1.0",
+    "description": "Governed Asset Lab drafting, collaboration, optimistic concurrency, append-only event persistence and snapshot retrieval."
+  },
+  "servers": [
+    {
+      "url": "https://api.synnergyze.example/v1",
+      "description": "Illustrative non-production endpoint"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/asset-drafts": {
+      "post": {
+        "operationId": "createAssetDraft",
+        "summary": "Create an Asset Draft",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/asset-draft.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Asset Draft created",
+            "headers": {
+              "ETag": {
+                "$ref": "#/components/headers/ETag"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/asset-draft.schema.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
+      }
+    },
+    "/asset-drafts/{assetDraftId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AssetDraftId"
+        }
+      ],
+      "get": {
+        "operationId": "getAssetDraft",
+        "summary": "Retrieve the current Asset Draft projection",
+        "responses": {
+          "200": {
+            "description": "Current projection",
+            "headers": {
+              "ETag": {
+                "$ref": "#/components/headers/ETag"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/asset-draft.schema.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/asset-drafts/{assetDraftId}/sessions": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AssetDraftId"
+        }
+      ],
+      "post": {
+        "operationId": "openCollaborationSession",
+        "summary": "Open a bounded collaboration session",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/synnergyze-collaboration-session.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Session opened",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/synnergyze-collaboration-session.schema.json"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/asset-drafts/{assetDraftId}/operations": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AssetDraftId"
+        }
+      ],
+      "post": {
+        "operationId": "submitAssetOperation",
+        "summary": "Submit an idempotent operation against a base revision",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IfMatch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/synnergyze-asset-operation.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Operation accepted and event recorded",
+            "headers": {
+              "ETag": {
+                "$ref": "#/components/headers/ETag"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/synnergyze-asset-event.schema.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "412": {
+            "description": "Revision precondition failed"
+          }
+        }
+      }
+    },
+    "/asset-drafts/{assetDraftId}/events": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AssetDraftId"
+        }
+      ],
+      "get": {
+        "operationId": "listAssetEvents",
+        "summary": "List append-only events after an optional sequence",
+        "parameters": [
+          {
+            "name": "afterSequence",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ordered event page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "../../schemas/synnergyze-asset-event.schema.json"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/asset-drafts/{assetDraftId}/snapshots/latest": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AssetDraftId"
+        }
+      ],
+      "get": {
+        "operationId": "getLatestAssetSnapshot",
+        "summary": "Retrieve the latest deterministic snapshot",
+        "responses": {
+          "200": {
+            "description": "Latest snapshot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/synnergyze-asset-snapshot.schema.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/asset-drafts/{assetDraftId}/release-requests": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AssetDraftId"
+        }
+      ],
+      "post": {
+        "operationId": "requestAssetRelease",
+        "summary": "Request controlled lifecycle advancement",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IfMatch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["sessionRef", "targetLifecycleStage", "releaseGateRef"],
+                "properties": {
+                  "sessionRef": {
+                    "type": "string"
+                  },
+                  "targetLifecycleStage": {
+                    "type": "string",
+                    "enum": ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"]
+                  },
+                  "releaseGateRef": {
+                    "type": "string"
+                  },
+                  "wardenDecisionRef": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Release request recorded; no lifecycle advancement is implied"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "DigitalMe access token"
+      }
+    },
+    "parameters": {
+      "AssetDraftId": {
+        "name": "assetDraftId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^CC-AD-[A-Z0-9][A-Z0-9._-]{5,95}$"
+        }
+      },
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 200
+        }
+      },
+      "IfMatch": {
+        "name": "If-Match",
+        "in": "header",
+        "required": true,
+        "description": "Expected Asset Draft revision ETag.",
+        "schema": {
+          "type": "string",
+          "pattern": "^\\\"rev-[0-9]+\\\"$"
+        }
+      }
+    },
+    "headers": {
+      "ETag": {
+        "description": "Current Asset Draft revision, for example rev-12 in a quoted HTTP ETag.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "Conflict": {
+        "description": "Idempotency or revision conflict",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Warden or role policy denied the operation",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Governed record not found",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Problem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "title", "status", "code"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "minimum": 400,
+            "maximum": 599
+          },
+          "code": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "currentRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "conflictRef": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

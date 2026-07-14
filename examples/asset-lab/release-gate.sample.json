@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "0.1.0",
+  "releaseGateId": "CC-RG-PROTOTYPE-DEMO-001",
+  "recordVersion": "0.1.0",
+  "assetDraftId": "CC-AD-MATERIAL-DEMO-001",
+  "targetLifecycleStage": "C2",
+  "gateStatus": "conditional",
+  "checks": [
+    {
+      "checkId": "IDENTITY-001",
+      "category": "identity",
+      "status": "pass",
+      "requiredRecordRefs": [
+        "CC-CR-DEMO-MOLECULAR-001"
+      ],
+      "findings": "Synthetic creator fixture is linked."
+    },
+    {
+      "checkId": "DEFINITION-001",
+      "category": "technical",
+      "status": "pass",
+      "requiredRecordRefs": [
+        "CC-MS-RECYCLED-COMPOSITE-001",
+        "CC-PR-COMPRESSION-DEMO-001"
+      ]
+    },
+    {
+      "checkId": "VALIDATION-001",
+      "category": "validation",
+      "status": "conditional-pass",
+      "requiredRecordRefs": [
+        "CC-VR-FLEXURAL-DEMO-001"
+      ],
+      "conditions": "Repeat with a real approved method before any performance claim or production decision."
+    },
+    {
+      "checkId": "ACCESS-001",
+      "category": "other",
+      "status": "conditional-pass",
+      "requiredRecordRefs": [
+        "CC-WA-ASSET-LAB-MATERIAL-001",
+        "CC-WD-MATERIAL-REVIEW-001"
+      ],
+      "conditions": "Restricted fields remain purpose-bound, logged and non-exportable."
+    },
+    {
+      "checkId": "RIGHTS-001",
+      "category": "rights",
+      "status": "not-started",
+      "findings": "No legal ownership or assignment decision is represented by the fixture."
+    },
+    {
+      "checkId": "LICENCE-001",
+      "category": "licensing",
+      "status": "not-started",
+      "findings": "No manufacturing or commercial licence has been issued."
+    }
+  ],
+  "decisionAuthority": {
+    "authorityId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityType": "institution",
+    "decisionRef": {
+      "ref": "examples/README.md",
+      "label": "Synthetic fixture policy",
+      "mediaType": "text/markdown",
+      "visibility": "public"
+    }
+  },
+  "wardenDecisionRef": "CC-WD-MATERIAL-REVIEW-001",
+  "decisionAt": "2026-07-14T10:00:00Z",
+  "notes": "Conditional synthetic gate for architecture review only. It does not authorise physical production or commercial use.",
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/product/CC-ASSET-LAB-PRD-V0.1.md"
+  },
+  "createdAt": "2026-07-14T10:00:00Z",
+  "updatedAt": "2026-07-14T10:16:00Z"
+}

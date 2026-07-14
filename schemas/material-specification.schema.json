@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/material-specification.schema.json",
+  "title": "Creators Common Material Specification",
+  "description": "Controlled composition, properties, circularity, hazard and sourcing definition for a material used in Asset Lab.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "materialSpecificationId", "recordVersion", "name", "family", "status", "issuer", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "materialSpecificationId": {"type": "string", "pattern": "^CC-MS-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "assetDraftId": {"type": "string", "maxLength": 200},
+    "name": {"type": "string", "minLength": 1, "maxLength": 300},
+    "family": {"type": "string", "minLength": 1, "maxLength": 160},
+    "grade": {"type": "string", "maxLength": 160},
+    "description": {"type": "string", "maxLength": 5000},
+    "composition": {"type": "array", "maxItems": 500, "items": {"type": "object", "additionalProperties": false, "required": ["substance", "proportion", "unit"], "properties": {"substance": {"type": "string", "minLength": 1, "maxLength": 240}, "proportion": {"type": "string", "minLength": 1, "maxLength": 80}, "unit": {"type": "string", "enum": ["percent", "fraction", "phr", "mass", "volume", "custom"]}, "sourceType": {"type": "string", "enum": ["virgin", "pre-consumer-recycled", "post-consumer-recycled", "bio-based", "recovered", "unknown"]}, "evidenceRefs": {"$ref": "#/$defs/references"}}}},
+    "properties": {"type": "array", "maxItems": 1000, "items": {"type": "object", "additionalProperties": false, "required": ["name", "value", "status"], "properties": {"name": {"type": "string", "minLength": 1, "maxLength": 200}, "value": {"type": "string", "minLength": 1, "maxLength": 160}, "unit": {"type": "string", "maxLength": 80}, "testMethodRef": {"type": "string", "maxLength": 1000}, "status": {"type": "string", "enum": ["target", "supplier-declared", "tested", "verified", "validated", "rejected"]}, "evidenceRefs": {"$ref": "#/$defs/references"}}}},
+    "circularity": {"type": "object", "additionalProperties": false, "properties": {"recycledContentPercent": {"type": "string", "maxLength": 80}, "recoverability": {"type": "string", "enum": ["unknown", "low", "moderate", "high", "closed-loop"]}, "recoveryRoute": {"type": "string", "maxLength": 1000}, "disassemblyNotes": {"type": "string", "maxLength": 3000}, "endOfLifeEvidenceRefs": {"$ref": "#/$defs/references"}}},
+    "hazardClassification": {"type": "object", "additionalProperties": false, "properties": {"riskLevel": {"type": "string", "enum": ["unassessed", "low", "moderate", "high", "critical"]}, "hazardCodes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 120}}, "restrictedUse": {"type": "boolean"}, "safetyDataSheetRefs": {"$ref": "#/$defs/references"}}},
+    "supplierSpecificationRefs": {"$ref": "#/$defs/references"},
+    "applicableStandardRefs": {"$ref": "#/$defs/references"},
+    "status": {"type": "string", "enum": ["draft", "proposed", "approved", "restricted", "deprecated", "superseded", "withdrawn"]},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "reference": {"type": "object", "additionalProperties": false, "required": ["ref"], "properties": {"ref": {"type": "string", "minLength": 1, "maxLength": 1000}, "label": {"type": "string", "maxLength": 240}, "hash": {"type": "string", "maxLength": 256}, "mediaType": {"type": "string", "maxLength": 120}, "visibility": {"type": "string", "enum": ["public", "member", "restricted", "confidential"]}}},
+    "references": {"type": "array", "maxItems": 2000, "items": {"$ref": "#/$defs/reference"}},
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 500}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"$ref": "#/$defs/references"}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

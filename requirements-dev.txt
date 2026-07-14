@@ -1,0 +1,2 @@
+cryptography>=45,<47
+jsonschema[format]>=4.22,<5

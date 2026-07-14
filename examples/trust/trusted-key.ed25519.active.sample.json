@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "0.1.0",
+  "keyId": "CC-TK-CREATORS-COMMON-ED25519-002",
+  "keyVersion": "0.1.0",
+  "algorithm": "Ed25519",
+  "publicKey": {
+    "format": "raw",
+    "encoding": "base64url",
+    "value": "voGFicrn1BzR7ofuv7ifMFgV5zWRdUQiHGRJEkGkjTE"
+  },
+  "fingerprint": {
+    "algorithm": "sha-256",
+    "value": "66beebb08a109f10657949cecef356cf581bf7dd22ebee563d582023744b4b6a"
+  },
+  "owner": {
+    "partyId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "partyType": "institution"
+  },
+  "status": "active",
+  "purposes": [
+    "record-envelope-signing",
+    "test-vector"
+  ],
+  "validFrom": "2026-07-14T08:00:00Z",
+  "activatedAt": "2026-07-14T08:00:00Z",
+  "previousKeyRef": "CC-TK-CREATORS-COMMON-ED25519-001",
+  "custody": {
+    "mode": "software",
+    "privateKeyExportable": false,
+    "providerRef": "synthetic-test-fixture",
+    "notes": "Public verification key used only for deterministic repository conformance. It is not a production trust anchor."
+  },
+  "lifecycleEventRefs": [
+    "CC-KE-CREATORS-COMMON-ROTATE-002"
+  ],
+  "issuer": {
+    "issuerId": "CC-INST-WARDEN",
+    "name": "Warden",
+    "authorityRef": "docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      "CC-TK-CREATORS-COMMON-ED25519-001"
+    ],
+    "changeReason": "Synthetic successor key for active-signature conformance"
+  },
+  "createdAt": "2026-07-14T10:24:00Z",
+  "updatedAt": "2026-07-14T10:24:00Z"
+}

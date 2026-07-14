@@ -1,0 +1,59 @@
+name: Validate Creators Common Registry
+
+on:
+  pull_request:
+    paths:
+      - "README.md"
+      - "docs/**"
+      - "schemas/**"
+      - "examples/**"
+      - "api/**"
+      - "tools/**"
+      - "requirements-dev.txt"
+      - ".github/workflows/validate-registry.yml"
+  push:
+    branches:
+      - main
+      - "docs/**"
+      - "feat/**"
+      - "fix/**"
+    paths:
+      - "README.md"
+      - "docs/**"
+      - "schemas/**"
+      - "examples/**"
+      - "api/**"
+      - "tools/**"
+      - "requirements-dev.txt"
+      - ".github/workflows/validate-registry.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: creators-common-registry-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-registry:
+    name: Validate schemas and linked examples
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out validation target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git init -q .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch -q --depth=1 origin "${GITHUB_SHA}"
+          git checkout -q --detach FETCH_HEAD
+
+      - name: Install dependencies and validate
+        run: |
+          python3 -m pip install --quiet --disable-pip-version-check -r requirements-dev.txt
+          python3 tools/validate_registry.py
+          python3 tools/validate_advanced_trust.py
+          python3 tools/validate_synnergyze_asset_api.py
+          python3 tools/validate_registration_workflows.py

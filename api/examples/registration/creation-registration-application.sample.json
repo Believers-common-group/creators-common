@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "0.1.0",
+  "applicationId": "CC-REG-CP-MATERIAL-DEMO-001",
+  "recordVersion": "0.1.0",
+  "applicantCreatorRef": "CC-CR-DEMO-MOLECULAR-001",
+  "assetDraftRef": "CC-AD-MATERIAL-DEMO-001",
+  "proposedTitle": "Recycled composite shell demonstration",
+  "classification": "engineering",
+  "subclassification": [
+    "material system",
+    "physical product shell",
+    "circularity demonstration"
+  ],
+  "intendedPurpose": "Register the synthetic Asset Lab material demonstration as a controlled Creation Passport fixture for conformance testing.",
+  "requestedLifecycleStage": "C2",
+  "creatorClaims": [
+    {
+      "creatorRef": "CC-CR-DEMO-MOLECULAR-001",
+      "role": "originating-creator",
+      "attributionStatus": "accepted",
+      "evidenceRefs": [
+        "CC-RV-EV-REG-CREATION-AUTHORSHIP-001"
+      ]
+    }
+  ],
+  "rightsDisclosure": {
+    "ownershipClaimStatus": "claimed-unverified",
+    "ownershipClaimBasis": "Synthetic fixture declaration only; no legal assignment or ownership conclusion is created.",
+    "ownerPartyRef": "CC-INST-CREATORS-COMMON",
+    "custodianPartyRef": "CC-INST-CREATORS-COMMON",
+    "thirdPartyMaterialsDeclared": false,
+    "sponsorshipSeparatedFromAuthorship": true,
+    "restrictions": [
+      "No production or commercial reliance",
+      "No certified recycled-content claim"
+    ]
+  },
+  "safetyAndRegulatory": {
+    "riskLevel": "moderate",
+    "restrictedUse": true,
+    "regulatoryStatus": "assessment-required",
+    "intendedUseStatement": "Prototype and registry-conformance demonstration only; not approved for production, structural safety claims or regulated use.",
+    "hazardCategories": [
+      "material processing",
+      "prototype handling"
+    ],
+    "controlRefs": [
+      "CC-RG-PROTOTYPE-DEMO-001"
+    ]
+  },
+  "evidenceRefs": [
+    "CC-RV-EV-REG-CREATION-SUBMIT-001",
+    "CC-RV-EV-REG-CREATION-REVIEW-001",
+    "CC-VR-FLEXURAL-DEMO-001"
+  ],
+  "publicationRequest": "member",
+  "publicProjection": {
+    "title": "Recycled composite shell demonstration",
+    "summary": "Synthetic Asset Lab creation used to test controlled registration and passport issuance.",
+    "classification": "engineering",
+    "creatorDisplayNames": [
+      "Molecular Sciences Founding Working Group"
+    ],
+    "maturityLabel": "C2 — Prototype created",
+    "evidenceSummary": "Synthetic evidence references are present; no production or certified performance claim is made."
+  },
+  "attestation": {
+    "accuracyAttested": true,
+    "rightsDisclosureAttested": true,
+    "evidenceUseConsent": true,
+    "publicProjectionConsent": false,
+    "attestedAt": "2026-07-14T11:25:00Z",
+    "statement": "This is a synthetic conformance application and not a legal, scientific or regulatory representation."
+  },
+  "status": "accepted",
+  "reviewRefs": [
+    "CC-REG-RV-CREATION-FINAL-001"
+  ],
+  "wardenDecisionRef": "CC-WD-REG-CREATION-001",
+  "riverosEvidenceEventRefs": [
+    "CC-RV-EV-REG-CREATION-SUBMIT-001",
+    "CC-RV-EV-REG-CREATION-REVIEW-001"
+  ],
+  "resultingCreationPassportRef": "CC-CP-MATERIAL-DEMO-001",
+  "submittedAt": "2026-07-14T11:26:00Z",
+  "acceptedAt": "2026-07-14T11:30:00Z",
+  "issuer": {
+    "issuerId": "CC-SVC-REGISTRATION",
+    "name": "Creators Common Registration Service",
+    "authorityRef": "docs/workflows/CC-CREATOR-AND-CREATION-REGISTRATION-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      "CC-AD-MATERIAL-DEMO-001"
+    ],
+    "changeReason": "Initial synthetic Creation registration fixture"
+  },
+  "createdAt": "2026-07-14T11:25:00Z",
+  "updatedAt": "2026-07-14T11:30:00Z"
+}

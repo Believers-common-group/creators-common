@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/signer-authority.schema.json",
+  "title": "Creators Common Signer Authority",
+  "description": "Governed authority record defining who may sign which record types, with which trusted keys, scopes, actions and assurance conditions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "authorityId", "authorityVersion", "signer", "keyRefs", "status", "permissions", "assurance", "validFrom", "issuer", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "authorityId": {"type": "string", "pattern": "^CC-SA-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "authorityVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "signer": {"$ref": "#/$defs/party"},
+    "keyRefs": {"$ref": "#/$defs/idList"},
+    "status": {"type": "string", "enum": ["draft", "active", "suspended", "revoked", "expired", "superseded"]},
+    "permissions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["permissionId", "recordTypes", "actions", "signatureScopes"],
+        "properties": {
+          "permissionId": {"type": "string", "minLength": 1, "maxLength": 160},
+          "recordTypes": {"$ref": "#/$defs/stringList"},
+          "actions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "enum": ["sign", "issue", "countersign", "approve", "revoke"]}},
+          "signatureScopes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "enum": ["payload-digest", "envelope-without-signatures"]}},
+          "purposes": {"$ref": "#/$defs/stringList"},
+          "environments": {"$ref": "#/$defs/stringList"},
+          "requireWardenDecision": {"type": "boolean"},
+          "maximumEnvelopeValiditySeconds": {"type": "integer", "minimum": 1, "maximum": 315576000},
+          "conditions": {"type": "array", "maxItems": 100, "items": {"type": "string", "maxLength": 1000}}
+        }
+      }
+    },
+    "assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identityLevel", "keyCustodyLevel", "multiPartyRequired"],
+      "properties": {
+        "identityLevel": {"type": "string", "enum": ["self-asserted", "verified", "strong", "institutional"]},
+        "keyCustodyLevel": {"type": "string", "enum": ["unknown", "software", "managed", "hardware-bound", "hsm"]},
+        "multiPartyRequired": {"type": "boolean"},
+        "minimumSignatures": {"type": "integer", "minimum": 1, "maximum": 50},
+        "attestationRefs": {"$ref": "#/$defs/stringList"}
+      }
+    },
+    "validFrom": {"type": "string", "format": "date-time"},
+    "validUntil": {"type": "string", "format": "date-time"},
+    "suspendedAt": {"type": "string", "format": "date-time"},
+    "revokedAt": {"type": "string", "format": "date-time"},
+    "statusReason": {"type": "string", "maxLength": 3000},
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reviewFrequencyDays": {"type": "integer", "minimum": 1, "maximum": 3650},
+        "nextReviewAt": {"type": "string", "format": "date-time"},
+        "reviewerRefs": {"$ref": "#/$defs/idList"}
+      }
+    },
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "party": {"type": "object", "additionalProperties": false, "required": ["partyId", "name", "partyType"], "properties": {"partyId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 300}, "partyType": {"type": "string", "enum": ["person", "institution", "collective", "public-body", "service"]}}},
+    "idList": {"type": "array", "minItems": 1, "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 3, "maxLength": 200}},
+    "stringList": {"type": "array", "minItems": 1, "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 1, "maxLength": 200}},
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 500}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"type": "array", "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 1, "maxLength": 1000}}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

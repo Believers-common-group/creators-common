@@ -1,11 +1,531 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Creators Common</title>
-  </head>
-  <body>
-    <h1>Welcome to the Commons</h1>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Creators Common is the governed home of creators and their creations—preserving identity, provenance, evidence, licensing and economic participation.">
+  <title>Creators Common</title>
+  <style>
+    :root {
+      --ink: #11231d;
+      --muted: #52645d;
+      --paper: #f6f8f3;
+      --panel: rgba(255, 255, 255, 0.82);
+      --line: rgba(17, 35, 29, 0.14);
+      --accent: #1f6a4a;
+      --accent-2: #b98a35;
+      --shadow: 0 22px 70px rgba(18, 48, 37, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(31, 106, 74, 0.16), transparent 34rem),
+        radial-gradient(circle at 85% 20%, rgba(185, 138, 53, 0.14), transparent 30rem),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(18px);
+      background: rgba(246, 248, 243, 0.78);
+      border-bottom: 1px solid var(--line);
+    }
+
+    nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(145deg, var(--accent), #123c2c);
+      box-shadow: 0 8px 24px rgba(31, 106, 74, 0.25);
+      font-family: Georgia, serif;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 20px;
+      font-size: 0.94rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    .hero {
+      padding: 104px 0 76px;
+      display: grid;
+      grid-template-columns: 1.35fr 0.85fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--accent);
+      font-weight: 750;
+      font-size: 0.8rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    h1, h2, h3 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+    }
+
+    h1 {
+      margin: 20px 0 24px;
+      font-size: clamp(3.2rem, 7vw, 6.7rem);
+      max-width: 10ch;
+    }
+
+    .lead {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 750;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.62);
+    }
+
+    .button.primary {
+      color: white;
+      border-color: transparent;
+      background: var(--accent);
+      box-shadow: 0 12px 30px rgba(31, 106, 74, 0.22);
+    }
+
+    .hero-card {
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card h2 {
+      margin: 0 0 16px;
+      font-size: 2rem;
+    }
+
+    .hero-card dl { margin: 0; }
+
+    .hero-card div {
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .hero-card div:first-child { border-top: 0; }
+
+    dt {
+      color: var(--muted);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 800;
+    }
+
+    dd {
+      margin: 3px 0 0;
+      font-weight: 700;
+    }
+
+    section { padding: 72px 0; }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 0.7fr 1.3fr;
+      gap: 48px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(2.3rem, 4vw, 4.2rem);
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 690px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--panel);
+    }
+
+    .card .number {
+      color: var(--accent-2);
+      font-size: 0.82rem;
+      font-weight: 850;
+      letter-spacing: 0.12em;
+    }
+
+    .card h3 {
+      margin: 16px 0 12px;
+      font-size: 1.55rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .band {
+      margin: 46px 0;
+      padding: 42px;
+      color: white;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #153f30, #1f6a4a 58%, #356d55);
+      box-shadow: var(--shadow);
+    }
+
+    .band blockquote {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.8rem, 4vw, 3.7rem);
+      line-height: 1.16;
+      letter-spacing: -0.035em;
+    }
+
+    .lifecycle {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--line);
+    }
+
+    .stage {
+      min-height: 180px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .stage strong {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+
+    .programme {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .programme > div {
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--panel);
+    }
+
+    .programme h3 {
+      margin-top: 0;
+      font-size: 2.1rem;
+    }
+
+    .programme ul {
+      padding-left: 19px;
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 48px 0 72px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 860px) {
+      .hero, .section-head, .programme { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr 1fr; }
+      .lifecycle { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 560px) {
+      .hero { padding-top: 72px; }
+      .grid, .lifecycle { grid-template-columns: 1fr; }
+      .band { padding: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <nav aria-label="Primary navigation">
+        <a class="brand" href="#top" aria-label="Creators Common home">
+          <span class="mark">C</span>
+          <span>Creators Common</span>
+        </a>
+        <div class="nav-links">
+          <a href="#purpose">Purpose</a>
+          <a href="#passports">Passports</a>
+          <a href="#lifecycle">Lifecycle</a>
+          <a href="#programmes">Programmes</a>
+          <a href="docs/canon/CC-CANON-V0.2.md">Canon V0.2</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="shell">
+      <div class="hero">
+        <div>
+          <span class="eyebrow">Identity · Evidence · Continuity</span>
+          <h1>The governed home of creators and their creations.</h1>
+          <p class="lead">
+            Creators Common preserves who created, contributed, validated, licensed, improved and preserved a work—from its first idea to every authorised use.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="docs/canon/CC-CANON-V0.2.md">Read the Canon</a>
+            <a class="button" href="docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md">Explore the qPCR Programme</a>
+          </div>
+        </div>
+
+        <aside class="hero-card" aria-label="Release summary">
+          <h2>Controlled baseline</h2>
+          <dl>
+            <div><dt>Release</dt><dd>CC-CANON-V0.2</dd></div>
+            <div><dt>Authority</dt><dd>Believers Common ecosystem</dd></div>
+            <div><dt>Registry</dt><dd>Creators, creations, contributions and licences</dd></div>
+            <div><dt>Evidence</dt><dd>RiverOS-backed provenance and audit history</dd></div>
+            <div><dt>First programme</dt><dd>Molecular Sciences · qPCR</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </div>
+
+    <section id="purpose">
+      <div class="shell">
+        <div class="section-head">
+          <h2>Creation must remain connected to truth.</h2>
+          <p>
+            Every creation should preserve its origin, contributors, controlled version, supporting evidence, permitted uses, responsibilities and economic allocation. Creators Common supplies that continuity without pretending to replace legal or regulatory institutions.
+          </p>
+        </div>
+
+        <div class="grid">
+          <article class="card">
+            <span class="number">01</span>
+            <h3>Identity</h3>
+            <p>Verified creator, contributor, reviewer, operator and institutional identities through portable Creator Passports.</p>
+          </article>
+          <article class="card">
+            <span class="number">02</span>
+            <h3>Provenance</h3>
+            <p>Traceable lineage from concept and prototype to validation, release, derivatives, improvements and preservation.</p>
+          </article>
+          <article class="card">
+            <span class="number">03</span>
+            <h3>Evidence</h3>
+            <p>Claims remain linked to tests, designs, decisions, approvals, deviations and immutable historical records.</p>
+          </article>
+          <article class="card">
+            <span class="number">04</span>
+            <h3>Licensing</h3>
+            <p>Field of use, territory, duration, volume, obligations, restrictions and derivative rights are explicitly governed.</p>
+          </article>
+          <article class="card">
+            <span class="number">05</span>
+            <h3>Participation</h3>
+            <p>Attribution and economic rights are assigned to the people and institutions that actually contributed value.</p>
+          </article>
+          <article class="card">
+            <span class="number">06</span>
+            <h3>Preservation</h3>
+            <p>Custodianship, archives, source materials and knowledge-transfer controls protect continuity beyond one project or owner.</p>
+          </article>
+        </div>
+
+        <div class="band">
+          <blockquote>
+            Creators remain connected to what they create. Creations remain connected to their evidence. Every authorised use remains connected to responsibility and value distribution.
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <section id="passports">
+      <div class="shell">
+        <div class="section-head">
+          <h2>Two passports. One continuous record.</h2>
+          <p>
+            The Creator Passport identifies the person or institution. The Creation Passport identifies the work. Contribution and Licence Records connect both to verifiable action and authorised use.
+          </p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <span class="number">PERSON</span>
+            <h3>Creator Passport</h3>
+            <p>Identity, capability, affiliations, contributions, reviewer roles, licences, training and an evidence-backed portfolio.</p>
+          </article>
+          <article class="card">
+            <span class="number">WORK</span>
+            <h3>Creation Passport</h3>
+            <p>Purpose, technical definition, creators, ownership, evidence, version, maturity, restrictions, economics and lineage.</p>
+          </article>
+          <article class="card">
+            <span class="number">USE</span>
+            <h3>Licence Record</h3>
+            <p>Permitted parties, territory, duration, field of use, evidence duties, royalties, derivatives and suspension conditions.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="lifecycle">
+      <div class="shell">
+        <div class="section-head">
+          <h2>From idea to preserved creation.</h2>
+          <p>A controlled maturity ladder prevents an early concept from being presented as a validated product and protects every stage of genuine progress.</p>
+        </div>
+        <div class="lifecycle">
+          <div class="stage"><strong>C0 · Idea registered</strong>Problem, opportunity and originator recorded.</div>
+          <div class="stage"><strong>C1 · Concept defined</strong>Purpose, preliminary design and contributors established.</div>
+          <div class="stage"><strong>C2 · Prototype created</strong>Initial working embodiment and known limitations captured.</div>
+          <div class="stage"><strong>C3 · Verified</strong>Technical function demonstrated against defined requirements.</div>
+          <div class="stage"><strong>C4 · Validated</strong>Fitness for intended use evaluated and bounded.</div>
+          <div class="stage"><strong>C5 · Production-ready</strong>Controlled specification and release package completed.</div>
+          <div class="stage"><strong>C6 · Licensed deployment</strong>Approved parties may manufacture, deploy or use the creation.</div>
+          <div class="stage"><strong>C7 · Network creation</strong>Interoperable use across affiliated nodes with shared evidence rules.</div>
+          <div class="stage"><strong>C8 · Preserved creation</strong>Custodian, archive, continuity and knowledge transfer completed.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="programmes">
+      <div class="shell">
+        <div class="section-head">
+          <h2>Discipline-level programmes.</h2>
+          <p>Each guild applies the same constitutional model to the evidence, risks, maturity gates, licences and responsibilities of its field.</p>
+        </div>
+        <div class="programme">
+          <div>
+            <span class="eyebrow">First implementation</span>
+            <h3>Molecular Sciences · qPCR Creator Programme</h3>
+            <p>The first controlled programme registers and governs:</p>
+            <ul>
+              <li>assays, primers, probes, controls and reference materials;</li>
+              <li>extraction, reverse-transcription and laboratory protocols;</li>
+              <li>thermal, optical, fluidic and automation hardware;</li>
+              <li>analysis software, instrument connectors and evidence systems;</li>
+              <li>scientists, engineers, validation reviewers and laboratory nodes.</li>
+            </ul>
+            <a class="button primary" href="docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md">Open programme baseline</a>
+          </div>
+          <div>
+            <span class="eyebrow">Institutional chain</span>
+            <h3>Governance to distribution</h3>
+            <p>
+              Believers Common provides constitutional authority. DigitalMe identifies participants. Synnergyze operates the registry. RiverOS preserves evidence. Warden enforces permissions. EmpireOS issues governed licences. The Virtual Silk Road enables controlled discovery, collaboration and exchange.
+            </p>
+            <p>
+              No registry entry or ecosystem licence substitutes for a patent, copyright registration, professional qualification, laboratory accreditation, regulated-product authorisation or legally required approval.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-grid">
+      <span>Creators Common · CC-CANON-V0.2</span>
+      <span>Controlled architecture baseline for review</span>
+    </div>
+  </footer>
+</body>
 </html>

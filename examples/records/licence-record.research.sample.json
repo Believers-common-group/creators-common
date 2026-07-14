@@ -1,0 +1,141 @@
+{
+  "schemaVersion": "0.1.0",
+  "licenceId": "CC-LR-QPCR-RESEARCH-001",
+  "recordVersion": "0.1.0",
+  "creationId": "CC-CP-QPCR-CREATOR-PROGRAMME-001",
+  "creationVersionRef": "0.1.0",
+  "family": "CC-Research",
+  "status": "draft",
+  "licensor": {
+    "partyId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "partyType": "institution",
+    "authorityRef": "docs/canon/CC-CANON-V0.2.md"
+  },
+  "licensees": [
+    {
+      "partyId": "CC-INST-DEMO-RESEARCH-LAB",
+      "name": "Demonstration Research Laboratory",
+      "partyType": "institution",
+      "authorityRef": "examples/README.md"
+    }
+  ],
+  "effectiveFrom": "2026-07-14T07:00:00Z",
+  "renewal": {
+    "mode": "review-gated",
+    "noticeDays": 30,
+    "conditions": "Renewal requires review of evidence obligations, permitted use and programme version status."
+  },
+  "territory": {
+    "scope": "digital-network",
+    "included": [
+      "Creators Common demonstration environment"
+    ],
+    "description": "Synthetic fixture only; this record grants no real-world licence."
+  },
+  "fieldOfUse": {
+    "included": [
+      "research-use qPCR programme evaluation",
+      "registry schema conformance testing",
+      "educational review"
+    ],
+    "excluded": [
+      "clinical diagnosis",
+      "patient management",
+      "regulated diagnostic reporting",
+      "commercial kit manufacture"
+    ],
+    "intendedUseStatement": "Permit evaluation of the synthetic qPCR Creator Programme record set in a non-production research and education environment.",
+    "regulatedUseStatus": "research-only"
+  },
+  "permittedActions": [
+    "view",
+    "evaluate",
+    "research",
+    "train",
+    "publish-results",
+    "archive"
+  ],
+  "prohibitedUses": [
+    {
+      "code": "NO-DIAGNOSTIC-USE",
+      "description": "The creation and this synthetic licence record must not be used for diagnosis, patient management or regulated clinical reporting.",
+      "policyRef": "docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md"
+    },
+    {
+      "code": "NO-COMMERCIAL-RELIANCE",
+      "description": "The fixture must not be treated as an executed commercial licence, ownership assignment or permission to manufacture."
+    }
+  ],
+  "evidenceObligations": [
+    {
+      "event": "example-record-validation",
+      "requiredRecord": "GitHub Actions validation result",
+      "destinationRef": ".github/workflows/validate-registry.yml",
+      "retentionPeriod": "repository history",
+      "submissionDeadline": "on every governed schema or example change"
+    }
+  ],
+  "reporting": {
+    "frequency": "event-driven",
+    "requiredMetrics": [
+      "schema validation result",
+      "example record count",
+      "unresolved local references"
+    ],
+    "reportingEndpointRef": "tools/validate_registry.py",
+    "auditRight": true,
+    "auditTerms": "Repository maintainers may inspect schema, fixture and workflow history."
+  },
+  "derivativeTerms": {
+    "permitted": true,
+    "registrationRequired": true,
+    "attributionRequired": true,
+    "shareAlike": false,
+    "approvalRequired": true,
+    "lineageRequirements": "Any derivative fixture must preserve the source Creation Passport identifier and clearly remain synthetic."
+  },
+  "sublicensing": {
+    "permitted": false,
+    "approvalRequired": true,
+    "flowDownRequired": true,
+    "terms": "No sublicensing is created by this synthetic fixture."
+  },
+  "suspension": {
+    "automaticTriggers": [
+      "schema validation failure",
+      "removal of the research-use restriction",
+      "misrepresentation as a production licence"
+    ],
+    "wardenPolicyRef": "docs/canon/CC-CANON-V0.2.md",
+    "curePeriodDays": 0,
+    "effect": "The fixture is treated as invalid until corrected and revalidated."
+  },
+  "termination": {
+    "terminationRights": "Creators Common may withdraw or supersede this synthetic fixture at any time through controlled repository change.",
+    "postTerminationObligations": "Archived copies must remain labelled as synthetic and superseded.",
+    "survivingTerms": [
+      "attribution",
+      "prohibited-use notice",
+      "historical provenance"
+    ]
+  },
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/canon/CC-CANON-V0.2.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      {
+        "ref": "examples/README.md",
+        "label": "Synthetic fixture policy",
+        "mediaType": "text/markdown",
+        "visibility": "public"
+      }
+    ],
+    "changeReason": "Initial synthetic research Licence Record fixture"
+  },
+  "createdAt": "2026-07-14T07:00:00Z",
+  "updatedAt": "2026-07-14T07:00:00Z"
+}

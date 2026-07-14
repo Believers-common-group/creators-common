@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "0.1.0",
+  "processRecipeId": "CC-PR-COMPRESSION-DEMO-001",
+  "recordVersion": "0.1.0",
+  "assetDraftId": "CC-AD-MATERIAL-DEMO-001",
+  "name": "Low-temperature compression moulding",
+  "description": "Synthetic process recipe for the Asset Lab material fixture.",
+  "inputRefs": [
+    "CC-MS-RECYCLED-COMPOSITE-001"
+  ],
+  "steps": [
+    {
+      "sequence": 1,
+      "action": "Blend recovered fibre and binder according to the controlled material specification.",
+      "operatorRole": "process engineer",
+      "parameters": [
+        {
+          "name": "blend time",
+          "value": "8",
+          "unit": "minutes"
+        }
+      ]
+    },
+    {
+      "sequence": 2,
+      "action": "Compression mould the charge using the prototype tool.",
+      "equipmentRef": "DEMO-COMPRESSION-PRESS-01",
+      "operatorRole": "prototype operator",
+      "parameters": [
+        {
+          "name": "temperature",
+          "value": "125",
+          "unit": "degC"
+        },
+        {
+          "name": "hold time",
+          "value": "6",
+          "unit": "minutes"
+        }
+      ]
+    }
+  ],
+  "outputRefs": [
+    "CC-AC-SHELL-DEMO-001"
+  ],
+  "wasteOutputs": [
+    {
+      "name": "Edge trim",
+      "estimatedQuantity": "4",
+      "unit": "percent of input mass",
+      "route": "recover"
+    }
+  ],
+  "status": "draft",
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/product/CC-ASSET-LAB-PRD-V0.1.md"
+  },
+  "createdAt": "2026-07-14T09:30:00Z",
+  "updatedAt": "2026-07-14T09:30:00Z"
+}

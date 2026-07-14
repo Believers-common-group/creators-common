@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/release-gate.schema.json",
+  "title": "Creators Common Release Gate",
+  "description": "Controlled decision record for moving an Asset Draft or Creation Passport to a higher lifecycle stage.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "releaseGateId", "recordVersion", "assetDraftId", "targetLifecycleStage", "gateStatus", "checks", "decisionAuthority", "issuer", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "releaseGateId": {"type": "string", "pattern": "^CC-RG-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "assetDraftId": {"type": "string", "minLength": 3, "maxLength": 200},
+    "creationPassportRef": {"type": "string", "maxLength": 200},
+    "targetLifecycleStage": {"type": "string", "enum": ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"]},
+    "gateStatus": {"type": "string", "enum": ["pending", "in-review", "passed", "conditional", "failed", "waived", "expired", "superseded"]},
+    "checks": {"type": "array", "minItems": 1, "maxItems": 1000, "items": {"type": "object", "additionalProperties": false, "required": ["checkId", "category", "status"], "properties": {"checkId": {"type": "string", "minLength": 1, "maxLength": 120}, "category": {"type": "string", "enum": ["identity", "contribution", "technical", "validation", "evidence", "safety", "regulatory", "rights", "licensing", "manufacturing", "circularity", "retention", "other"]}, "status": {"type": "string", "enum": ["not-started", "in-review", "pass", "conditional-pass", "fail", "not-applicable", "waived"]}, "requiredRecordRefs": {"$ref": "#/$defs/idList"}, "evidenceRefs": {"$ref": "#/$defs/references"}, "findings": {"type": "string", "maxLength": 5000}, "conditions": {"type": "string", "maxLength": 5000}}}},
+    "decisionAuthority": {"type": "object", "additionalProperties": false, "required": ["authorityId", "name", "authorityType"], "properties": {"authorityId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityType": {"type": "string", "enum": ["creator", "review-board", "institution", "warden", "regulator", "system"]}, "decisionRef": {"$ref": "#/$defs/reference"}}},
+    "wardenDecisionRef": {"type": "string", "maxLength": 200},
+    "requiredLicenceRefs": {"$ref": "#/$defs/idList"},
+    "signedEnvelopeRef": {"type": "string", "maxLength": 200},
+    "decisionAt": {"type": "string", "format": "date-time"},
+    "expiresAt": {"type": "string", "format": "date-time"},
+    "notes": {"type": "string", "maxLength": 5000},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "idList": {"type": "array", "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 3, "maxLength": 200}},
+    "reference": {"type": "object", "additionalProperties": false, "required": ["ref"], "properties": {"ref": {"type": "string", "minLength": 1, "maxLength": 1000}, "label": {"type": "string", "maxLength": 240}, "hash": {"type": "string", "maxLength": 256}, "mediaType": {"type": "string", "maxLength": 120}, "visibility": {"type": "string", "enum": ["public", "member", "restricted", "confidential"]}}},
+    "references": {"type": "array", "maxItems": 5000, "items": {"$ref": "#/$defs/reference"}},
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 500}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"$ref": "#/$defs/references"}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

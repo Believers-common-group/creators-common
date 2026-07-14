@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "0.1.0",
+  "envelopeId": "CC-EN-QPCR-CREATION-ED25519-001",
+  "envelopeVersion": "0.1.0",
+  "subject": {
+    "recordType": "creation",
+    "recordId": "CC-CP-QPCR-CREATOR-PROGRAMME-001",
+    "recordVersion": "0.1.0"
+  },
+  "payload": {
+    "ref": "examples/records/creation-passport.qpcr-programme.sample.json",
+    "mediaType": "application/json",
+    "canonicalization": "CC-CJSON-0.1",
+    "digest": {
+      "algorithm": "sha-256",
+      "value": "fd09c2f02fd10d7bdfa3a200aab390794f495783ce74a2d8a8a8f66813cd66bd"
+    }
+  },
+  "signatures": [
+    {
+      "signatureId": "SIG-QPCR-CREATION-ED25519-001",
+      "signer": {
+        "partyId": "CC-INST-CREATORS-COMMON",
+        "name": "Creators Common",
+        "partyType": "institution"
+      },
+      "algorithm": "Ed25519",
+      "messageProfile": "CC-SIG-0.1",
+      "keyRef": "CC-TK-CREATORS-COMMON-ED25519-002",
+      "signatureValue": "J7_0_y9FE9Kp2WO6mYDU5_qXmNVJutYkGMjlythKHY4KdWwNogyqwISKZUKJIb-paxEuujqW3Dh1PgJ8BqTbDA",
+      "signedAt": "2026-07-14T10:25:00Z",
+      "verificationStatus": "verified",
+      "verificationRef": "CC-SV-QPCR-CREATION-VALID-001",
+      "scope": "payload-digest"
+    }
+  ],
+  "status": "issued",
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "CC-SA-CREATORS-COMMON-ENVELOPE-001"
+  },
+  "createdAt": "2026-07-14T10:25:00Z",
+  "updatedAt": "2026-07-14T10:26:00Z"
+}

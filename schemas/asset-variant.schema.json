@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/asset-variant.schema.json",
+  "title": "Creators Common Asset Variant",
+  "description": "A controlled experimental or design variant derived from an Asset Draft or another variant.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "assetVariantId", "recordVersion", "assetDraftId", "name", "objective", "status", "issuer", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "assetVariantId": {"type": "string", "pattern": "^CC-AV-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "assetDraftId": {"type": "string", "minLength": 3, "maxLength": 200},
+    "name": {"type": "string", "minLength": 1, "maxLength": 300},
+    "objective": {"type": "string", "minLength": 10, "maxLength": 5000},
+    "baseVariantRef": {"type": "string", "maxLength": 200},
+    "changeSet": {"type": "array", "minItems": 1, "maxItems": 1000, "items": {"type": "object", "additionalProperties": false, "required": ["path", "operation", "value"], "properties": {"path": {"type": "string", "minLength": 1, "maxLength": 500}, "operation": {"type": "string", "enum": ["add", "replace", "remove", "scale", "substitute", "reorder", "custom"]}, "value": {"type": ["string", "integer", "boolean", "null"]}, "reason": {"type": "string", "maxLength": 2000}}}},
+    "componentRefs": {"$ref": "#/$defs/idList"},
+    "materialSpecificationRefs": {"$ref": "#/$defs/idList"},
+    "processRecipeRefs": {"$ref": "#/$defs/idList"},
+    "validationRunRefs": {"$ref": "#/$defs/idList"},
+    "claimRefs": {"$ref": "#/$defs/idList"},
+    "status": {"type": "string", "enum": ["draft", "ready-for-test", "testing", "accepted", "rejected", "superseded", "withdrawn"]},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "idList": {"type": "array", "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 3, "maxLength": 200}},
+    "reference": {"type": "object", "additionalProperties": false, "required": ["ref"], "properties": {"ref": {"type": "string", "minLength": 1, "maxLength": 1000}, "label": {"type": "string", "maxLength": 240}, "hash": {"type": "string", "maxLength": 256}, "mediaType": {"type": "string", "maxLength": 120}, "visibility": {"type": "string", "enum": ["public", "member", "restricted", "confidential"]}}},
+    "references": {"type": "array", "maxItems": 2000, "items": {"$ref": "#/$defs/reference"}},
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 500}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"$ref": "#/$defs/references"}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

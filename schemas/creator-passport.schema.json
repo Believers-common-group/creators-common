@@ -1,0 +1,252 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/creator-passport.schema.json",
+  "title": "Creators Common Creator Passport",
+  "description": "Machine-readable identity, capability, affiliation and verified creation portfolio for a person, institution or collective registered with Creators Common.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "creatorId",
+    "passportVersion",
+    "holderType",
+    "displayName",
+    "status",
+    "disciplines",
+    "verification",
+    "issuer",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "creatorId": {
+      "type": "string",
+      "pattern": "^CC-CR-[A-Z0-9][A-Z0-9._-]{5,63}$"
+    },
+    "passportVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"
+    },
+    "holderType": {
+      "type": "string",
+      "enum": ["person", "institution", "collective"]
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "legalName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "digitalMeId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "suspended", "revoked", "archived"]
+    },
+    "publicProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "headline": {"type": "string", "maxLength": 240},
+        "biography": {"type": "string", "maxLength": 4000},
+        "location": {"type": "string", "maxLength": 200},
+        "website": {"type": "string", "format": "uri"},
+        "avatarRef": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "identifiers": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scheme", "value", "visibility"],
+        "properties": {
+          "scheme": {"type": "string", "minLength": 1, "maxLength": 80},
+          "value": {"type": "string", "minLength": 1, "maxLength": 300},
+          "issuer": {"type": "string", "maxLength": 200},
+          "visibility": {"$ref": "#/$defs/visibility"},
+          "verified": {"type": "boolean", "default": false}
+        }
+      }
+    },
+    "affiliations": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["organisationName", "role", "status"],
+        "properties": {
+          "organisationId": {"type": "string", "maxLength": 200},
+          "organisationName": {"type": "string", "minLength": 1, "maxLength": 300},
+          "role": {"type": "string", "minLength": 1, "maxLength": 160},
+          "startDate": {"type": "string", "format": "date"},
+          "endDate": {"type": "string", "format": "date"},
+          "status": {"type": "string", "enum": ["current", "former", "proposed", "disputed"]},
+          "evidenceRefs": {"$ref": "#/$defs/references"}
+        }
+      }
+    },
+    "disciplines": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 2, "maxLength": 120}
+    },
+    "capabilities": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "level", "verificationStatus"],
+        "properties": {
+          "name": {"type": "string", "minLength": 2, "maxLength": 160},
+          "level": {"type": "string", "enum": ["awareness", "working", "proficient", "advanced", "reviewer", "authority"]},
+          "verificationStatus": {"type": "string", "enum": ["self-declared", "evidence-reviewed", "institution-verified", "expired", "disputed"]},
+          "evidenceRefs": {"$ref": "#/$defs/references"},
+          "validUntil": {"type": "string", "format": "date"}
+        }
+      }
+    },
+    "roles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "originating-creator",
+          "co-creator",
+          "design-contributor",
+          "engineering-contributor",
+          "research-contributor",
+          "software-contributor",
+          "manufacturing-contributor",
+          "validation-authority",
+          "domain-reviewer",
+          "institutional-sponsor",
+          "funding-sponsor",
+          "custodian",
+          "commercial-operator",
+          "improvement-creator",
+          "derivative-creator"
+        ]
+      }
+    },
+    "creationRefs": {"$ref": "#/$defs/idList"},
+    "contributionRefs": {"$ref": "#/$defs/idList"},
+    "licenceRefs": {"$ref": "#/$defs/idList"},
+    "training": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "provider", "status"],
+        "properties": {
+          "title": {"type": "string", "minLength": 1, "maxLength": 240},
+          "provider": {"type": "string", "minLength": 1, "maxLength": 240},
+          "credentialId": {"type": "string", "maxLength": 200},
+          "issuedOn": {"type": "string", "format": "date"},
+          "expiresOn": {"type": "string", "format": "date"},
+          "status": {"type": "string", "enum": ["completed", "in-progress", "expired", "revoked", "unverified"]},
+          "evidenceRefs": {"$ref": "#/$defs/references"}
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identityStatus", "reviewedAt"],
+      "properties": {
+        "identityStatus": {"type": "string", "enum": ["unverified", "partially-verified", "verified", "suspended", "disputed"]},
+        "reviewedAt": {"type": "string", "format": "date-time"},
+        "reviewerId": {"type": "string", "maxLength": 200},
+        "methods": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "enum": ["document", "institution", "digital-signature", "in-person", "domain-control", "other"]}
+        },
+        "evidenceRefs": {"$ref": "#/$defs/references"},
+        "notes": {"type": "string", "maxLength": 2000}
+      }
+    },
+    "visibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {"$ref": "#/$defs/visibility"},
+        "restrictedFields": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 160}
+        }
+      }
+    },
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "visibility": {
+      "type": "string",
+      "enum": ["public", "member", "restricted", "confidential"]
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref"],
+      "properties": {
+        "ref": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "label": {"type": "string", "maxLength": 240},
+        "hash": {"type": "string", "maxLength": 256},
+        "mediaType": {"type": "string", "maxLength": 120},
+        "visibility": {"$ref": "#/$defs/visibility"}
+      }
+    },
+    "references": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {"$ref": "#/$defs/reference"}
+    },
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 1000,
+      "items": {"type": "string", "minLength": 3, "maxLength": 200}
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuerId", "name"],
+      "properties": {
+        "issuerId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 240},
+        "authorityRef": {"type": "string", "maxLength": 500}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "previousVersionRef": {"type": "string", "maxLength": 500},
+        "sourceRecordRefs": {"$ref": "#/$defs/references"},
+        "contentHash": {"type": "string", "maxLength": 256},
+        "signatureRef": {"type": "string", "maxLength": 1000}
+      }
+    }
+  }
+}

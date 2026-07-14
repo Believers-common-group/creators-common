@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "0.1.0",
+  "decisionId": "CC-WD-MATERIAL-REVIEW-001",
+  "recordVersion": "0.1.0",
+  "requestId": "REQ-ASSET-LAB-MATERIAL-REVIEW-001",
+  "policyRef": "CC-WA-ASSET-LAB-MATERIAL-001",
+  "subject": {
+    "actorId": "CC-CR-DEMO-MOLECULAR-001",
+    "roles": [
+      "domain-reviewer"
+    ],
+    "assuranceLevel": "verified"
+  },
+  "resource": {
+    "recordRef": "CC-MS-RECYCLED-COMPOSITE-001",
+    "recordType": "material-specification",
+    "fieldPaths": [
+      "$.composition",
+      "$.properties",
+      "$.evidenceRefs"
+    ],
+    "classification": "restricted"
+  },
+  "action": "review",
+  "context": {
+    "purpose": "technical-review",
+    "environment": "asset-lab",
+    "jurisdiction": "India",
+    "networkZone": "Creators Common member network",
+    "deviceTrust": "managed",
+    "occurredAt": "2026-07-14T10:16:00Z"
+  },
+  "decision": "permit-with-conditions",
+  "matchedRuleRefs": [
+    "MATERIAL-REVIEW-READ"
+  ],
+  "reasonCodes": [
+    "VERIFIED-REVIEWER",
+    "PURPOSE-BOUND",
+    "EXPORT-PROHIBITED"
+  ],
+  "explanation": "Synthetic policy decision permitting bounded review access while requiring evidence logging and prohibiting export.",
+  "obligations": [
+    {
+      "type": "log-access",
+      "status": "required",
+      "destinationRef": "RiverOS",
+      "details": "Capture actor, fields, action, purpose and decision."
+    },
+    {
+      "type": "riveros-evidence",
+      "status": "required",
+      "destinationRef": "CC-RV-RP-RESEARCH-EVIDENCE-001",
+      "details": "Preserve the access decision evidence."
+    },
+    {
+      "type": "no-export",
+      "status": "required",
+      "fieldPaths": [
+        "$.composition",
+        "$.properties",
+        "$.evidenceRefs"
+      ],
+      "details": "No export or onward sharing is permitted."
+    }
+  ],
+  "releaseGateRef": "CC-RG-PROTOTYPE-DEMO-001",
+  "validUntil": "2026-07-14T11:16:00Z",
+  "evaluatedAt": "2026-07-14T10:16:00Z",
+  "evaluator": {
+    "serviceId": "CC-SVC-WARDEN-POLICY",
+    "policyEngineVersion": "0.1.0"
+  },
+  "review": {
+    "status": "not-required"
+  },
+  "issuer": {
+    "issuerId": "CC-INST-WARDEN",
+    "name": "Warden",
+    "authorityRef": "docs/integrations/warden/CC-WARDEN-POLICY-CONTRACTS-V0.1.md"
+  },
+  "createdAt": "2026-07-14T10:16:00Z"
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "0.1.0",
+  "keyEventId": "CC-KE-CREATORS-COMMON-REVOKE-003",
+  "recordVersion": "0.1.0",
+  "sequence": 3,
+  "previousEventRef": "CC-KE-CREATORS-COMMON-ROTATE-002",
+  "eventType": "revoke",
+  "status": "applied",
+  "keyRef": "CC-TK-CREATORS-COMMON-ED25519-001",
+  "effectiveAt": "2026-07-14T09:00:00Z",
+  "actor": {
+    "partyId": "CC-INST-WARDEN",
+    "name": "Warden",
+    "partyType": "institution"
+  },
+  "reasonCodes": [
+    "TEST-KEY-REVOKED"
+  ],
+  "reason": "Revoke the synthetic predecessor key after rotation to exercise current-trust failure handling.",
+  "basisRefs": [
+    "CC-TK-CREATORS-COMMON-ED25519-001",
+    "CC-KE-CREATORS-COMMON-ROTATE-002"
+  ],
+  "issuer": {
+    "issuerId": "CC-INST-WARDEN",
+    "name": "Warden",
+    "authorityRef": "docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      "CC-KE-CREATORS-COMMON-ROTATE-002"
+    ],
+    "changeReason": "Synthetic predecessor-key revocation"
+  },
+  "createdAt": "2026-07-14T10:24:00Z"
+}

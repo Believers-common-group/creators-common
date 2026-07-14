@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "0.1.0",
+  "creatorId": "CC-CR-DEMO-MOLECULAR-001",
+  "passportVersion": "0.1.0",
+  "holderType": "collective",
+  "displayName": "Molecular Sciences Founding Working Group",
+  "status": "draft",
+  "publicProfile": {
+    "headline": "Synthetic Creators Common conformance fixture",
+    "biography": "A non-production collective identity used to demonstrate the linked qPCR Creator Programme registry records.",
+    "location": "Demonstration environment"
+  },
+  "disciplines": [
+    "Molecular sciences",
+    "Laboratory systems engineering",
+    "Registry architecture"
+  ],
+  "capabilities": [
+    {
+      "name": "qPCR programme architecture",
+      "level": "working",
+      "verificationStatus": "self-declared"
+    }
+  ],
+  "roles": [
+    "originating-creator",
+    "research-contributor",
+    "custodian"
+  ],
+  "creationRefs": [
+    "CC-CP-QPCR-CREATOR-PROGRAMME-001"
+  ],
+  "contributionRefs": [
+    "CC-CO-QPCR-ARCHITECTURE-001"
+  ],
+  "licenceRefs": [
+    "CC-LR-QPCR-RESEARCH-001"
+  ],
+  "verification": {
+    "identityStatus": "unverified",
+    "reviewedAt": "2026-07-14T07:00:00Z",
+    "notes": "Synthetic record. No real identity verification has been performed."
+  },
+  "visibility": {
+    "default": "public",
+    "restrictedFields": []
+  },
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/canon/CC-CANON-V0.2.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      {
+        "ref": "examples/README.md",
+        "label": "Synthetic fixture policy",
+        "mediaType": "text/markdown",
+        "visibility": "public"
+      }
+    ]
+  },
+  "createdAt": "2026-07-14T07:00:00Z",
+  "updatedAt": "2026-07-14T07:00:00Z"
+}

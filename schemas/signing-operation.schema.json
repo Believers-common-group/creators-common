@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/signing-operation.schema.json",
+  "title": "Creators Common Signing Operation",
+  "description": "Append-only record of a signing request and result, including authority, custody attestation, message digest, signature and verification linkage.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "operationId", "recordVersion", "keyRef", "authorityRef", "custodyAttestationRef", "algorithm", "messageProfile", "signedMessageDigest", "signatureValue", "context", "result", "verificationRef", "issuer", "createdAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "operationId": {"type": "string", "pattern": "^CC-SO-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "requestRef": {"type": "string", "maxLength": 500},
+    "envelopeRef": {"type": "string", "pattern": "^CC-EN-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "signatureId": {"type": "string", "pattern": "^SIG-[A-Z0-9][A-Z0-9._-]{3,95}$"},
+    "keyRef": {"type": "string", "pattern": "^CC-TK-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "authorityRef": {"type": "string", "pattern": "^CC-SA-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "custodyAttestationRef": {"type": "string", "pattern": "^CC-KA-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "algorithm": {"type": "string", "enum": ["Ed25519", "ES256", "RS256"]},
+    "messageProfile": {"type": "string", "const": "CC-SIG-0.1"},
+    "signedMessageDigest": {"type": "object", "additionalProperties": false, "required": ["algorithm", "value"], "properties": {"algorithm": {"type": "string", "const": "sha-256"}, "value": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}},
+    "signatureValue": {"type": "string", "pattern": "^[A-Za-z0-9_-]{16,8192}$"},
+    "context": {"type": "object", "additionalProperties": false, "required": ["recordType", "action", "scope", "purpose", "environment", "requestedAt", "completedAt", "hardwareBound"], "properties": {
+      "recordType": {"type": "string", "minLength": 1, "maxLength": 120},
+      "action": {"type": "string", "enum": ["sign", "issue", "countersign", "approve", "revoke"]},
+      "scope": {"type": "string", "enum": ["payload-digest", "envelope-without-signatures"]},
+      "purpose": {"type": "string", "minLength": 1, "maxLength": 200},
+      "environment": {"type": "string", "minLength": 1, "maxLength": 200},
+      "requestedAt": {"type": "string", "format": "date-time"},
+      "completedAt": {"type": "string", "format": "date-time"},
+      "hardwareBound": {"type": "boolean"},
+      "userPresence": {"type": "boolean"},
+      "multiPartyApproval": {"type": "boolean"}
+    }},
+    "result": {"type": "object", "additionalProperties": false, "required": ["status", "keyBoundaryEvidence"], "properties": {
+      "status": {"type": "string", "enum": ["succeeded", "failed", "rejected", "cancelled"]},
+      "keyBoundaryEvidence": {"type": "boolean"},
+      "reasonCodes": {"type": "array", "uniqueItems": true, "maxItems": 100, "items": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{1,95}$"}},
+      "details": {"type": "string", "maxLength": 3000}
+    }},
+    "verificationRef": {"type": "string", "pattern": "^CC-SV-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "riverosEvidenceEventRef": {"type": "string", "maxLength": 200},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 500}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"type": "array", "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 1, "maxLength": 1000}}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

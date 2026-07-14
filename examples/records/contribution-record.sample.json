@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "0.1.0",
+  "contributionId": "CC-CO-QPCR-ARCHITECTURE-001",
+  "recordVersion": "0.1.0",
+  "creationId": "CC-CP-QPCR-CREATOR-PROGRAMME-001",
+  "creationVersionRef": "0.1.0",
+  "contributorId": "CC-CR-DEMO-MOLECULAR-001",
+  "contributorDisplayName": "Molecular Sciences Founding Working Group",
+  "role": "originating-creator",
+  "description": "Defined the initial qPCR Creator Programme architecture, including creator attribution, creation maturity, research-use restrictions, evidence linkage and licence boundaries.",
+  "scope": {
+    "workPackage": "qPCR programme architecture baseline",
+    "componentRefs": [
+      "creator identity",
+      "creation passport",
+      "contribution provenance",
+      "research-use licence boundary"
+    ],
+    "deliverableRefs": [
+      {
+        "ref": "docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md",
+        "label": "qPCR Creator Programme V0.1",
+        "mediaType": "text/markdown",
+        "visibility": "public"
+      }
+    ],
+    "excludedScope": "No wet-laboratory validation, assay performance claim, regulated approval or diagnostic authorisation is represented by this synthetic contribution fixture."
+  },
+  "period": {
+    "startedOn": "2026-07-14",
+    "completedOn": "2026-07-14",
+    "recordedAt": "2026-07-14T07:00:00Z"
+  },
+  "evidenceRefs": [
+    {
+      "ref": "docs/canon/CC-CANON-V0.2.md",
+      "label": "Creators Common Canon V0.2",
+      "mediaType": "text/markdown",
+      "visibility": "public"
+    },
+    {
+      "ref": "docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md",
+      "label": "qPCR Creator Programme V0.1",
+      "mediaType": "text/markdown",
+      "visibility": "public"
+    }
+  ],
+  "status": "accepted",
+  "attribution": {
+    "creditName": "Molecular Sciences Founding Working Group",
+    "creditStatement": "Synthetic originating-creator fixture for the qPCR Creator Programme architecture.",
+    "creditStatus": "accepted",
+    "publicCredit": true,
+    "citationPreference": "Creators Common, qPCR Creator Programme V0.1, synthetic conformance fixture."
+  },
+  "rights": {
+    "ownershipClaimed": false,
+    "assignmentStatus": "not-applicable",
+    "licenceGrantRefs": [
+      "CC-LR-QPCR-RESEARCH-001"
+    ],
+    "notes": "The fixture does not create or evidence legal ownership, assignment or economic entitlement."
+  },
+  "review": {
+    "status": "accepted",
+    "reviewerIds": [
+      "CC-INST-CREATORS-COMMON"
+    ],
+    "reviewedAt": "2026-07-14T07:00:00Z",
+    "findings": "Accepted solely as a schema-conformance and documentation fixture."
+  },
+  "confidentiality": {
+    "level": "public",
+    "restrictedFields": []
+  },
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/canon/CC-CANON-V0.2.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      {
+        "ref": "examples/README.md",
+        "label": "Synthetic fixture policy",
+        "mediaType": "text/markdown",
+        "visibility": "public"
+      }
+    ],
+    "changeReason": "Initial synthetic Contribution Record fixture"
+  },
+  "createdAt": "2026-07-14T07:00:00Z",
+  "updatedAt": "2026-07-14T07:00:00Z"
+}

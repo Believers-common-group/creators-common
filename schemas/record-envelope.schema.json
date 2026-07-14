@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/record-envelope.schema.json",
+  "title": "Creators Common Signed Record Envelope",
+  "description": "A governed envelope that binds a record reference to a deterministic content digest and one or more signature assertions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "envelopeId", "envelopeVersion", "subject", "payload", "signatures", "status", "issuer", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "envelopeId": {"type": "string", "pattern": "^CC-EN-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "envelopeVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordType", "recordId", "recordVersion"],
+      "properties": {
+        "recordType": {
+          "type": "string",
+          "enum": [
+            "creator", "creation", "contribution", "licence", "record-envelope",
+            "riveros-evidence-event", "riveros-retention-policy", "asset-draft",
+            "asset-component", "material-specification", "process-recipe", "asset-variant",
+            "validation-run", "creation-claim", "release-gate", "warden-access-policy",
+            "warden-policy-decision", "empireos-licence-event", "trusted-key",
+            "signer-authority", "key-lifecycle-event", "signature-verification"
+          ]
+        },
+        "recordId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "recordVersion": {"type": "string", "minLength": 1, "maxLength": 80}
+      }
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "mediaType", "canonicalization", "digest"],
+      "properties": {
+        "ref": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "mediaType": {"type": "string", "enum": ["application/json"]},
+        "canonicalization": {"type": "string", "const": "CC-CJSON-0.1"},
+        "digest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "value"],
+          "properties": {
+            "algorithm": {"type": "string", "const": "sha-256"},
+            "value": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+          }
+        }
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["signatureId", "signer", "algorithm", "signatureValue", "signedAt", "verificationStatus"],
+        "properties": {
+          "signatureId": {"type": "string", "pattern": "^SIG-[A-Z0-9][A-Z0-9._-]{3,95}$"},
+          "signer": {"$ref": "#/$defs/party"},
+          "algorithm": {"type": "string", "enum": ["Ed25519", "ES256", "RS256", "external-attestation", "synthetic-test"]},
+          "messageProfile": {"type": "string", "enum": ["CC-SIG-0.1"]},
+          "keyRef": {"type": "string", "maxLength": 1000},
+          "signatureValue": {"type": "string", "minLength": 8, "maxLength": 8192},
+          "signedAt": {"type": "string", "format": "date-time"},
+          "verificationStatus": {"type": "string", "enum": ["unverified", "verified", "failed", "revoked"]},
+          "verificationRef": {"type": "string", "maxLength": 1000},
+          "scope": {"type": "string", "enum": ["payload-digest", "envelope-without-signatures"]}
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"algorithm": {"enum": ["Ed25519", "ES256", "RS256"]}}, "required": ["algorithm"]},
+            "then": {"required": ["messageProfile", "keyRef", "scope"]}
+          },
+          {
+            "if": {"properties": {"verificationStatus": {"const": "verified"}}, "required": ["verificationStatus"]},
+            "then": {"required": ["verificationRef"]}
+          }
+        ]
+      }
+    },
+    "status": {"type": "string", "enum": ["draft", "issued", "superseded", "revoked", "archived"]},
+    "supersedesEnvelopeRef": {"type": "string", "maxLength": 200},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["partyId", "name", "partyType"],
+      "properties": {
+        "partyId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 300},
+        "partyType": {"type": "string", "enum": ["person", "institution", "collective", "public-body", "service"]}
+      }
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuerId", "name"],
+      "properties": {
+        "issuerId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 240},
+        "authorityRef": {"type": "string", "maxLength": 500}
+      }
+    }
+  }
+}

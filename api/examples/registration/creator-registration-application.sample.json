@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "0.1.0",
+  "applicationId": "CC-REG-CR-DEMO-001",
+  "recordVersion": "0.1.0",
+  "applicant": {
+    "digitalMeRef": "CC-DM-LITE-DEMO-001",
+    "identityStage": "verified",
+    "displayName": "Molecular Sciences Founding Working Group",
+    "handle": "molecular-sciences-demo",
+    "contactRefs": [
+      "CC-DM-CONTACT-DEMO-001"
+    ]
+  },
+  "registrationType": "collective",
+  "roleIntent": [
+    "originating-creator",
+    "research-contributor",
+    "custodian"
+  ],
+  "disciplines": [
+    "Molecular sciences",
+    "Laboratory systems engineering",
+    "Registry architecture"
+  ],
+  "jurisdiction": "India",
+  "consent": {
+    "termsAccepted": true,
+    "privacyNoticeVersion": "CC-PRIVACY-0.1",
+    "identityProcessingConsent": true,
+    "evidenceProcessingConsent": true,
+    "publicProfileConsent": false,
+    "purpose": "Register a synthetic Creator Passport conformance fixture.",
+    "duration": "Until withdrawn or superseded under the controlled fixture policy.",
+    "acceptedAt": "2026-07-14T11:20:00Z",
+    "revocationRef": "https://creators-common.org/consent/revoke/CC-REG-CR-DEMO-001"
+  },
+  "evidenceRefs": [
+    "CC-RV-EV-REG-CREATOR-SUBMIT-001",
+    "CC-RV-EV-REG-CREATOR-REVIEW-001"
+  ],
+  "requestedVisibility": "member",
+  "publicProjection": {
+    "displayName": "Molecular Sciences Founding Working Group",
+    "headline": "Synthetic Creator Passport registration fixture",
+    "disciplines": [
+      "Molecular sciences",
+      "Registry architecture"
+    ]
+  },
+  "status": "accepted",
+  "reviewRefs": [
+    "CC-REG-RV-CREATOR-FINAL-001"
+  ],
+  "wardenDecisionRef": "CC-WD-REG-CREATOR-001",
+  "riverosEvidenceEventRefs": [
+    "CC-RV-EV-REG-CREATOR-SUBMIT-001",
+    "CC-RV-EV-REG-CREATOR-REVIEW-001"
+  ],
+  "resultingCreatorPassportRef": "CC-CR-DEMO-MOLECULAR-001",
+  "submittedAt": "2026-07-14T11:21:00Z",
+  "acceptedAt": "2026-07-14T11:24:00Z",
+  "issuer": {
+    "issuerId": "CC-SVC-REGISTRATION",
+    "name": "Creators Common Registration Service",
+    "authorityRef": "docs/workflows/CC-CREATOR-AND-CREATION-REGISTRATION-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      "CC-DM-LITE-DEMO-001"
+    ],
+    "changeReason": "Initial synthetic Creator registration fixture"
+  },
+  "createdAt": "2026-07-14T11:20:00Z",
+  "updatedAt": "2026-07-14T11:24:00Z"
+}

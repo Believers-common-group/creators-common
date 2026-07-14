@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "0.1.0",
+  "validationRunId": "CC-VR-FLEXURAL-DEMO-001",
+  "recordVersion": "0.1.0",
+  "assetDraftId": "CC-AD-MATERIAL-DEMO-001",
+  "assetVariantRef": "CC-AV-HIGH-RECYCLED-001",
+  "subjectRefs": [
+    "CC-MS-RECYCLED-COMPOSITE-001",
+    "CC-AC-SHELL-DEMO-001"
+  ],
+  "methodRef": {
+    "ref": "examples/README.md",
+    "label": "Synthetic fixture policy",
+    "mediaType": "text/markdown",
+    "visibility": "public"
+  },
+  "executedBy": {
+    "partyId": "CC-INST-DEMO-RESEARCH-LAB",
+    "name": "Demonstration Research Laboratory",
+    "partyType": "institution",
+    "operatorIds": ["CC-CR-DEMO-MOLECULAR-001"]
+  },
+  "startedAt": "2026-07-14T09:30:00Z",
+  "completedAt": "2026-07-14T10:00:00Z",
+  "measurements": [
+    {
+      "metric": "Flexural screening result",
+      "value": "prototype target met with limitation",
+      "status": "observed"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "criterionId": "AC-001",
+      "statement": "Prototype must remain intact during the synthetic screening procedure.",
+      "result": "conditional-pass",
+      "finding": "Fixture records a conditional pass only; no physical test is claimed."
+    }
+  ],
+  "disposition": "conditionally-passed",
+  "evidenceRefs": [
+    {
+      "ref": "examples/README.md",
+      "label": "Synthetic fixture policy",
+      "mediaType": "text/markdown",
+      "visibility": "public"
+    }
+  ],
+  "reviewerRef": "CC-INST-CREATORS-COMMON",
+  "reviewStatus": "accepted",
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/product/CC-ASSET-LAB-PRD-V0.1.md"
+  },
+  "createdAt": "2026-07-14T10:00:00Z",
+  "updatedAt": "2026-07-14T10:00:00Z"
+}

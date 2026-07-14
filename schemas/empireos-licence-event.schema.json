@@ -1,0 +1,421 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/empireos-licence-event.schema.json",
+  "title": "Creators Common EmpireOS Licence Lifecycle Event",
+  "description": "An append-only EmpireOS event for issuance, amendment, renewal, suspension, resumption, expiry, termination, revocation or supersession of a governed Licence Record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "licenceEventId",
+    "recordVersion",
+    "licenceId",
+    "sequence",
+    "eventType",
+    "status",
+    "actor",
+    "changes",
+    "decisionBasisRefs",
+    "occurredAt",
+    "issuer",
+    "createdAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "licenceEventId": {
+      "type": "string",
+      "pattern": "^CC-EO-LE-[A-Z0-9][A-Z0-9._-]{5,95}$"
+    },
+    "recordVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"
+    },
+    "licenceId": {
+      "type": "string",
+      "pattern": "^CC-LR-[A-Z0-9][A-Z0-9._-]{5,95}$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previousEventRef": {
+      "type": "string",
+      "pattern": "^CC-EO-LE-[A-Z0-9][A-Z0-9._-]{5,95}$"
+    },
+    "eventType": {
+      "type": "string",
+      "enum": [
+        "issue",
+        "amend",
+        "renew",
+        "suspend",
+        "resume",
+        "expire",
+        "terminate",
+        "revoke",
+        "supersede"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "authorised",
+        "effective",
+        "rejected",
+        "cancelled",
+        "superseded"
+      ]
+    },
+    "actor": {
+      "$ref": "#/$defs/party"
+    },
+    "requestedByRefs": {
+      "$ref": "#/$defs/idList"
+    },
+    "approvedByRefs": {
+      "$ref": "#/$defs/idList"
+    },
+    "effectiveAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "changes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultingLicenceStatus",
+        "fieldChanges"
+      ],
+      "properties": {
+        "priorLicenceStatus": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "proposed",
+            "active",
+            "suspended",
+            "expired",
+            "terminated",
+            "revoked",
+            "superseded",
+            "disputed"
+          ]
+        },
+        "resultingLicenceStatus": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "proposed",
+            "active",
+            "suspended",
+            "expired",
+            "terminated",
+            "revoked",
+            "superseded",
+            "disputed"
+          ]
+        },
+        "fieldChanges": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "operation",
+              "reason"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^\\$?(?:\\.[A-Za-z0-9_-]+|\\[[0-9*]+\\])+$"
+              },
+              "operation": {
+                "type": "string",
+                "enum": [
+                  "add",
+                  "replace",
+                  "remove",
+                  "activate",
+                  "suspend",
+                  "resume",
+                  "expire",
+                  "terminate",
+                  "revoke",
+                  "supersede"
+                ]
+              },
+              "priorValue": {
+                "$ref": "#/$defs/jsonValue"
+              },
+              "newValue": {
+                "$ref": "#/$defs/jsonValue"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3000
+              }
+            }
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 1000
+          }
+        }
+      }
+    },
+    "decisionBasisRefs": {
+      "$ref": "#/$defs/idList"
+    },
+    "wardenDecisionRef": {
+      "type": "string",
+      "pattern": "^CC-WD-[A-Z0-9][A-Z0-9._-]{5,95}$"
+    },
+    "riverosEvidenceEventRef": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "notice": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "recipients": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 300
+          }
+        },
+        "issuedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "noticeRef": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "issuer": {
+      "$ref": "#/$defs/issuer"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sourceRecordRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "changeReason": {
+          "type": "string",
+          "maxLength": 3000
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "issue"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "sequence": {
+            "const": 1
+          }
+        },
+        "not": {
+          "required": [
+            "previousEventRef"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "enum": [
+              "amend",
+              "renew",
+              "suspend",
+              "resume",
+              "expire",
+              "terminate",
+              "revoke",
+              "supersede"
+            ]
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "required": [
+          "previousEventRef"
+        ],
+        "properties": {
+          "sequence": {
+            "minimum": 2
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "authorised",
+              "effective"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "effectiveAt"
+        ],
+        "properties": {
+          "approvedByRefs": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 5000,
+      "items": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 200
+      }
+    },
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "partyId",
+        "name",
+        "partyType"
+      ],
+      "properties": {
+        "partyId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "partyType": {
+          "type": "string",
+          "enum": [
+            "person",
+            "institution",
+            "collective",
+            "public-body",
+            "service"
+          ]
+        },
+        "authorityRef": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issuerId",
+        "name"
+      ],
+      "properties": {
+        "issuerId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "authorityRef": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "jsonValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      ]
+    }
+  }
+}

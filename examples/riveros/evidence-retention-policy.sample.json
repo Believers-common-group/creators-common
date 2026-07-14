@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "0.1.0",
+  "policyId": "CC-RV-RP-RESEARCH-EVIDENCE-001",
+  "policyVersion": "0.1.0",
+  "title": "Research Evidence Retention Baseline",
+  "status": "draft",
+  "scope": {
+    "programmes": ["CC-PROG-QPCR-001"],
+    "jurisdictions": ["India"],
+    "recordTypes": ["creation", "contribution", "licence", "record-envelope", "riveros-evidence-event"],
+    "exclusions": ["Regulated clinical records unless a separate approved policy applies"]
+  },
+  "categories": [
+    {
+      "categoryId": "CORE-PROVENANCE",
+      "name": "Core creation and contribution provenance",
+      "appliesTo": ["Creator Passport", "Creation Passport", "Contribution Record", "Licence Record"],
+      "trigger": "record-supersession",
+      "retentionPeriod": "P7Y",
+      "reviewInterval": "P1Y",
+      "disposition": "archive",
+      "legalHoldAllowed": true,
+      "deletionEvidenceRequired": true,
+      "conditions": ["Preserve superseded versions and their lineage links before archival disposition"]
+    },
+    {
+      "categoryId": "RUN-EVIDENCE",
+      "name": "Research programme execution evidence",
+      "appliesTo": ["qPCR programme evidence events", "validation outputs", "review findings"],
+      "trigger": "programme-closure",
+      "retentionPeriod": "P5Y",
+      "reviewInterval": "P1Y",
+      "disposition": "review",
+      "legalHoldAllowed": true,
+      "deletionEvidenceRequired": true,
+      "conditions": ["No deletion while a dispute, investigation, licence obligation or legal hold remains active"]
+    }
+  ],
+  "defaultDisposition": {
+    "action": "review",
+    "reviewRequired": true,
+    "approvalRole": "RiverOS evidence custodian",
+    "evidenceEventRequired": true
+  },
+  "legalHold": {
+    "supported": true,
+    "releaseAuthority": "Warden-authorised evidence custodian",
+    "eventTypeOnApply": "retain",
+    "eventTypeOnRelease": "archive"
+  },
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/integrations/riveros/CC-RIVEROS-EVIDENCE-CONTRACTS-V0.1.md"
+  },
+  "createdAt": "2026-07-14T07:10:00Z",
+  "updatedAt": "2026-07-14T07:10:00Z"
+}

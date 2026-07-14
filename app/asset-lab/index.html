@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Creators Common Asset Lab governed creation workspace prototype.">
+  <title>Asset Lab · Creators Common</title>
+  <style>
+    :root {
+      --ink: #13231d;
+      --muted: #65726c;
+      --paper: #eef1ea;
+      --panel: #fbfcf8;
+      --panel-2: #f4f6f0;
+      --line: #d9dfd6;
+      --accent: #226448;
+      --accent-soft: #dfece4;
+      --amber: #aa7626;
+      --danger: #9c463e;
+      --shadow: 0 18px 56px rgba(25, 48, 39, .12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+    .app { min-height: 100vh; display: grid; grid-template-rows: auto auto 1fr; }
+    .global {
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      background: #173b2d;
+      color: white;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; text-decoration: none; }
+    .mark { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: #f4f1df; color: #173b2d; font-family: Georgia, serif; }
+    .global nav { display: flex; gap: 18px; font-size: .88rem; color: rgba(255,255,255,.76); }
+    .global nav a { text-decoration: none; }
+    .global nav a.active, .global nav a:hover { color: white; }
+    .asset-header {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 12px 18px;
+      background: rgba(251,252,248,.96);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 6px 24px rgba(25,48,39,.06);
+      position: relative;
+      z-index: 3;
+    }
+    .asset-title { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .asset-symbol { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font-weight: 900; }
+    .asset-title h1 { margin: 0; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .meta { margin-top: 4px; display: flex; gap: 8px; color: var(--muted); font-size: .78rem; flex-wrap: wrap; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 9px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--line); font-weight: 700; }
+    .pill.stage { color: var(--amber); background: #f8eedc; border-color: #ead6b2; }
+    .pill.draft { color: var(--accent); background: var(--accent-soft); border-color: #c7ddd0; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .btn { min-height: 38px; padding: 0 14px; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--ink); font-weight: 750; }
+    .btn.primary { color: white; background: var(--accent); border-color: var(--accent); }
+    .btn.warn { color: #704b12; background: #f7ecd8; border-color: #e6c993; }
+    .workspace {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 245px minmax(360px, 1fr) 300px;
+      grid-template-rows: minmax(440px, 1fr) 190px;
+      gap: 1px;
+      background: var(--line);
+    }
+    .panel { min-width: 0; min-height: 0; background: var(--panel); }
+    .panel-head { height: 46px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; border-bottom: 1px solid var(--line); font-size: .78rem; font-weight: 850; letter-spacing: .04em; text-transform: uppercase; }
+    .tree { grid-row: 1 / span 2; overflow: auto; }
+    .tree-search { padding: 10px; border-bottom: 1px solid var(--line); }
+    .tree-search input { width: 100%; height: 34px; border: 1px solid var(--line); border-radius: 9px; padding: 0 10px; background: white; }
+    .tree-group { padding: 10px 8px 2px; }
+    .tree-label { padding: 0 8px 6px; color: var(--muted); font-size: .68rem; font-weight: 850; text-transform: uppercase; letter-spacing: .08em; }
+    .node { width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: 0; border-radius: 9px; background: transparent; color: var(--ink); text-align: left; }
+    .node:hover { background: var(--panel-2); }
+    .node.active { background: var(--accent-soft); color: var(--accent); font-weight: 800; }
+    .node .icon { width: 23px; text-align: center; }
+    .node small { margin-left: auto; color: var(--muted); }
+    .canvas { position: relative; overflow: hidden; background: radial-gradient(circle at 20% 10%, rgba(34,100,72,.08), transparent 34rem), var(--panel); }
+    .canvas-toolbar { height: 46px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1px solid var(--line); background: rgba(251,252,248,.9); }
+    .segmented { display: inline-flex; padding: 3px; border-radius: 9px; background: var(--panel-2); border: 1px solid var(--line); }
+    .segmented button { border: 0; padding: 5px 9px; border-radius: 6px; background: transparent; color: var(--muted); font-size: .78rem; font-weight: 750; }
+    .segmented button.active { color: var(--ink); background: white; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .canvas-body { height: calc(100% - 46px); padding: 24px; display: grid; place-items: center; overflow: auto; }
+    .material-card { width: min(720px, 92%); border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,.9); box-shadow: var(--shadow); overflow: hidden; }
+    .material-visual { min-height: 210px; display: grid; place-items: center; position: relative; background: linear-gradient(145deg, #e8dfce, #c8b79c 48%, #9f8a70); }
+    .swatch { width: 156px; height: 156px; border-radius: 48% 52% 49% 51% / 42% 40% 60% 58%; background: linear-gradient(135deg, #e8dfce, #9b876c); box-shadow: inset 18px 16px 40px rgba(255,255,255,.34), inset -20px -18px 36px rgba(70,49,33,.18), 0 22px 50px rgba(63,45,30,.22); transform: rotate(-8deg); }
+    .material-content { padding: 22px; }
+    .material-content h2 { margin: 0; font-family: Georgia, serif; font-size: 2rem; }
+    .material-content p { margin: 8px 0 18px; color: var(--muted); }
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .metric { padding: 12px; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); }
+    .metric span { display: block; color: var(--muted); font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 800; }
+    .metric strong { display: block; margin-top: 5px; font-size: .98rem; }
+    .inspector { overflow: auto; }
+    .section { padding: 14px; border-bottom: 1px solid var(--line); }
+    .section h3 { margin: 0 0 12px; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
+    .field { display: grid; grid-template-columns: 1fr 1.1fr; align-items: center; gap: 10px; margin: 9px 0; font-size: .78rem; }
+    .field label { color: var(--muted); }
+    .field input, .field select { width: 100%; height: 32px; padding: 0 8px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--ink); }
+    .status-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-top: 1px dashed var(--line); font-size: .78rem; }
+    .status-row:first-of-type { border-top: 0; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); display: inline-block; margin-right: 6px; }
+    .dot.green { background: var(--accent); }
+    .dot.red { background: var(--danger); }
+    .dock { grid-column: 2 / span 2; overflow: hidden; }
+    .tabs { height: 44px; display: flex; align-items: end; gap: 2px; padding: 0 10px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+    .tab { height: 36px; padding: 0 12px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); font-size: .78rem; font-weight: 800; white-space: nowrap; }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .dock-content { height: calc(100% - 44px); padding: 14px; overflow: auto; }
+    .event-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .event { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: white; }
+    .event small { display: block; color: var(--muted); }
+    .event strong { display: block; margin: 5px 0; font-size: .86rem; }
+    .event p { margin: 0; color: var(--muted); font-size: .76rem; }
+    .toast { position: fixed; right: 18px; bottom: 18px; max-width: 340px; padding: 13px 15px; border-radius: 12px; background: #173b2d; color: white; box-shadow: var(--shadow); transform: translateY(120%); opacity: 0; transition: .25s ease; z-index: 10; font-size: .86rem; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    @media (max-width: 1050px) {
+      .workspace { grid-template-columns: 220px 1fr; grid-template-rows: minmax(420px, 1fr) 260px 180px; }
+      .tree { grid-row: 1 / span 3; }
+      .inspector { grid-column: 2; grid-row: 2; }
+      .dock { grid-column: 2; grid-row: 3; }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 720px) {
+      .global nav { display: none; }
+      .asset-header { align-items: flex-start; flex-direction: column; }
+      .workspace { display: block; }
+      .tree, .canvas, .inspector, .dock { min-height: 340px; border-bottom: 1px solid var(--line); }
+      .tree { min-height: 280px; }
+      .dock { min-height: 240px; }
+      .event-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="global">
+    <a class="brand" href="../../index.html"><span class="mark">C</span><span>Creators Common</span></a>
+    <nav aria-label="Global navigation">
+      <a href="../../index.html">Home</a>
+      <a class="active" href="#">Create</a>
+      <a href="#">Assets</a>
+      <a href="#">Evidence</a>
+      <a href="#">Rights</a>
+      <a href="#">Licences</a>
+      <a href="#">Governance</a>
+    </nav>
+  </header>
+
+  <section class="asset-header" aria-label="Asset controls">
+    <div class="asset-title">
+      <div class="asset-symbol">M</div>
+      <div>
+        <h1>Recycled composite shell · Demonstration asset</h1>
+        <div class="meta">
+          <span class="pill draft">Draft V0.1</span>
+          <span class="pill stage">C1 · Concept defined</span>
+          <span>CC-AD-MATERIAL-DEMO-001</span>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" data-action="save">Save draft</button>
+      <button class="btn" data-action="review">Request review</button>
+      <button class="btn warn" data-action="gate">Open release gate</button>
+      <button class="btn primary" data-action="variant">Create variant</button>
+    </div>
+  </section>
+
+  <main class="workspace">
+    <aside class="panel tree" aria-label="Asset tree">
+      <div class="panel-head"><span>Asset tree</span><span>12 nodes</span></div>
+      <div class="tree-search"><input type="search" placeholder="Find a node…" aria-label="Find an asset node"></div>
+      <div class="tree-group">
+        <div class="tree-label">Definition</div>
+        <button class="node active" data-node="material"><span class="icon">◈</span>Material specification<small>1</small></button>
+        <button class="node" data-node="component"><span class="icon">▦</span>Components<small>3</small></button>
+        <button class="node" data-node="process"><span class="icon">↳</span>Process recipe<small>1</small></button>
+        <button class="node" data-node="requirements"><span class="icon">✓</span>Requirements<small>6</small></button>
+      </div>
+      <div class="tree-group">
+        <div class="tree-label">Experiment</div>
+        <button class="node" data-node="variants"><span class="icon">◇</span>Variants<small>2</small></button>
+        <button class="node" data-node="validation"><span class="icon">⌁</span>Validation runs<small>1</small></button>
+        <button class="node" data-node="claims"><span class="icon">“</span>Creation claims<small>2</small></button>
+      </div>
+      <div class="tree-group">
+        <div class="tree-label">Governance</div>
+        <button class="node" data-node="evidence"><span class="icon">▣</span>RiverOS evidence<small>4</small></button>
+        <button class="node" data-node="contributors"><span class="icon">◎</span>Contributors<small>3</small></button>
+        <button class="node" data-node="rights"><span class="icon">§</span>Rights and licences<small>1</small></button>
+        <button class="node" data-node="gate"><span class="icon">⬡</span>Release gate<small>7</small></button>
+      </div>
+    </aside>
+
+    <section class="panel canvas" aria-label="Creation canvas">
+      <div class="canvas-toolbar">
+        <div class="segmented" aria-label="Canvas mode">
+          <button class="active">Material</button><button>Graph</button><button>Table</button><button>Compare</button>
+        </div>
+        <span class="pill">Material Lab</span>
+      </div>
+      <div class="canvas-body">
+        <article class="material-card">
+          <div class="material-visual"><div class="swatch" aria-label="Material swatch"></div></div>
+          <div class="material-content">
+            <h2 id="canvasTitle">Recycled fibre composite</h2>
+            <p id="canvasCopy">A synthetic Asset Lab fixture combining recovered textile fibre and a bio-based binder for a lightweight product shell.</p>
+            <div class="metrics">
+              <div class="metric"><span>Recycled content</span><strong>72%</strong></div>
+              <div class="metric"><span>Density target</span><strong>0.94 g/cm³</strong></div>
+              <div class="metric"><span>Recoverability</span><strong>Moderate</strong></div>
+              <div class="metric"><span>Claim state</span><strong>Proposed</strong></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <aside class="panel inspector" aria-label="Property inspector">
+      <div class="panel-head"><span>Property inspector</span><span>CC-MS</span></div>
+      <div class="section">
+        <h3>Identity</h3>
+        <div class="field"><label>Name</label><input value="Recycled fibre composite"></div>
+        <div class="field"><label>Family</label><select><option>Composite</option><option>Polymer</option><option>Textile</option></select></div>
+        <div class="field"><label>Grade</label><input value="RFC-D01"></div>
+        <div class="field"><label>Status</label><select><option>Draft</option><option>Proposed</option><option>Approved</option></select></div>
+      </div>
+      <div class="section">
+        <h3>Composition</h3>
+        <div class="field"><label>Recovered fibre</label><input value="72 percent"></div>
+        <div class="field"><label>Bio binder</label><input value="28 percent"></div>
+        <div class="field"><label>Source evidence</label><input value="2 references"></div>
+      </div>
+      <div class="section">
+        <h3>Governance state</h3>
+        <div class="status-row"><span><i class="dot green"></i>Creator identified</span><strong>Pass</strong></div>
+        <div class="status-row"><span><i class="dot green"></i>Composition complete</span><strong>Pass</strong></div>
+        <div class="status-row"><span><i class="dot"></i>Validation accepted</span><strong>Pending</strong></div>
+        <div class="status-row"><span><i class="dot red"></i>Release licence</span><strong>Missing</strong></div>
+      </div>
+    </aside>
+
+    <section class="panel dock" aria-label="Evidence dock">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="evidence">Evidence</button>
+        <button class="tab" data-tab="contributions">Contributions</button>
+        <button class="tab" data-tab="versions">Versions</button>
+        <button class="tab" data-tab="tests">Tests</button>
+        <button class="tab" data-tab="claims">Claims</button>
+        <button class="tab" data-tab="warden">Warden</button>
+        <button class="tab" data-tab="comments">Comments</button>
+      </div>
+      <div class="dock-content">
+        <div class="event-grid" id="dockGrid">
+          <article class="event"><small>RiverOS event</small><strong>Material source declaration attached</strong><p>Evidence reference recorded · synthetic fixture</p></article>
+          <article class="event"><small>Validation run</small><strong>Flexural strength screening</strong><p>Disposition: conditionally passed</p></article>
+          <article class="event"><small>Release gate</small><strong>C2 prototype gate</strong><p>5 checks passed · 2 checks pending</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" role="status" aria-live="polite"></div>
+<script>
+  const nodeContent = {
+    material: ["Recycled fibre composite", "A synthetic Asset Lab fixture combining recovered textile fibre and a bio-based binder for a lightweight product shell."],
+    component: ["Three-component shell assembly", "Outer skin, structural rib and reversible fastening component linked to controlled material specifications."],
+    process: ["Low-temperature compression recipe", "An ordered process with input batches, equipment, temperature, pressure, inspection points and waste recovery route."],
+    requirements: ["Six governed requirements", "Weight, strength, recoverability, restricted chemistry, cost boundary and disassembly requirements."],
+    variants: ["Variant comparison", "Variant A increases recovered fibre content. Variant B lowers process temperature and changes binder ratio."],
+    validation: ["Validation run CC-VR-MATERIAL-DEMO-001", "Measurements, acceptance criteria, disposition, evidence and reviewer status remain separately governed."],
+    claims: ["Creation claims", "Claims remain proposed until their supporting validation records and evidence are accepted."],
+    evidence: ["RiverOS evidence chain", "Source declarations, process photographs, test results and review decisions are registered as evidence events."],
+    contributors: ["Contribution timeline", "Material selection, process design and validation execution remain separate attributable contributions."],
+    rights: ["Rights and licences", "Attribution, ownership, permitted use and manufacturing permission are not treated as the same decision."],
+    gate: ["C2 prototype release gate", "Identity and definition checks pass. Validation and licence checks remain open and block governed release."]
+  };
+
+  document.querySelectorAll('.node').forEach(node => node.addEventListener('click', () => {
+    document.querySelectorAll('.node').forEach(n => n.classList.remove('active'));
+    node.classList.add('active');
+    const [title, copy] = nodeContent[node.dataset.node];
+    document.getElementById('canvasTitle').textContent = title;
+    document.getElementById('canvasCopy').textContent = copy;
+  }));
+
+  const dockData = {
+    evidence: ['Material source declaration attached', 'Flexural strength screening', 'C2 prototype gate'],
+    contributions: ['Originating material concept', 'Process recipe definition', 'Validation execution'],
+    versions: ['Draft V0.1 created', 'Composition corrected', 'Variant references added'],
+    tests: ['Flexural screening', 'Density check', 'Recovery route review'],
+    claims: ['72% recovered content', 'Lightweight product shell', 'Moderate recoverability'],
+    warden: ['Restricted chemistry check', 'Confidential supplier field policy', 'Release decision pending'],
+    comments: ['Clarify binder evidence', 'Add supplier specification', 'Repeat strength test']
+  };
+
+  document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const items = dockData[tab.dataset.tab];
+    document.getElementById('dockGrid').innerHTML = items.map((item, index) =>
+      `<article class="event"><small>${tab.textContent} ${index + 1}</small><strong>${item}</strong><p>Synthetic dashboard record for architecture review.</p></article>`
+    ).join('');
+  }));
+
+  const toast = document.querySelector('.toast');
+  function notify(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(window.toastTimer);
+    window.toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+  }
+  document.querySelectorAll('[data-action]').forEach(button => button.addEventListener('click', () => {
+    const messages = {
+      save: 'Draft save prepared. A governed implementation would create a new draft version and RiverOS event.',
+      review: 'Review request prepared. Contributor and reviewer identities must be resolved before submission.',
+      gate: 'Release gate opened: validation and licence checks remain blocking.',
+      variant: 'Variant branch prepared with an explicit base and change set.'
+    };
+    notify(messages[button.dataset.action]);
+  }));
+</script>
+</body>
+</html>

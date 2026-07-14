@@ -1,0 +1,90 @@
+{
+  "events": [
+    {
+      "schemaVersion": "0.1.0",
+      "eventId": "CC-REG-EV-CREATOR-SUBMITTED-001",
+      "recordVersion": "0.1.0",
+      "applicationRef": "CC-REG-CR-DEMO-001",
+      "applicationType": "creator",
+      "sequence": 1,
+      "eventType": "submitted",
+      "status": "applied",
+      "actor": {
+        "actorRef": "CC-DM-LITE-DEMO-001",
+        "role": "applicant"
+      },
+      "reasonCodes": [
+        "APPLICATION-SUBMITTED",
+        "CONSENT-RECORDED"
+      ],
+      "publicProjectionEffect": "none",
+      "riverosEvidenceEventRef": "CC-RV-EV-REG-CREATOR-SUBMIT-001",
+      "occurredAt": "2026-07-14T11:21:00Z",
+      "issuer": {
+        "issuerId": "CC-SVC-REGISTRATION",
+        "name": "Creators Common Registration Service",
+        "authorityRef": "docs/workflows/CC-CREATOR-AND-CREATION-REGISTRATION-V0.1.md"
+      }
+    },
+    {
+      "schemaVersion": "0.1.0",
+      "eventId": "CC-REG-EV-CREATOR-ACCEPTED-002",
+      "recordVersion": "0.1.0",
+      "applicationRef": "CC-REG-CR-DEMO-001",
+      "applicationType": "creator",
+      "sequence": 2,
+      "previousEventRef": "CC-REG-EV-CREATOR-SUBMITTED-001",
+      "eventType": "accepted",
+      "status": "applied",
+      "actor": {
+        "actorRef": "CC-INST-CREATORS-COMMON",
+        "role": "registration-authority"
+      },
+      "reviewRef": "CC-REG-RV-CREATOR-FINAL-001",
+      "wardenDecisionRef": "CC-WD-REG-CREATOR-001",
+      "reasonCodes": [
+        "HUMAN-REVIEW-ACCEPTED",
+        "WARDEN-DECISION-PRESENT"
+      ],
+      "publicProjectionEffect": "none",
+      "riverosEvidenceEventRef": "CC-RV-EV-REG-CREATOR-REVIEW-001",
+      "occurredAt": "2026-07-14T11:24:00Z",
+      "issuer": {
+        "issuerId": "CC-INST-CREATORS-COMMON",
+        "name": "Creators Common",
+        "authorityRef": "docs/workflows/CC-CREATOR-AND-CREATION-REGISTRATION-V0.1.md"
+      }
+    },
+    {
+      "schemaVersion": "0.1.0",
+      "eventId": "CC-REG-EV-CREATOR-PASSPORT-003",
+      "recordVersion": "0.1.0",
+      "applicationRef": "CC-REG-CR-DEMO-001",
+      "applicationType": "creator",
+      "sequence": 3,
+      "previousEventRef": "CC-REG-EV-CREATOR-ACCEPTED-002",
+      "eventType": "passport-issued",
+      "status": "applied",
+      "actor": {
+        "actorRef": "CC-INST-CREATORS-COMMON",
+        "role": "registration-authority"
+      },
+      "reviewRef": "CC-REG-RV-CREATOR-FINAL-001",
+      "outputPassportRef": "CC-CR-DEMO-MOLECULAR-001",
+      "wardenDecisionRef": "CC-WD-REG-CREATOR-001",
+      "reasonCodes": [
+        "PASSPORT-ISSUED",
+        "MEMBER-PROJECTION-ELIGIBLE"
+      ],
+      "publicProjectionEffect": "prepare-eligible",
+      "riverosEvidenceEventRef": "CC-RV-EV-REG-CREATOR-ISSUE-001",
+      "occurredAt": "2026-07-14T11:25:00Z",
+      "effectiveAt": "2026-07-14T11:25:00Z",
+      "issuer": {
+        "issuerId": "CC-INST-CREATORS-COMMON",
+        "name": "Creators Common",
+        "authorityRef": "docs/workflows/CC-CREATOR-AND-CREATION-REGISTRATION-V0.1.md"
+      }
+    }
+  ]
+}

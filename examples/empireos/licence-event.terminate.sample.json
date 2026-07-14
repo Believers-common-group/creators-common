@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0.1.0",
+  "licenceEventId": "CC-EO-LE-QPCR-TERMINATE-001",
+  "recordVersion": "0.1.0",
+  "licenceId": "CC-LR-QPCR-RESEARCH-001",
+  "sequence": 4,
+  "previousEventRef": "CC-EO-LE-QPCR-SUSPEND-001",
+  "eventType": "terminate",
+  "status": "proposed",
+  "actor": {
+    "partyId": "CC-SVC-EMPIREOS",
+    "name": "EmpireOS Licence Service",
+    "partyType": "service",
+    "authorityRef": "docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md"
+  },
+  "changes": {
+    "priorLicenceStatus": "suspended",
+    "resultingLicenceStatus": "terminated",
+    "fieldChanges": [
+      {
+        "path": "$.status",
+        "operation": "terminate",
+        "priorValue": "suspended",
+        "newValue": "terminated",
+        "reason": "Demonstrate a proposed termination event after an unresolved hypothetical breach."
+      }
+    ],
+    "conditions": [
+      "Historical attribution, provenance and retention obligations survive termination."
+    ]
+  },
+  "decisionBasisRefs": [
+    "CC-LR-QPCR-RESEARCH-001",
+    "CC-EO-LE-QPCR-SUSPEND-001"
+  ],
+  "notice": {
+    "required": true,
+    "recipients": [
+      "synthetic-licensee@example.invalid"
+    ]
+  },
+  "occurredAt": "2026-07-14T10:23:00Z",
+  "issuer": {
+    "issuerId": "CC-INST-EMPIREOS",
+    "name": "EmpireOS",
+    "authorityRef": "docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      "CC-EO-LE-QPCR-SUSPEND-001"
+    ],
+    "changeReason": "Synthetic termination event fixture"
+  },
+  "createdAt": "2026-07-14T10:23:00Z"
+}

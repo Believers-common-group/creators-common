@@ -1,0 +1,84 @@
+{
+  "reviews": [
+    {
+      "schemaVersion": "0.1.0",
+      "reviewId": "CC-REG-RV-CREATOR-FINAL-001",
+      "recordVersion": "0.1.0",
+      "applicationRef": "CC-REG-CR-DEMO-001",
+      "applicationType": "creator",
+      "reviewStage": "final",
+      "reviewer": {
+        "reviewerRef": "CC-CR-DEMO-MOLECULAR-001",
+        "role": "registration-authority",
+        "institutionRef": "CC-INST-CREATORS-COMMON"
+      },
+      "humanReviewed": true,
+      "evidenceSufficiency": "sufficient",
+      "permissionCheck": "passed",
+      "publicVisibilityCheck": "member-only",
+      "findings": [
+        "DigitalMe identity reference and explicit consent are present.",
+        "Synthetic evidence is sufficient for repository conformance only.",
+        "No public profile publication was requested."
+      ],
+      "disposition": "accepted",
+      "reasonCodes": [
+        "IDENTITY-REFERENCE-PRESENT",
+        "CONSENT-VALID",
+        "EVIDENCE-SUFFICIENT",
+        "HUMAN-REVIEW-COMPLETE"
+      ],
+      "wardenDecisionRef": "CC-WD-REG-CREATOR-001",
+      "riverosEvidenceEventRef": "CC-RV-EV-REG-CREATOR-REVIEW-001",
+      "reviewedAt": "2026-07-14T11:24:00Z",
+      "issuer": {
+        "issuerId": "CC-INST-CREATORS-COMMON",
+        "name": "Creators Common",
+        "authorityRef": "docs/workflows/CC-CREATOR-AND-CREATION-REGISTRATION-V0.1.md"
+      }
+    },
+    {
+      "schemaVersion": "0.1.0",
+      "reviewId": "CC-REG-RV-CREATION-FINAL-001",
+      "recordVersion": "0.1.0",
+      "applicationRef": "CC-REG-CP-MATERIAL-DEMO-001",
+      "applicationType": "creation",
+      "reviewStage": "final",
+      "reviewer": {
+        "reviewerRef": "CC-CR-DEMO-MOLECULAR-001",
+        "role": "registration-authority",
+        "institutionRef": "CC-INST-CREATORS-COMMON"
+      },
+      "humanReviewed": true,
+      "evidenceSufficiency": "sufficient",
+      "permissionCheck": "conditional",
+      "publicVisibilityCheck": "member-only",
+      "findings": [
+        "Creator, Asset Draft and evidence references are present.",
+        "Sponsorship is not represented as authorship.",
+        "Material performance and recycled-content claims remain restricted.",
+        "The passport may be issued at C2 for member visibility only."
+      ],
+      "requiredActions": [
+        "Retain the no-production and no-certified-performance restrictions.",
+        "Require a separate VSR publication decision before discovery listing."
+      ],
+      "disposition": "accepted",
+      "reasonCodes": [
+        "CREATOR-REFERENCE-VALID",
+        "ATTRIBUTION-BOUNDED",
+        "RIGHTS-DISCLOSED",
+        "SAFETY-RESTRICTIONS-RETAINED",
+        "HUMAN-REVIEW-COMPLETE"
+      ],
+      "wardenDecisionRef": "CC-WD-REG-CREATION-001",
+      "riverosEvidenceEventRef": "CC-RV-EV-REG-CREATION-REVIEW-001",
+      "reviewedAt": "2026-07-14T11:30:00Z",
+      "issuer": {
+        "issuerId": "CC-INST-CREATORS-COMMON",
+        "name": "Creators Common",
+        "authorityRef": "docs/workflows/CC-CREATOR-AND-CREATION-REGISTRATION-V0.1.md"
+      }
+    }
+  ]
+}

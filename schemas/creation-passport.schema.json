@@ -1,0 +1,305 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/creation-passport.schema.json",
+  "title": "Creators Common Creation Passport",
+  "description": "Controlled identity, provenance, maturity, evidence, custodianship, licensing and derivative lineage for a creation registered with Creators Common.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "creationId",
+    "passportVersion",
+    "title",
+    "classification",
+    "intendedPurpose",
+    "lifecycleStage",
+    "status",
+    "creators",
+    "publicationLevel",
+    "issuer",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "creationId": {
+      "type": "string",
+      "pattern": "^CC-CP-[A-Z0-9][A-Z0-9._-]{5,95}$"
+    },
+    "passportVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "shortName": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "classification": {
+      "type": "string",
+      "enum": ["scientific", "engineering", "digital", "design", "cultural", "organisational", "hybrid"]
+    },
+    "subclassification": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 2, "maxLength": 120}
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 5000
+    },
+    "intendedPurpose": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 5000
+    },
+    "intendedUsers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 2, "maxLength": 240}
+    },
+    "lifecycleStage": {
+      "type": "string",
+      "enum": ["C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "superseded", "suspended", "withdrawn", "preserved", "disputed"]
+    },
+    "programme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "guild": {"type": "string", "maxLength": 200},
+        "programmeId": {"type": "string", "maxLength": 200},
+        "programmeName": {"type": "string", "maxLength": 240}
+      }
+    },
+    "creators": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["creatorId", "role", "attributionStatus"],
+        "properties": {
+          "creatorId": {"type": "string", "minLength": 3, "maxLength": 200},
+          "displayName": {"type": "string", "maxLength": 240},
+          "role": {
+            "type": "string",
+            "enum": [
+              "originating-creator",
+              "co-creator",
+              "design-contributor",
+              "engineering-contributor",
+              "research-contributor",
+              "software-contributor",
+              "manufacturing-contributor",
+              "validation-authority",
+              "domain-reviewer",
+              "institutional-sponsor",
+              "funding-sponsor",
+              "custodian",
+              "commercial-operator",
+              "improvement-creator",
+              "derivative-creator"
+            ]
+          },
+          "contributionRef": {"type": "string", "maxLength": 200},
+          "attributionStatus": {"type": "string", "enum": ["accepted", "pending", "disputed", "declined", "withdrawn"]}
+        }
+      }
+    },
+    "owner": {"$ref": "#/$defs/party"},
+    "custodian": {"$ref": "#/$defs/party"},
+    "sponsorRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 3, "maxLength": 200}
+    },
+    "technicalDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["definitionVersion", "artefactRefs", "restrictedSource"],
+      "properties": {
+        "definitionVersion": {"type": "string", "minLength": 1, "maxLength": 80},
+        "description": {"type": "string", "maxLength": 10000},
+        "artefactRefs": {"$ref": "#/$defs/references"},
+        "requirementsRefs": {"$ref": "#/$defs/references"},
+        "billOfMaterialsRef": {"$ref": "#/$defs/reference"},
+        "sourceRepositoryRef": {"$ref": "#/$defs/reference"},
+        "restrictedSource": {"type": "boolean"},
+        "interoperability": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["system", "status"],
+            "properties": {
+              "system": {"type": "string", "minLength": 1, "maxLength": 240},
+              "version": {"type": "string", "maxLength": 100},
+              "status": {"type": "string", "enum": ["claimed", "tested", "validated", "unsupported", "deprecated"]},
+              "evidenceRefs": {"$ref": "#/$defs/references"}
+            }
+          }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claimId", "statement", "status"],
+        "properties": {
+          "claimId": {"type": "string", "minLength": 1, "maxLength": 120},
+          "statement": {"type": "string", "minLength": 3, "maxLength": 5000},
+          "status": {"type": "string", "enum": ["proposed", "verified", "validated", "rejected", "withdrawn", "superseded"]},
+          "evidenceRefs": {"$ref": "#/$defs/references"},
+          "limitations": {"type": "string", "maxLength": 4000}
+        }
+      }
+    },
+    "evidenceRefs": {"$ref": "#/$defs/references"},
+    "verification": {"$ref": "#/$defs/assessment"},
+    "validation": {"$ref": "#/$defs/assessment"},
+    "parentCreationRefs": {"$ref": "#/$defs/idList"},
+    "componentCreationRefs": {"$ref": "#/$defs/idList"},
+    "derivativeCreationRefs": {"$ref": "#/$defs/idList"},
+    "contributionRefs": {"$ref": "#/$defs/idList"},
+    "licenceRefs": {"$ref": "#/$defs/idList"},
+    "economicAllocationRefs": {"$ref": "#/$defs/idList"},
+    "safetyClassification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["riskLevel", "restrictedUse"],
+      "properties": {
+        "riskLevel": {"type": "string", "enum": ["low", "moderate", "high", "critical", "unassessed"]},
+        "restrictedUse": {"type": "boolean"},
+        "hazardCategories": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 2, "maxLength": 160}
+        },
+        "controlRefs": {"$ref": "#/$defs/references"},
+        "assessmentStatus": {"type": "string", "enum": ["not-started", "preliminary", "reviewed", "approved", "expired"]}
+      }
+    },
+    "regulatoryStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "intendedRegulatoryClass": {"type": "string", "maxLength": 240},
+        "jurisdictions": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 2, "maxLength": 120}
+        },
+        "status": {"type": "string", "enum": ["not-applicable", "research-use", "assessment-required", "submitted", "authorised", "restricted", "expired", "withdrawn"]},
+        "approvalRefs": {"$ref": "#/$defs/references"},
+        "disclaimer": {"type": "string", "maxLength": 3000}
+      }
+    },
+    "publicationLevel": {"$ref": "#/$defs/visibility"},
+    "restrictions": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "description"],
+        "properties": {
+          "type": {"type": "string", "enum": ["access", "use", "export", "safety", "confidentiality", "regulatory", "commercial", "other"]},
+          "description": {"type": "string", "minLength": 3, "maxLength": 3000},
+          "policyRef": {"type": "string", "maxLength": 1000}
+        }
+      }
+    },
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "visibility": {
+      "type": "string",
+      "enum": ["public", "member", "restricted", "confidential"]
+    },
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["partyId", "name", "partyType"],
+      "properties": {
+        "partyId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 300},
+        "partyType": {"type": "string", "enum": ["person", "institution", "collective", "public-body", "unknown"]},
+        "basisRef": {"type": "string", "maxLength": 1000}
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref"],
+      "properties": {
+        "ref": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "label": {"type": "string", "maxLength": 240},
+        "hash": {"type": "string", "maxLength": 256},
+        "mediaType": {"type": "string", "maxLength": 120},
+        "visibility": {"$ref": "#/$defs/visibility"}
+      }
+    },
+    "references": {
+      "type": "array",
+      "maxItems": 2000,
+      "items": {"$ref": "#/$defs/reference"}
+    },
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 5000,
+      "items": {"type": "string", "minLength": 3, "maxLength": 200}
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"type": "string", "enum": ["not-started", "in-progress", "passed", "conditionally-passed", "failed", "expired", "not-applicable"]},
+        "methodRef": {"$ref": "#/$defs/reference"},
+        "reviewerId": {"type": "string", "maxLength": 200},
+        "completedAt": {"type": "string", "format": "date-time"},
+        "evidenceRefs": {"$ref": "#/$defs/references"},
+        "limitations": {"type": "string", "maxLength": 5000}
+      }
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuerId", "name"],
+      "properties": {
+        "issuerId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 240},
+        "authorityRef": {"type": "string", "maxLength": 500}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "previousVersionRef": {"type": "string", "maxLength": 500},
+        "sourceRecordRefs": {"$ref": "#/$defs/references"},
+        "contentHash": {"type": "string", "maxLength": 256},
+        "signatureRef": {"type": "string", "maxLength": 1000},
+        "changeReason": {"type": "string", "maxLength": 3000}
+      }
+    }
+  }
+}

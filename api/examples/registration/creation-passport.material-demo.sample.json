@@ -1,0 +1,130 @@
+{
+  "schemaVersion": "0.1.0",
+  "creationId": "CC-CP-MATERIAL-DEMO-001",
+  "passportVersion": "0.1.0",
+  "title": "Recycled composite shell demonstration",
+  "shortName": "Composite shell demo",
+  "classification": "engineering",
+  "subclassification": [
+    "material system",
+    "physical product shell",
+    "circularity demonstration"
+  ],
+  "summary": "Synthetic Creation Passport issued from the controlled Creator and Creation registration workflow fixtures.",
+  "intendedPurpose": "Demonstrate controlled registration, evidence linkage, attribution, safety restrictions and passport issuance for an Asset Lab material prototype.",
+  "intendedUsers": [
+    "Creators Common reviewers",
+    "Asset Lab developers",
+    "registry conformance testers"
+  ],
+  "lifecycleStage": "C2",
+  "status": "active",
+  "creators": [
+    {
+      "creatorId": "CC-CR-DEMO-MOLECULAR-001",
+      "displayName": "Molecular Sciences Founding Working Group",
+      "role": "originating-creator",
+      "attributionStatus": "accepted"
+    }
+  ],
+  "owner": {
+    "partyId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "partyType": "institution",
+    "basisRef": "CC-REG-CP-MATERIAL-DEMO-001"
+  },
+  "custodian": {
+    "partyId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "partyType": "institution",
+    "basisRef": "docs/canon/CC-CANON-V0.2.md"
+  },
+  "technicalDefinition": {
+    "definitionVersion": "0.1.0",
+    "description": "Synthetic shell material and process configuration originating from the linked Asset Draft fixture.",
+    "artefactRefs": [
+      {
+        "ref": "examples/asset-lab/asset-draft.material.sample.json",
+        "label": "Asset Draft fixture",
+        "mediaType": "application/json",
+        "visibility": "member"
+      },
+      {
+        "ref": "examples/asset-lab/material-specification.sample.json",
+        "label": "Material Specification fixture",
+        "mediaType": "application/json",
+        "visibility": "member"
+      }
+    ],
+    "restrictedSource": false
+  },
+  "claims": [
+    {
+      "claimId": "MATERIAL-DEMO-CLAIM-001",
+      "statement": "The record set demonstrates a controlled material-creation registration workflow.",
+      "status": "verified",
+      "limitations": "Verification applies only to repository workflow structure and not to physical material performance or certified recycled content."
+    }
+  ],
+  "evidenceRefs": [
+    {
+      "ref": "CC-RV-EV-REG-CREATION-REVIEW-001",
+      "label": "Registration review evidence",
+      "visibility": "restricted"
+    },
+    {
+      "ref": "CC-VR-FLEXURAL-DEMO-001",
+      "label": "Synthetic validation-run reference",
+      "visibility": "member"
+    }
+  ],
+  "safetyClassification": {
+    "riskLevel": "moderate",
+    "restrictedUse": true,
+    "hazardCategories": [
+      "material processing",
+      "prototype handling"
+    ],
+    "assessmentStatus": "preliminary"
+  },
+  "regulatoryStatus": {
+    "jurisdictions": [
+      "India"
+    ],
+    "status": "assessment-required",
+    "disclaimer": "Prototype and conformance fixture only; not approved for production or regulated use."
+  },
+  "publicationLevel": "member",
+  "restrictions": [
+    {
+      "type": "commercial",
+      "description": "No production or commercial reliance is permitted."
+    },
+    {
+      "type": "safety",
+      "description": "No structural or safety-critical claim is authorised."
+    }
+  ],
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/workflows/CC-CREATOR-AND-CREATION-REGISTRATION-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      {
+        "ref": "CC-REG-CP-MATERIAL-DEMO-001",
+        "label": "Accepted Creation Registration Application",
+        "visibility": "restricted"
+      },
+      {
+        "ref": "CC-REG-RV-CREATION-FINAL-001",
+        "label": "Final Registration Review",
+        "visibility": "restricted"
+      }
+    ],
+    "changeReason": "Initial synthetic passport issuance from registration workflow"
+  },
+  "createdAt": "2026-07-14T11:31:00Z",
+  "updatedAt": "2026-07-14T11:31:00Z"
+}

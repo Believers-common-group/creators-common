@@ -84,7 +84,7 @@ The repository validator at [`tools/validate_registry.py`](tools/validate_regist
 4. rejects duplicate governed record identifiers; and
 5. verifies local cross-references between the linked Creator, Creation, Contribution and Licence records.
 
-The root workflow at [`.github/workflows/validate-registry.yml`](.github/workflows/validate-registry.yml) executes these checks for relevant pull requests and branch updates.
+The root workflow at [`.github/workflows/validate-registry.yml`](.github/workflows/validate-registry.yml) is configured to execute these checks for relevant pull requests and branch updates. A successful workflow run is required before this baseline should be marked ready for merge.
 
 ## Creation maturity lifecycle
 

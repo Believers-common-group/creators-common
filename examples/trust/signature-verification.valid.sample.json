@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0.1.0",
+  "verificationId": "CC-SV-QPCR-CREATION-VALID-001",
+  "recordVersion": "0.1.0",
+  "vectorType": "positive",
+  "envelopeRef": "CC-EN-QPCR-CREATION-ED25519-001",
+  "signatureId": "SIG-QPCR-CREATION-ED25519-001",
+  "keyRef": "CC-TK-CREATORS-COMMON-ED25519-002",
+  "authorityRef": "CC-SA-CREATORS-COMMON-ENVELOPE-001",
+  "algorithm": "Ed25519",
+  "messageProfile": "CC-SIG-0.1",
+  "signedMessage": "CC-SIG-0.1\nenvelopeId=CC-EN-QPCR-CREATION-ED25519-001\nenvelopeVersion=0.1.0\nrecordType=creation\nrecordId=CC-CP-QPCR-CREATOR-PROGRAMME-001\nrecordVersion=0.1.0\ncanonicalization=CC-CJSON-0.1\ndigestAlgorithm=sha-256\ndigestValue=fd09c2f02fd10d7bdfa3a200aab390794f495783ce74a2d8a8a8f66813cd66bd",
+  "signatureValue": "J7_0_y9FE9Kp2WO6mYDU5_qXmNVJutYkGMjlythKHY4KdWwNogyqwISKZUKJIb-paxEuujqW3Dh1PgJ8BqTbDA",
+  "verificationContext": {
+    "recordType": "creation",
+    "action": "issue",
+    "scope": "payload-digest",
+    "purpose": "registry-issuance",
+    "environment": "creators-common-registry",
+    "verifiedAt": "2026-07-14T10:26:00Z"
+  },
+  "expected": {
+    "cryptographicResult": "valid",
+    "trustResult": "trusted",
+    "overall": "verified"
+  },
+  "observed": {
+    "cryptographicResult": "valid",
+    "trustResult": "trusted",
+    "overall": "verified",
+    "reasonCodes": [
+      "SIGNATURE-VALID",
+      "KEY-ACTIVE",
+      "SIGNER-AUTHORIZED"
+    ]
+  },
+  "verifier": {
+    "serviceId": "CC-SVC-SIGNATURE-VERIFIER",
+    "implementationVersion": "0.1.0"
+  },
+  "issuer": {
+    "issuerId": "CC-INST-WARDEN",
+    "name": "Warden",
+    "authorityRef": "docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      "CC-EN-QPCR-CREATION-ED25519-001",
+      "CC-TK-CREATORS-COMMON-ED25519-002",
+      "CC-SA-CREATORS-COMMON-ENVELOPE-001"
+    ],
+    "changeReason": "Positive Ed25519 verification vector"
+  },
+  "createdAt": "2026-07-14T10:26:00Z"
+}

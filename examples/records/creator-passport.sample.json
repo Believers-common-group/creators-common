@@ -58,8 +58,7 @@
         "mediaType": "text/markdown",
         "visibility": "public"
       }
-    ],
-    "changeReason": "Initial conformance fixture"
+    ]
   },
   "createdAt": "2026-07-14T07:00:00Z",
   "updatedAt": "2026-07-14T07:00:00Z"

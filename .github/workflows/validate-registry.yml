@@ -52,3 +52,4 @@ jobs:
           python3 tools/validate_registry.py
           python3 tools/validate_advanced_trust.py
           python3 tools/validate_synnergyze_asset_api.py
+          python3 tools/validate_registration_workflows.py

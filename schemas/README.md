@@ -2,10 +2,11 @@
 
 **Core schema release:** CC-SCHEMAS-V0.2  
 **Asset Lab schema release:** CC-ASSET-LAB-SCHEMAS-V0.1  
+**Governance schema release:** CC-GOVERNANCE-SCHEMAS-V0.1  
 **Status:** Draft controlled contracts for implementation and review  
 **JSON Schema dialect:** Draft 2020-12
 
-This directory converts the Creators Common Canon and Asset Lab product baseline into machine-readable registry, integrity, evidence and authoring contracts.
+This directory converts the Creators Common Canon, Asset Lab product baseline and governance integrations into machine-readable registry, integrity, evidence, authoring, policy-decision and licence-lifecycle contracts.
 
 ## Core registry, integrity and evidence schemas
 
@@ -32,6 +33,14 @@ This directory converts the Creators Common Canon and Asset Lab product baseline
 | [`creation-claim.schema.json`](creation-claim.schema.json) | Creation Claim | Bounded claim linked to evidence, validation, limitations and excluded uses |
 | [`release-gate.schema.json`](release-gate.schema.json) | Release Gate | Lifecycle-stage check set and controlled release decision |
 
+## Warden and EmpireOS governance schemas
+
+| Schema | Registry object | Purpose |
+|---|---|---|
+| [`warden-access-policy.schema.json`](warden-access-policy.schema.json) | Warden Access Policy | Field-level subject, resource, action, purpose, device-trust, obligation and conflict rules |
+| [`warden-policy-decision.schema.json`](warden-policy-decision.schema.json) | Warden Policy Decision | One deterministic permit, deny or conditional decision for a governed request |
+| [`empireos-licence-event.schema.json`](empireos-licence-event.schema.json) | EmpireOS Licence Lifecycle Event | Append-only issuance, amendment, renewal, suspension, expiry, termination, revocation and supersession events |
+
 ## Identifier families
 
 - Creator Passport: `CC-CR-...`
@@ -49,6 +58,9 @@ This directory converts the Creators Common Canon and Asset Lab product baseline
 - Validation Run: `CC-VR-...`
 - Creation Claim: `CC-CL-...`
 - Release Gate: `CC-RG-...`
+- Warden Access Policy: `CC-WA-...`
+- Warden Policy Decision: `CC-WD-...`
+- EmpireOS Licence Lifecycle Event: `CC-EO-LE-...`
 
 Identifiers are permanent. A correction or substantive update creates a new controlled version; it does not silently overwrite historical evidence.
 
@@ -74,22 +86,25 @@ See [`CC-SIGNED-ENVELOPES-V0.1`](../docs/architecture/CC-SIGNED-ENVELOPES-V0.1.m
 4. `additionalProperties` is disabled at each governed record boundary.
 5. Records carry issuer, provenance and timestamps so registry actions can be audited.
 6. Cross-record relationships use permanent identifiers and resolvable references.
-7. Lifecycle stage, validation, claim status, release decision and licensing remain separate concepts.
+7. Lifecycle stage, validation, claim status, release decision, access decision and licensing remain separate concepts.
 8. Decimal measurements in digest-bound fixtures use normalized strings under `CC-CJSON-0.1`.
 9. A digest detects change but does not prove truth or lawful authority.
-10. A signature assertion is not trusted until verified against an approved key and Warden policy.
-11. A licence or release gate does not substitute for legally required approval, certification, accreditation or authorisation.
+10. A Warden permit is context-specific and does not create broader rights.
+11. A proposed EmpireOS event does not change a Licence Record until separately authorised and made effective.
+12. A licence, policy decision or release gate does not substitute for legally required approval, certification, accreditation or authorisation.
 
 ## Automated validation
 
 `tools/validate_registry.py` checks:
 
-- all fifteen schemas against JSON Schema Draft 2020-12;
+- all eighteen schemas against JSON Schema Draft 2020-12;
 - unique schema `$id` values;
 - all JSON fixtures under `examples/`;
 - duplicate governed identifiers;
 - local record cross-references;
 - Asset Lab draft, component, material, process, variant, validation, claim and release links;
+- Warden policy references, matched rule identifiers and governed resource links;
+- EmpireOS licence-event continuity, sequence order and same-licence chaining;
 - envelope subject-to-payload consistency;
 - CC-CJSON-0.1 SHA-256 digests;
 - local evidence artefact digests;
@@ -105,13 +120,14 @@ See [`CC-SIGNED-ENVELOPES-V0.1`](../docs/architecture/CC-SIGNED-ENVELOPES-V0.1.m
 3. Signed record envelope and deterministic digest profile.
 4. RiverOS evidence-event and retention-policy contracts.
 5. Asset Lab governed authoring schemas and linked material fixture.
+6. Warden field-level access policy and policy-decision contracts.
+7. EmpireOS append-only licence lifecycle events.
 
 ### Next
 
-6. Add trusted key, signer authority and production signature verification contracts.
-7. Define Warden policy decisions and restricted-field access.
-8. Define EmpireOS licence issuance and lifecycle events.
+8. Add trusted key, signer authority and production signature verification contracts.
 9. Add positive and negative conformance vectors.
-10. Add Synnergyze Asset Draft APIs and Virtual Silk Road discovery projections.
+10. Add Synnergyze Asset Draft APIs and collaborative persistence.
+11. Add Virtual Silk Road discovery projections.
 
 These schemas are an architecture baseline and are not legal advice, intellectual-property registration, scientific validation, safety approval or regulated-product authorisation.

@@ -3,6 +3,8 @@ name: Validate Creators Common Registry
 on:
   pull_request:
     paths:
+      - "README.md"
+      - "docs/**"
       - "schemas/**"
       - "examples/**"
       - "api/**"
@@ -16,6 +18,8 @@ on:
       - "feat/**"
       - "fix/**"
     paths:
+      - "README.md"
+      - "docs/**"
       - "schemas/**"
       - "examples/**"
       - "api/**"

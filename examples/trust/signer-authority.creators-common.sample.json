@@ -48,10 +48,7 @@
   "validFrom": "2026-01-01T00:00:00Z",
   "review": {
     "reviewFrequencyDays": 90,
-    "nextReviewAt": "2026-10-12T10:24:00Z",
-    "reviewerRefs": [
-      "CC-INST-WARDEN"
-    ]
+    "nextReviewAt": "2026-10-12T10:24:00Z"
   },
   "issuer": {
     "issuerId": "CC-INST-WARDEN",

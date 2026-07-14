@@ -1,0 +1,133 @@
+{
+  "schemaVersion": "0.1.0",
+  "creationId": "CC-CP-QPCR-CREATOR-PROGRAMME-001",
+  "passportVersion": "0.1.0",
+  "title": "qPCR Creator Programme",
+  "shortName": "CC qPCR Programme",
+  "classification": "hybrid",
+  "subclassification": [
+    "scientific programme",
+    "assay provenance",
+    "laboratory governance"
+  ],
+  "summary": "A synthetic record demonstrating how Creators Common can register a research-use qPCR creation programme and its evidence, attribution, licensing and maturity controls.",
+  "intendedPurpose": "Provide a governed research-use framework for registering qPCR assays, protocols, reagents, instruments, software, validation evidence and creator contributions.",
+  "intendedUsers": [
+    "research laboratories",
+    "assay creators",
+    "validation reviewers",
+    "laboratory systems engineers"
+  ],
+  "lifecycleStage": "C1",
+  "status": "draft",
+  "programme": {
+    "guild": "Molecular Sciences Guild",
+    "programmeId": "CC-PROG-QPCR-001",
+    "programmeName": "qPCR Creator Programme"
+  },
+  "creators": [
+    {
+      "creatorId": "CC-CR-DEMO-MOLECULAR-001",
+      "displayName": "Molecular Sciences Founding Working Group",
+      "role": "originating-creator",
+      "contributionRef": "CC-CO-QPCR-ARCHITECTURE-001",
+      "attributionStatus": "accepted"
+    }
+  ],
+  "custodian": {
+    "partyId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "partyType": "institution",
+    "basisRef": "docs/canon/CC-CANON-V0.2.md"
+  },
+  "technicalDefinition": {
+    "definitionVersion": "0.1.0",
+    "description": "The programme defines creator identity, creation passports, contribution records, research-use licensing and evidence-linked qPCR programme governance.",
+    "artefactRefs": [
+      {
+        "ref": "docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md",
+        "label": "qPCR Creator Programme V0.1",
+        "mediaType": "text/markdown",
+        "visibility": "public"
+      }
+    ],
+    "sourceRepositoryRef": {
+      "ref": "https://github.com/Believers-common-group/creators-common",
+      "label": "Creators Common canonical repository",
+      "mediaType": "text/html",
+      "visibility": "public"
+    },
+    "restrictedSource": false,
+    "interoperability": [
+      {
+        "system": "Creators Common registry schemas",
+        "version": "0.1.0",
+        "status": "tested",
+        "evidenceRefs": [
+          {
+            "ref": "tools/validate_registry.py",
+            "label": "Registry conformance validator",
+            "mediaType": "text/x-python",
+            "visibility": "public"
+          }
+        ]
+      }
+    ]
+  },
+  "claims": [
+    {
+      "claimId": "CLAIM-001",
+      "statement": "The programme provides a controlled architecture for research-use qPCR creation records.",
+      "status": "proposed",
+      "limitations": "This architecture does not establish scientific validation, laboratory accreditation, diagnostic approval or regulatory authorisation."
+    }
+  ],
+  "contributionRefs": [
+    "CC-CO-QPCR-ARCHITECTURE-001"
+  ],
+  "licenceRefs": [
+    "CC-LR-QPCR-RESEARCH-001"
+  ],
+  "safetyClassification": {
+    "riskLevel": "moderate",
+    "restrictedUse": false,
+    "hazardCategories": [
+      "molecular laboratory operations",
+      "biological data governance"
+    ],
+    "assessmentStatus": "preliminary"
+  },
+  "regulatoryStatus": {
+    "jurisdictions": [
+      "India"
+    ],
+    "status": "research-use",
+    "disclaimer": "Synthetic programme fixture for research-use architecture only. Not for diagnostic procedures."
+  },
+  "publicationLevel": "public",
+  "restrictions": [
+    {
+      "type": "regulatory",
+      "description": "No diagnostic, clinical or regulated claim may be made without a separately authorised pathway.",
+      "policyRef": "docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md"
+    }
+  ],
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/canon/CC-CANON-V0.2.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      {
+        "ref": "docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md",
+        "label": "Programme source document",
+        "mediaType": "text/markdown",
+        "visibility": "public"
+      }
+    ],
+    "changeReason": "Initial synthetic Creation Passport fixture"
+  },
+  "createdAt": "2026-07-14T07:00:00Z",
+  "updatedAt": "2026-07-14T07:00:00Z"
+}

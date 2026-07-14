@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "0.1.0",
+  "assetComponentId": "CC-AC-SHELL-DEMO-001",
+  "recordVersion": "0.1.0",
+  "assetDraftId": "CC-AD-MATERIAL-DEMO-001",
+  "name": "Composite outer shell",
+  "componentType": "part",
+  "description": "Synthetic moulded shell component for Asset Lab conformance testing.",
+  "quantity": {
+    "value": "1",
+    "unit": "piece",
+    "tolerance": "prototype only"
+  },
+  "materialSpecificationRefs": ["CC-MS-RECYCLED-COMPOSITE-001"],
+  "processRecipeRefs": ["CC-PR-COMPRESSION-DEMO-001"],
+  "status": "draft",
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/product/CC-ASSET-LAB-PRD-V0.1.md"
+  },
+  "createdAt": "2026-07-14T09:30:00Z",
+  "updatedAt": "2026-07-14T09:30:00Z"
+}

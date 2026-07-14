@@ -50,7 +50,7 @@
     {
       "type": "riveros-evidence",
       "status": "required",
-      "destinationRef": "CC-RV-RP-GOVERNED-RECORD-001",
+      "destinationRef": "CC-RV-RP-RESEARCH-EVIDENCE-001",
       "details": "Preserve the access decision evidence."
     },
     {

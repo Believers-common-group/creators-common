@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/riveros-retention-policy.schema.json",
+  "title": "RiverOS Evidence Retention Policy",
+  "description": "A governed policy defining evidence categories, retention triggers, review intervals, holds and end-of-retention disposition.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "policyId", "policyVersion", "title", "status", "scope", "categories", "defaultDisposition", "issuer", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "policyId": {"type": "string", "pattern": "^CC-RV-RP-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "policyVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "title": {"type": "string", "minLength": 3, "maxLength": 300},
+    "status": {"type": "string", "enum": ["draft", "active", "suspended", "superseded", "withdrawn"]},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["programmes", "jurisdictions"],
+      "properties": {
+        "programmes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 2, "maxLength": 200}},
+        "jurisdictions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 2, "maxLength": 120}},
+        "recordTypes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 2, "maxLength": 120}},
+        "exclusions": {"type": "array", "items": {"type": "string", "minLength": 2, "maxLength": 500}}
+      }
+    },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["categoryId", "name", "trigger", "retentionPeriod", "disposition", "legalHoldAllowed", "deletionEvidenceRequired"],
+        "properties": {
+          "categoryId": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{2,79}$"},
+          "name": {"type": "string", "minLength": 3, "maxLength": 240},
+          "appliesTo": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 2, "maxLength": 160}},
+          "trigger": {"type": "string", "enum": ["record-creation", "record-supersession", "licence-expiry", "programme-closure", "contract-termination", "last-use", "manual-review", "legal-event"]},
+          "retentionPeriod": {"type": "string", "pattern": "^P(?=\\d|T\\d)(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?(?:T(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?)?$"},
+          "reviewInterval": {"type": "string", "pattern": "^P(?=\\d|T\\d)(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?(?:T(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?)?$"},
+          "disposition": {"type": "string", "enum": ["preserve", "archive", "review", "delete", "anonymize", "transfer"]},
+          "legalHoldAllowed": {"type": "boolean"},
+          "deletionEvidenceRequired": {"type": "boolean"},
+          "conditions": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 1000}}
+        }
+      }
+    },
+    "defaultDisposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "reviewRequired"],
+      "properties": {
+        "action": {"type": "string", "enum": ["preserve", "archive", "review", "delete", "anonymize", "transfer"]},
+        "reviewRequired": {"type": "boolean"},
+        "approvalRole": {"type": "string", "maxLength": 160},
+        "evidenceEventRequired": {"type": "boolean"}
+      }
+    },
+    "legalHold": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "supported": {"type": "boolean"},
+        "releaseAuthority": {"type": "string", "maxLength": 240},
+        "eventTypeOnApply": {"type": "string", "maxLength": 120},
+        "eventTypeOnRelease": {"type": "string", "maxLength": 120}
+      }
+    },
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuerId", "name"],
+      "properties": {
+        "issuerId": {"type": "string", "minLength": 3, "maxLength": 200},
+        "name": {"type": "string", "minLength": 1, "maxLength": 240},
+        "authorityRef": {"type": "string", "maxLength": 500}
+      }
+    }
+  }
+}

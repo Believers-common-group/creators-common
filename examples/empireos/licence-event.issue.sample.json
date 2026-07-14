@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "0.1.0",
+  "licenceEventId": "CC-EO-LE-QPCR-ISSUE-001",
+  "recordVersion": "0.1.0",
+  "licenceId": "CC-LR-QPCR-RESEARCH-001",
+  "sequence": 1,
+  "eventType": "issue",
+  "status": "proposed",
+  "actor": {
+    "partyId": "CC-SVC-EMPIREOS",
+    "name": "EmpireOS Licence Service",
+    "partyType": "service",
+    "authorityRef": "docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md"
+  },
+  "requestedByRefs": [
+    "CC-INST-CREATORS-COMMON"
+  ],
+  "changes": {
+    "resultingLicenceStatus": "active",
+    "fieldChanges": [
+      {
+        "path": "$.status",
+        "operation": "activate",
+        "priorValue": "draft",
+        "newValue": "active",
+        "reason": "Demonstrate a proposed research-use licence issuance event."
+      }
+    ],
+    "conditions": [
+      "Synthetic fixture only; no licence is executed or effective."
+    ]
+  },
+  "decisionBasisRefs": [
+    "CC-LR-QPCR-RESEARCH-001"
+  ],
+  "occurredAt": "2026-07-14T10:20:00Z",
+  "issuer": {
+    "issuerId": "CC-INST-EMPIREOS",
+    "name": "EmpireOS",
+    "authorityRef": "docs/integrations/empireos/CC-EMPIREOS-LICENCE-LIFECYCLE-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      "CC-LR-QPCR-RESEARCH-001"
+    ],
+    "changeReason": "Initial synthetic issuance event fixture"
+  },
+  "createdAt": "2026-07-14T10:20:00Z"
+}

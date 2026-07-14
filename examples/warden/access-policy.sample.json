@@ -116,10 +116,7 @@
   ],
   "review": {
     "reviewFrequencyDays": 90,
-    "nextReviewAt": "2026-10-12T10:00:00Z",
-    "reviewerRefs": [
-      "CC-INST-CREATORS-COMMON"
-    ]
+    "nextReviewAt": "2026-10-12T10:00:00Z"
   },
   "issuer": {
     "issuerId": "CC-INST-WARDEN",

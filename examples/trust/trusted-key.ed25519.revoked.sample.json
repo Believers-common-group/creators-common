@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "0.1.0",
+  "keyId": "CC-TK-CREATORS-COMMON-ED25519-001",
+  "keyVersion": "0.1.0",
+  "algorithm": "Ed25519",
+  "publicKey": {
+    "format": "raw",
+    "encoding": "base64url",
+    "value": "0ILI19yRcF0NFTqcqFKomgDjab7iCMiaZQkpLmuRt1Q"
+  },
+  "fingerprint": {
+    "algorithm": "sha-256",
+    "value": "31be641a0418fea7829b29e76b9f23702dcb6ce6aa50db084dc446058c5cb622"
+  },
+  "owner": {
+    "partyId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "partyType": "institution"
+  },
+  "status": "revoked",
+  "purposes": [
+    "record-envelope-signing",
+    "test-vector"
+  ],
+  "validFrom": "2026-01-01T00:00:00Z",
+  "validUntil": "2026-07-14T08:00:00Z",
+  "activatedAt": "2026-01-01T00:00:00Z",
+  "revokedAt": "2026-07-14T09:00:00Z",
+  "statusReason": "Synthetic rotation and revocation fixture. No production private key is represented.",
+  "successorKeyRef": "CC-TK-CREATORS-COMMON-ED25519-002",
+  "custody": {
+    "mode": "software",
+    "privateKeyExportable": false,
+    "providerRef": "synthetic-test-fixture",
+    "notes": "Public key only. The repository does not contain or claim custody of a production private key."
+  },
+  "lifecycleEventRefs": [
+    "CC-KE-CREATORS-COMMON-REGISTER-001",
+    "CC-KE-CREATORS-COMMON-ROTATE-002",
+    "CC-KE-CREATORS-COMMON-REVOKE-003"
+  ],
+  "issuer": {
+    "issuerId": "CC-INST-WARDEN",
+    "name": "Warden",
+    "authorityRef": "docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      "docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md"
+    ],
+    "changeReason": "Synthetic predecessor key for rotation and revocation conformance"
+  },
+  "createdAt": "2026-07-14T10:24:00Z",
+  "updatedAt": "2026-07-14T10:24:00Z"
+}

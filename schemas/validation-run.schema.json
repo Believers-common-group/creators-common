@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/validation-run.schema.json",
+  "title": "Creators Common Validation Run",
+  "description": "Execution record for testing a material, component, process, variant, assay, software module or complete asset against defined criteria.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "validationRunId", "recordVersion", "assetDraftId", "methodRef", "executedBy", "startedAt", "measurements", "disposition", "evidenceRefs", "issuer", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "validationRunId": {"type": "string", "pattern": "^CC-VR-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "assetDraftId": {"type": "string", "minLength": 3, "maxLength": 200},
+    "assetVariantRef": {"type": "string", "maxLength": 200},
+    "subjectRefs": {"$ref": "#/$defs/idList"},
+    "methodRef": {"$ref": "#/$defs/reference"},
+    "executedBy": {"type": "object", "additionalProperties": false, "required": ["partyId", "name", "partyType"], "properties": {"partyId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "partyType": {"type": "string", "enum": ["person", "institution", "collective", "system"]}, "operatorIds": {"$ref": "#/$defs/idList"}}},
+    "startedAt": {"type": "string", "format": "date-time"},
+    "completedAt": {"type": "string", "format": "date-time"},
+    "environment": {"type": "array", "maxItems": 200, "items": {"type": "object", "additionalProperties": false, "required": ["name", "value"], "properties": {"name": {"type": "string", "minLength": 1, "maxLength": 160}, "value": {"type": "string", "minLength": 1, "maxLength": 160}, "unit": {"type": "string", "maxLength": 80}}}},
+    "inputBatchRefs": {"$ref": "#/$defs/idList"},
+    "measurements": {"type": "array", "minItems": 1, "maxItems": 5000, "items": {"type": "object", "additionalProperties": false, "required": ["metric", "value", "status"], "properties": {"metric": {"type": "string", "minLength": 1, "maxLength": 240}, "value": {"type": "string", "minLength": 1, "maxLength": 160}, "unit": {"type": "string", "maxLength": 80}, "status": {"type": "string", "enum": ["observed", "calculated", "verified", "invalid", "excluded"]}, "evidenceRefs": {"$ref": "#/$defs/references"}}}},
+    "acceptanceCriteria": {"type": "array", "maxItems": 1000, "items": {"type": "object", "additionalProperties": false, "required": ["criterionId", "statement", "result"], "properties": {"criterionId": {"type": "string", "minLength": 1, "maxLength": 120}, "statement": {"type": "string", "minLength": 3, "maxLength": 3000}, "result": {"type": "string", "enum": ["pass", "conditional-pass", "fail", "not-evaluated", "invalid"]}, "finding": {"type": "string", "maxLength": 3000}}}},
+    "disposition": {"type": "string", "enum": ["passed", "conditionally-passed", "failed", "invalid", "inconclusive", "cancelled"]},
+    "evidenceRefs": {"$ref": "#/$defs/references"},
+    "reviewerRef": {"type": "string", "maxLength": 200},
+    "reviewStatus": {"type": "string", "enum": ["not-started", "in-review", "accepted", "rejected", "disputed"]},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "idList": {"type": "array", "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 3, "maxLength": 200}},
+    "reference": {"type": "object", "additionalProperties": false, "required": ["ref"], "properties": {"ref": {"type": "string", "minLength": 1, "maxLength": 1000}, "label": {"type": "string", "maxLength": 240}, "hash": {"type": "string", "maxLength": 256}, "mediaType": {"type": "string", "maxLength": 120}, "visibility": {"type": "string", "enum": ["public", "member", "restricted", "confidential"]}}},
+    "references": {"type": "array", "maxItems": 5000, "items": {"$ref": "#/$defs/reference"}},
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 500}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"$ref": "#/$defs/references"}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

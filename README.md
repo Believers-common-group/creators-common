@@ -1,8 +1,9 @@
 # Creators Common
 
 **Canonical release:** CC-CANON-V0.2  
-**Schema release:** CC-SCHEMAS-V0.2  
-**Fixture release:** CC-FIXTURES-V0.2  
+**Core schema release:** CC-SCHEMAS-V0.2  
+**Asset Lab release:** CC-ASSET-LAB-V0.1  
+**Fixture release:** CC-FIXTURES-V0.3  
 **Integrity architecture:** CC-SIGNED-ENVELOPES-V0.1  
 **Evidence architecture:** CC-RIVEROS-EVIDENCE-CONTRACTS-V0.1  
 **Repository status:** Controlled baseline for review  
@@ -32,63 +33,93 @@ Creators Common does **not** replace patent offices, copyright systems, universi
 | **Believers Common** | Constitutional governance, ethics, custodianship, dispute resolution and public-interest safeguards |
 | **Creators Common** | Creator identity, contribution records, creation registration, provenance, attribution, licensing instructions and economic participation |
 | **DigitalMe** | Portable identity for creators, reviewers, operators and institutions |
-| **Synnergyze** | Registry infrastructure, workflow orchestration, integrations, usage metering and royalty accounting |
+| **Synnergyze** | Registry infrastructure, Asset Lab services, workflow orchestration, integrations, usage metering and royalty accounting |
 | **RiverOS** | Evidence events, timestamps, artefact digests, event chains, retention and disposition records |
 | **Warden** | Permission enforcement, safety gates, signer authority, restricted-use controls, suspension and exception handling |
 | **EmpireOS** | Issuance and lifecycle control of governed licences and affiliations |
 | **Virtual Silk Road** | Discovery, collaboration, controlled distribution, manufacturing access and commercial exchange |
 
-## Core registry objects
+## Governed registry objects
 
-### Creator Passport
+### Core records
 
-A portable identity record for a person or institution, including verified capabilities, affiliations, registered contributions, reviewer roles, licences, training and a portfolio of evidence-backed work.
+- **Creator Passport** — identity, capabilities, affiliations, contributions, reviewer roles and portfolio.
+- **Creation Passport** — controlled identity, purpose, creators, ownership, evidence, maturity, restrictions, economics and lineage.
+- **Contribution Record** — precise contributor action, evidence, review, attribution and agreed rights.
+- **Licence Record** — permitted users, territory, duration, field of use, obligations, royalties, derivative rights and suspension conditions.
+- **Signed Record Envelope** — deterministic bytes, SHA-256 digest and signature assertions for a governed record version.
+- **RiverOS Evidence Event** — actors, governed subjects, evidence artefacts, policy decisions, timestamps and chain references.
+- **RiverOS Retention Policy** — retention triggers, review periods, legal holds and end-of-retention disposition.
 
-### Creation Passport
+### Asset Lab authoring records
 
-The controlled identity of a product, method, system, design, protocol, dataset, work or organisational model. It records creators, ownership, purpose, technical definition, evidence, maturity, version, licences, restrictions, economic allocations and derivative lineage.
+- **Asset Draft (`CC-AD`)** — editable creation workspace before controlled release.
+- **Asset Component (`CC-AC`)** — part, assembly, panel, layer, ingredient group or logical module.
+- **Material Specification (`CC-MS`)** — composition, properties, circularity, hazards, standards and sourcing.
+- **Process Recipe (`CC-PR`)** — ordered production, laboratory, assembly or computational process.
+- **Asset Variant (`CC-AV`)** — controlled experimental or design alternative.
+- **Validation Run (`CC-VR`)** — method, execution, measurements, acceptance criteria and disposition.
+- **Creation Claim (`CC-CL`)** — bounded claim linked to evidence, validation, limitations and excluded uses.
+- **Release Gate (`CC-RG`)** — controlled decision for lifecycle advancement.
 
-### Contribution Record
+## Creators Common Asset Lab
 
-A precise record of what each contributor did, when the work occurred, what evidence supports the contribution, and what attribution or economic rights were agreed.
+Asset Lab is the governed authoring interface for creating assets. It takes interaction inspiration from material-exploration and composition workbenches, including the referenced OpenAI Material Lab study, but is not represented as an OpenAI product integration, endorsement or copied interface.
 
-### Licence Record
+Its distinguishing function is the Creators Common governance chain:
 
-A machine-readable and human-readable statement of permitted users, territory, duration, field of use, volume limits, evidence obligations, royalties, derivative rights, suspension conditions and prohibited uses.
+```text
+Creator identity
+  -> Asset Draft
+  -> Components, materials and processes
+  -> Variants
+  -> Validation Runs
+  -> Creation Claims
+  -> RiverOS evidence
+  -> Contribution attribution
+  -> Warden and rights checks
+  -> Release Gate
+  -> Creation Passport
+  -> EmpireOS licence
+  -> Virtual Silk Road projection
+```
 
-### Signed Record Envelope
+### V0.1 creation modes
 
-A controlled envelope binding a governed record version to deterministic canonical bytes, a SHA-256 digest and one or more signature assertions.
+1. Material specification and process development;
+2. Physical product and assembly development;
+3. Research-use qPCR assay and molecular workflow development.
 
-### RiverOS Evidence Event
+### Dashboard prototype
 
-A timestamped record connecting an actor, governed subjects, evidence artefacts, policy decisions, retention duties and event-chain references.
+- [Open the Asset Lab prototype](app/asset-lab/index.html)
+- [Read the Asset Lab PRD](docs/product/CC-ASSET-LAB-PRD-V0.1.md)
+- [Read the Asset Lab UI contract](docs/architecture/CC-ASSET-LAB-UI-CONTRACT-V0.1.md)
 
-### RiverOS Retention Policy
-
-A governed policy defining evidence categories, retention triggers, review periods, legal holds and end-of-retention disposition.
+The prototype demonstrates the five-region workspace: Asset Header, Asset Tree, Creation Canvas, Property Inspector and Evidence Dock. It does not store production data or issue real approvals.
 
 ## Machine-readable contracts
 
-The JSON Schema Draft 2020-12 contracts under [`schemas/`](schemas/) now cover seven record families:
+The JSON Schema Draft 2020-12 contracts under [`schemas/`](schemas/) cover fifteen record families:
 
-- [Creator Passport](schemas/creator-passport.schema.json)
-- [Creation Passport](schemas/creation-passport.schema.json)
-- [Contribution Record](schemas/contribution-record.schema.json)
-- [Licence Record](schemas/licence-record.schema.json)
-- [Signed Record Envelope](schemas/record-envelope.schema.json)
-- [RiverOS Evidence Event](schemas/riveros-evidence-event.schema.json)
-- [RiverOS Retention Policy](schemas/riveros-retention-policy.schema.json)
-- [Schema architecture and implementation notes](schemas/README.md)
+- [Core schema index and design rules](schemas/README.md)
+- [Asset Draft schema](schemas/asset-draft.schema.json)
+- [Asset Component schema](schemas/asset-component.schema.json)
+- [Material Specification schema](schemas/material-specification.schema.json)
+- [Process Recipe schema](schemas/process-recipe.schema.json)
+- [Asset Variant schema](schemas/asset-variant.schema.json)
+- [Validation Run schema](schemas/validation-run.schema.json)
+- [Creation Claim schema](schemas/creation-claim.schema.json)
+- [Release Gate schema](schemas/release-gate.schema.json)
 
 Schema conformance does not by itself establish authorship, ownership, scientific validity, safety, regulatory status, signature authority or legal enforceability.
 
 ## Integrity profile
 
-The prototype signed-envelope flow uses `CC-CJSON-0.1`:
+The signed-envelope flow uses `CC-CJSON-0.1`:
 
 1. reject duplicate JSON keys and non-standard constants;
-2. reject floating-point numbers in digest-bound payloads;
+2. reject floating-point values in digest-bound payloads;
 3. recursively sort object keys;
 4. preserve array order;
 5. serialize UTF-8 JSON without insignificant whitespace; and
@@ -102,22 +133,19 @@ The current signature fixture is synthetic and unverified. The repository does n
 
 Synthetic, cross-linked fixtures are maintained under [`examples/`](examples/):
 
-- [Creator Passport fixture](examples/records/creator-passport.sample.json)
-- [qPCR Creation Passport fixture](examples/records/creation-passport.qpcr-programme.sample.json)
-- [Contribution Record fixture](examples/records/contribution-record.sample.json)
-- [Research Licence Record fixture](examples/records/licence-record.research.sample.json)
-- [Signed Record Envelope fixture](examples/records/record-envelope.creation.sample.json)
-- [RiverOS Evidence Event fixture](examples/riveros/evidence-event.sample.json)
-- [RiverOS Retention Policy fixture](examples/riveros/evidence-retention-policy.sample.json)
-- [Fixture policy](examples/README.md)
+- core Creator, Creation, Contribution, Licence and Envelope records;
+- RiverOS Evidence Event and Retention Policy records;
+- an eight-record Asset Lab material-authoring chain;
+- [fixture policy and chain description](examples/README.md).
 
 The validator at [`tools/validate_registry.py`](tools/validate_registry.py):
 
-- validates all seven schemas;
+- validates all fifteen schemas;
 - checks unique schema `$id` values;
 - validates every JSON fixture with format checking;
 - rejects duplicate governed identifiers;
 - verifies local cross-record references;
+- validates Asset Lab authoring links;
 - confirms envelope subject-to-payload consistency;
 - recalculates CC-CJSON-0.1 SHA-256 digests;
 - verifies local evidence artefact digests;
@@ -140,71 +168,41 @@ The workflow at [`.github/workflows/validate-registry.yml`](.github/workflows/va
 | **C7 — Network creation** | Interoperable use across affiliated nodes with common evidence rules |
 | **C8 — Preserved creation** | Custodian, archive, continuity and knowledge-transfer controls completed |
 
-## What may be registered
-
-Creators Common supports scientific, engineering, digital, design, cultural and organisational creations, including:
-
-- assays, reagents, protocols, datasets and laboratory methods;
-- machines, components, CAD, control systems and manufacturing processes;
-- software, APIs, algorithms, AI models, schemas and digital workflows;
-- product designs, apparel styles, artwork, media, architecture and publications;
-- operating models, governance frameworks, standards, courses and community programmes.
-
-A creation may contain registered sub-creations with different creators, owners, maturity levels and licence terms.
-
 ## Current controlled documents
 
 - [Creators Common Canon V0.2](docs/canon/CC-CANON-V0.2.md)
+- [Asset Lab PRD V0.1](docs/product/CC-ASSET-LAB-PRD-V0.1.md)
+- [Asset Lab UI Contract V0.1](docs/architecture/CC-ASSET-LAB-UI-CONTRACT-V0.1.md)
 - [qPCR Creator Programme V0.1](docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md)
 - [Signed Record Envelopes V0.1](docs/architecture/CC-SIGNED-ENVELOPES-V0.1.md)
 - [RiverOS Evidence Contracts V0.1](docs/integrations/riveros/CC-RIVEROS-EVIDENCE-CONTRACTS-V0.1.md)
-- [Registry Schemas V0.2](schemas/README.md)
-- [Registry Fixtures V0.2](examples/README.md)
-
-## First programme: Molecular Sciences
-
-The first discipline-level implementation is the **qPCR Creator Programme**, which applies the Creators Common model to assay design, primers, probes, reagents, extraction methods, instruments, laboratory processes, analysis software and validation evidence.
-
-The programme is initially restricted to research-use and other lawfully permitted non-diagnostic applications unless a separate regulated pathway is completed.
+- [Registry Schemas](schemas/README.md)
+- [Registry Fixtures](examples/README.md)
 
 ## Governance principles
 
 1. Sponsorship does not automatically constitute authorship.
 2. Company ownership does not erase individual contribution.
 3. A derivative creation must preserve lineage to its source records.
-4. Scientific, technical and commercial claims must remain connected to evidence.
+4. Claims must remain connected to evidence and limitations.
 5. Sensitive source material may remain restricted while provenance and status remain discoverable.
-6. A licence never substitutes for legally required approval, certification, accreditation or registration.
-7. Creation records may be corrected through controlled change, but historical evidence must not be silently overwritten.
-8. A digest demonstrates change detection, not factual truth.
-9. A signature assertion is not trusted until verified against an approved key and policy.
-10. Evidence deletion must remain connected to an authorised disposition record where required.
+6. A release gate does not substitute for legal, safety or regulatory approval.
+7. A licence never substitutes for legally required certification, accreditation or registration.
+8. Historical evidence must not be silently overwritten.
+9. A digest demonstrates change detection, not factual truth.
+10. A signature assertion is not trusted until verified against approved authority and policy.
 
 ## Release status
 
-CC-CANON-V0.2, CC-SCHEMAS-V0.2, CC-FIXTURES-V0.2, CC-SIGNED-ENVELOPES-V0.1 and CC-RIVEROS-EVIDENCE-CONTRACTS-V0.1 are controlled prototype baselines. They are suitable for repository design, data-model development, programme formation, governance review and conformance testing. They are not legal assignments, patent filings, copyright registrations, trusted digital certificates, regulated-product authorisations, clinical approvals or diagnostic validations.
+The current documents, schemas, fixtures and prototype are controlled architecture baselines for review and conformance testing. They are not legal assignments, patent filings, copyright registrations, trusted digital certificates, production CAD or LIMS systems, scientific validations, regulated-product authorisations, clinical approvals or diagnostic validations.
 
-## Repository direction
-
-### Implemented in the current baseline
-
-- canonical governance architecture;
-- Creator, Creation, Contribution and Licence schemas;
-- qPCR and Molecular Sciences programme baseline;
-- synthetic linked registry fixtures;
-- signed record envelope and canonical digest checks;
-- RiverOS evidence-event and retention-policy contracts;
-- automated schema, identifier, digest and cross-reference validation;
-- repository-level GitHub Actions workflow;
-- public discovery landing page.
-
-### Next implementation layers
+## Next implementation layers
 
 - trusted key and signer-authority registry;
 - production signature verification and revocation;
-- Warden policy-decision and restricted-access contracts;
+- Warden policy-decision and restricted-field access contracts;
 - EmpireOS licence issuance and lifecycle events;
-- positive and negative cryptographic conformance vectors;
-- guild and programme templates;
+- positive and negative conformance vectors;
+- Synnergyze Asset Draft APIs and collaborative persistence;
 - creator and creation registration workflows;
-- Synnergyze registry APIs and Virtual Silk Road discovery projections.
+- Virtual Silk Road public and member discovery projections.

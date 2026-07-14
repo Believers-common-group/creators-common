@@ -5,18 +5,7 @@
   "description": "A governed envelope that binds a record reference to a deterministic content digest and one or more signature assertions.",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "schemaVersion",
-    "envelopeId",
-    "envelopeVersion",
-    "subject",
-    "payload",
-    "signatures",
-    "status",
-    "issuer",
-    "createdAt",
-    "updatedAt"
-  ],
+  "required": ["schemaVersion", "envelopeId", "envelopeVersion", "subject", "payload", "signatures", "status", "issuer", "createdAt", "updatedAt"],
   "properties": {
     "schemaVersion": {"type": "string", "const": "0.1.0"},
     "envelopeId": {"type": "string", "pattern": "^CC-EN-[A-Z0-9][A-Z0-9._-]{5,95}$"},
@@ -28,7 +17,14 @@
       "properties": {
         "recordType": {
           "type": "string",
-          "enum": ["creator", "creation", "contribution", "licence", "riveros-evidence-event", "riveros-retention-policy"]
+          "enum": [
+            "creator", "creation", "contribution", "licence", "record-envelope",
+            "riveros-evidence-event", "riveros-retention-policy", "asset-draft",
+            "asset-component", "material-specification", "process-recipe", "asset-variant",
+            "validation-run", "creation-claim", "release-gate", "warden-access-policy",
+            "warden-policy-decision", "empireos-licence-event", "trusted-key",
+            "signer-authority", "key-lifecycle-event", "signature-verification"
+          ]
         },
         "recordId": {"type": "string", "minLength": 3, "maxLength": 200},
         "recordVersion": {"type": "string", "minLength": 1, "maxLength": 80}
@@ -65,13 +61,24 @@
           "signatureId": {"type": "string", "pattern": "^SIG-[A-Z0-9][A-Z0-9._-]{3,95}$"},
           "signer": {"$ref": "#/$defs/party"},
           "algorithm": {"type": "string", "enum": ["Ed25519", "ES256", "RS256", "external-attestation", "synthetic-test"]},
+          "messageProfile": {"type": "string", "enum": ["CC-SIG-0.1"]},
           "keyRef": {"type": "string", "maxLength": 1000},
           "signatureValue": {"type": "string", "minLength": 8, "maxLength": 8192},
           "signedAt": {"type": "string", "format": "date-time"},
           "verificationStatus": {"type": "string", "enum": ["unverified", "verified", "failed", "revoked"]},
           "verificationRef": {"type": "string", "maxLength": 1000},
           "scope": {"type": "string", "enum": ["payload-digest", "envelope-without-signatures"]}
-        }
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"algorithm": {"enum": ["Ed25519", "ES256", "RS256"]}}, "required": ["algorithm"]},
+            "then": {"required": ["messageProfile", "keyRef", "scope"]}
+          },
+          {
+            "if": {"properties": {"verificationStatus": {"const": "verified"}}, "required": ["verificationStatus"]},
+            "then": {"required": ["verificationRef"]}
+          }
+        ]
       }
     },
     "status": {"type": "string", "enum": ["draft", "issued", "superseded", "revoked", "archived"]},
@@ -88,7 +95,7 @@
       "properties": {
         "partyId": {"type": "string", "minLength": 3, "maxLength": 200},
         "name": {"type": "string", "minLength": 1, "maxLength": 300},
-        "partyType": {"type": "string", "enum": ["person", "institution", "collective", "public-body"]}
+        "partyType": {"type": "string", "enum": ["person", "institution", "collective", "public-body", "service"]}
       }
     },
     "issuer": {

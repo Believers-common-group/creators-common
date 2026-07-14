@@ -1,0 +1,137 @@
+{
+  "schemaVersion": "0.1.0",
+  "accessPolicyId": "CC-WA-ASSET-LAB-MATERIAL-001",
+  "recordVersion": "0.1.0",
+  "name": "Asset Lab restricted material review access",
+  "description": "Synthetic field-level access policy for review of a governed material specification without permitting unrestricted export or commercial use.",
+  "status": "draft",
+  "scope": {
+    "recordTypes": [
+      "material-specification"
+    ],
+    "recordRefs": [
+      "CC-MS-RECYCLED-COMPOSITE-001"
+    ],
+    "fieldPaths": [
+      "$.composition",
+      "$.properties",
+      "$.evidenceRefs"
+    ],
+    "classifications": [
+      "restricted",
+      "confidential"
+    ]
+  },
+  "defaultEffect": "deny",
+  "conflictResolution": "deny-overrides",
+  "rules": [
+    {
+      "ruleId": "MATERIAL-REVIEW-READ",
+      "description": "Permit verified domain reviewers to read bounded material fields inside Asset Lab with evidence logging.",
+      "effect": "permit-with-conditions",
+      "actions": [
+        "view",
+        "read",
+        "review"
+      ],
+      "priority": 100,
+      "subjectConditions": {
+        "roles": [
+          "domain-reviewer"
+        ],
+        "assuranceLevels": [
+          "verified",
+          "strong",
+          "hardware-bound"
+        ]
+      },
+      "resourceConditions": {
+        "recordTypes": [
+          "material-specification"
+        ],
+        "recordRefs": [
+          "CC-MS-RECYCLED-COMPOSITE-001"
+        ],
+        "fieldPaths": [
+          "$.composition",
+          "$.properties",
+          "$.evidenceRefs"
+        ],
+        "classifications": [
+          "restricted",
+          "confidential"
+        ]
+      },
+      "contextConditions": {
+        "purposes": [
+          "technical-review"
+        ],
+        "environments": [
+          "asset-lab"
+        ],
+        "minimumDeviceTrust": "managed"
+      },
+      "obligations": [
+        {
+          "type": "log-access",
+          "destinationRef": "RiverOS",
+          "details": "Record the access request, decision, fields and reviewer identity."
+        },
+        {
+          "type": "riveros-evidence",
+          "destinationRef": "CC-RV-RP-GOVERNED-RECORD-001",
+          "details": "Retain the decision evidence under the governed-record retention policy."
+        },
+        {
+          "type": "no-export",
+          "fieldPaths": [
+            "$.composition",
+            "$.properties",
+            "$.evidenceRefs"
+          ],
+          "details": "The reviewed fields may not be exported by this rule."
+        }
+      ]
+    },
+    {
+      "ruleId": "MATERIAL-EXPORT-DENY",
+      "description": "Deny export of restricted or confidential material fields.",
+      "effect": "deny",
+      "actions": [
+        "export",
+        "share"
+      ],
+      "priority": 1000,
+      "resourceConditions": {
+        "recordTypes": [
+          "material-specification"
+        ],
+        "classifications": [
+          "restricted",
+          "confidential",
+          "secret"
+        ]
+      }
+    }
+  ],
+  "review": {
+    "reviewFrequencyDays": 90,
+    "nextReviewAt": "2026-10-12T10:00:00Z",
+    "reviewerRefs": [
+      "CC-INST-CREATORS-COMMON"
+    ]
+  },
+  "issuer": {
+    "issuerId": "CC-INST-WARDEN",
+    "name": "Warden",
+    "authorityRef": "docs/integrations/warden/CC-WARDEN-POLICY-CONTRACTS-V0.1.md"
+  },
+  "provenance": {
+    "sourceRecordRefs": [
+      "docs/product/CC-ASSET-LAB-PRD-V0.1.md"
+    ],
+    "changeReason": "Initial synthetic field-access policy fixture"
+  },
+  "createdAt": "2026-07-14T10:15:00Z",
+  "updatedAt": "2026-07-14T10:15:00Z"
+}

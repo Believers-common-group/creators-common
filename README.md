@@ -1,6 +1,7 @@
 # Creators Common
 
 **Canonical release:** CC-CANON-V0.2  
+**Schema release:** CC-SCHEMAS-V0.1  
 **Repository status:** Controlled baseline for review  
 **Institutional home:** Believers Common ecosystem
 
@@ -52,6 +53,18 @@ A precise record of what each contributor did, when the work occurred, what evid
 
 A machine-readable and human-readable statement of permitted users, territory, duration, field of use, volume limits, evidence obligations, royalties, derivative rights, suspension conditions and prohibited uses.
 
+## Machine-readable registry contracts
+
+The first JSON Schema Draft 2020-12 contracts are now included under [`schemas/`](schemas/):
+
+- [Creator Passport schema](schemas/creator-passport.schema.json)
+- [Creation Passport schema](schemas/creation-passport.schema.json)
+- [Contribution Record schema](schemas/contribution-record.schema.json)
+- [Licence Record schema](schemas/licence-record.schema.json)
+- [Schema architecture and implementation notes](schemas/README.md)
+
+These schemas establish structural contracts for registry services. Schema conformance does not by itself establish authorship, ownership, scientific validity, safety, regulatory status or legal enforceability.
+
 ## Creation maturity lifecycle
 
 | Stage | Meaning |
@@ -82,6 +95,7 @@ A creation may contain registered sub-creations with different creators, owners,
 
 - [Creators Common Canon V0.2](docs/canon/CC-CANON-V0.2.md)
 - [qPCR Creator Programme V0.1](docs/programmes/molecular-sciences/CC-QPCR-CREATOR-PROGRAMME-V0.1.md)
+- [Registry Schemas V0.1](schemas/README.md)
 
 ## First programme: Molecular Sciences
 
@@ -101,16 +115,25 @@ The programme is initially restricted to research-use and other lawfully permitt
 
 ## Release status
 
-CC-CANON-V0.2 is an initial controlled architecture baseline. It is suitable for repository design, data-model development, programme formation and governance review. It is not, by itself, a legal assignment, patent filing, copyright registration, regulated-product authorisation, clinical approval or diagnostic validation.
+CC-CANON-V0.2 and CC-SCHEMAS-V0.1 are initial controlled architecture baselines. They are suitable for repository design, data-model development, programme formation, governance review and prototype implementation. They are not, by themselves, legal assignments, patent filings, copyright registrations, regulated-product authorisations, clinical approvals or diagnostic validations.
 
 ## Repository direction
 
-Planned implementation layers include:
+### Implemented in the current baseline
 
 - creator and creation passport schemas;
 - contribution and licence record schemas;
-- evidence and version-control rules;
+- canonical governance architecture;
+- first discipline programme for qPCR and molecular sciences;
+- public discovery landing page.
+
+### Next implementation layers
+
+- signed record envelopes and content-hash rules;
+- RiverOS evidence and retention contracts;
+- Warden policy-decision and restricted-access contracts;
+- EmpireOS licence issuance and lifecycle events;
+- sample records, conformance fixtures and automated schema validation;
 - guild and programme templates;
-- public discovery pages;
-- registration workflows;
-- Synnergyze, RiverOS, Warden, EmpireOS and Virtual Silk Road integration contracts.
+- creator and creation registration workflows;
+- Synnergyze APIs and Virtual Silk Road discovery projections.

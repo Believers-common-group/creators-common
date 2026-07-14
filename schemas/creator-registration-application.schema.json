@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/creator-registration-application.schema.json",
+  "title": "Creators Common Creator Registration Application",
+  "description": "Consent-bound application for registering a creator identity and requesting issuance of a Creator Passport.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "applicationId",
+    "recordVersion",
+    "applicant",
+    "registrationType",
+    "roleIntent",
+    "jurisdiction",
+    "consent",
+    "requestedVisibility",
+    "status",
+    "issuer",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "applicationId": {"type": "string", "pattern": "^CC-REG-CR-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "applicant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digitalMeRef", "identityStage", "displayName"],
+      "properties": {
+        "digitalMeRef": {"type": "string", "minLength": 3, "maxLength": 200},
+        "identityStage": {"type": "string", "enum": ["lite", "verified", "strong", "institutional"]},
+        "displayName": {"type": "string", "minLength": 1, "maxLength": 240},
+        "handle": {"type": "string", "maxLength": 120},
+        "contactRefs": {"$ref": "#/$defs/idList"}
+      }
+    },
+    "registrationType": {"type": "string", "enum": ["person", "institution", "collective"]},
+    "roleIntent": {"$ref": "#/$defs/stringList"},
+    "disciplines": {"$ref": "#/$defs/stringList"},
+    "jurisdiction": {"type": "string", "minLength": 2, "maxLength": 120},
+    "consent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "termsAccepted",
+        "privacyNoticeVersion",
+        "identityProcessingConsent",
+        "evidenceProcessingConsent",
+        "publicProfileConsent",
+        "acceptedAt",
+        "revocationRef"
+      ],
+      "properties": {
+        "termsAccepted": {"type": "boolean"},
+        "privacyNoticeVersion": {"type": "string", "minLength": 1, "maxLength": 80},
+        "identityProcessingConsent": {"type": "boolean"},
+        "evidenceProcessingConsent": {"type": "boolean"},
+        "publicProfileConsent": {"type": "boolean"},
+        "purpose": {"type": "string", "maxLength": 1000},
+        "duration": {"type": "string", "maxLength": 200},
+        "acceptedAt": {"type": "string", "format": "date-time"},
+        "revocationRef": {"type": "string", "minLength": 3, "maxLength": 1000}
+      }
+    },
+    "evidenceRefs": {"$ref": "#/$defs/idList"},
+    "requestedVisibility": {"type": "string", "enum": ["member", "restricted", "private", "public"]},
+    "publicProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "displayName": {"type": "string", "maxLength": 240},
+        "headline": {"type": "string", "maxLength": 500},
+        "disciplines": {"$ref": "#/$defs/stringList"},
+        "locationLabel": {"type": "string", "maxLength": 160}
+      }
+    },
+    "status": {"type": "string", "enum": ["draft", "submitted", "under-review", "returned", "accepted", "rejected", "withdrawn", "superseded"]},
+    "reviewRefs": {"$ref": "#/$defs/idList"},
+    "wardenDecisionRef": {"type": "string", "maxLength": 200},
+    "riverosEvidenceEventRefs": {"$ref": "#/$defs/idList"},
+    "resultingCreatorPassportRef": {"type": "string", "maxLength": 200},
+    "submittedAt": {"type": "string", "format": "date-time"},
+    "acceptedAt": {"type": "string", "format": "date-time"},
+    "rejectedAt": {"type": "string", "format": "date-time"},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"enum": ["submitted", "under-review", "returned", "accepted", "rejected"]}}, "required": ["status"]},
+      "then": {"required": ["submittedAt", "evidenceRefs"]}
+    },
+    {
+      "if": {"properties": {"status": {"const": "accepted"}}, "required": ["status"]},
+      "then": {"required": ["acceptedAt", "reviewRefs", "wardenDecisionRef", "riverosEvidenceEventRefs"]}
+    },
+    {
+      "if": {"properties": {"requestedVisibility": {"const": "public"}}, "required": ["requestedVisibility"]},
+      "then": {"properties": {"consent": {"properties": {"publicProfileConsent": {"const": true}}}}, "required": ["publicProjection"]}
+    }
+  ],
+  "$defs": {
+    "idList": {"type": "array", "minItems": 1, "uniqueItems": true, "maxItems": 500, "items": {"type": "string", "minLength": 3, "maxLength": 1000}},
+    "stringList": {"type": "array", "minItems": 1, "uniqueItems": true, "maxItems": 500, "items": {"type": "string", "minLength": 1, "maxLength": 240}},
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 1000}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"$ref": "#/$defs/idList"}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

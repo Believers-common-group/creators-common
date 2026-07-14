@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/creation-registration-application.schema.json",
+  "title": "Creators Common Creation Registration Application",
+  "description": "Evidence-bound application for registering a creation and requesting issuance of a Creation Passport.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "applicationId",
+    "recordVersion",
+    "applicantCreatorRef",
+    "proposedTitle",
+    "classification",
+    "intendedPurpose",
+    "creatorClaims",
+    "rightsDisclosure",
+    "safetyAndRegulatory",
+    "publicationRequest",
+    "attestation",
+    "status",
+    "issuer",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "applicationId": {"type": "string", "pattern": "^CC-REG-CP-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "applicantCreatorRef": {"type": "string", "minLength": 3, "maxLength": 200},
+    "assetDraftRef": {"type": "string", "maxLength": 200},
+    "proposedTitle": {"type": "string", "minLength": 1, "maxLength": 300},
+    "classification": {"type": "string", "enum": ["scientific", "engineering", "digital", "design", "cultural", "organisational", "hybrid"]},
+    "subclassification": {"$ref": "#/$defs/stringList"},
+    "intendedPurpose": {"type": "string", "minLength": 10, "maxLength": 5000},
+    "requestedLifecycleStage": {"type": "string", "enum": ["C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"]},
+    "creatorClaims": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["creatorRef", "role", "attributionStatus", "evidenceRefs"],
+        "properties": {
+          "creatorRef": {"type": "string", "minLength": 3, "maxLength": 200},
+          "role": {"type": "string", "enum": ["originating-creator", "co-creator", "design-contributor", "engineering-contributor", "research-contributor", "software-contributor", "manufacturing-contributor", "validation-authority", "domain-reviewer", "institutional-sponsor", "funding-sponsor", "custodian", "commercial-operator", "improvement-creator", "derivative-creator"]},
+          "contributionRef": {"type": "string", "maxLength": 200},
+          "attributionStatus": {"type": "string", "enum": ["accepted", "pending", "disputed", "declined", "withdrawn"]},
+          "evidenceRefs": {"$ref": "#/$defs/idList"}
+        }
+      }
+    },
+    "rightsDisclosure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ownershipClaimStatus", "thirdPartyMaterialsDeclared", "sponsorshipSeparatedFromAuthorship"],
+      "properties": {
+        "ownershipClaimStatus": {"type": "string", "enum": ["not-claimed", "claimed-unverified", "documented", "disputed"]},
+        "ownershipClaimBasis": {"type": "string", "maxLength": 3000},
+        "ownerPartyRef": {"type": "string", "maxLength": 200},
+        "custodianPartyRef": {"type": "string", "maxLength": 200},
+        "sponsorRefs": {"$ref": "#/$defs/idList"},
+        "thirdPartyMaterialsDeclared": {"type": "boolean"},
+        "thirdPartyMaterialRefs": {"$ref": "#/$defs/idList"},
+        "sponsorshipSeparatedFromAuthorship": {"type": "boolean"},
+        "restrictions": {"$ref": "#/$defs/stringList"}
+      }
+    },
+    "safetyAndRegulatory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["riskLevel", "restrictedUse", "regulatoryStatus", "intendedUseStatement"],
+      "properties": {
+        "riskLevel": {"type": "string", "enum": ["low", "moderate", "high", "critical", "unassessed"]},
+        "restrictedUse": {"type": "boolean"},
+        "regulatoryStatus": {"type": "string", "enum": ["not-applicable", "research-use", "assessment-required", "submitted", "authorised", "restricted", "expired", "withdrawn"]},
+        "intendedUseStatement": {"type": "string", "minLength": 10, "maxLength": 3000},
+        "hazardCategories": {"$ref": "#/$defs/stringList"},
+        "controlRefs": {"$ref": "#/$defs/idList"}
+      }
+    },
+    "evidenceRefs": {"$ref": "#/$defs/idList"},
+    "publicationRequest": {"type": "string", "enum": ["none", "member", "restricted", "public"]},
+    "publicProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {"type": "string", "maxLength": 300},
+        "summary": {"type": "string", "maxLength": 1500},
+        "classification": {"type": "string", "maxLength": 120},
+        "creatorDisplayNames": {"$ref": "#/$defs/stringList"},
+        "maturityLabel": {"type": "string", "maxLength": 120},
+        "evidenceSummary": {"type": "string", "maxLength": 1500}
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accuracyAttested", "rightsDisclosureAttested", "evidenceUseConsent", "publicProjectionConsent", "attestedAt"],
+      "properties": {
+        "accuracyAttested": {"type": "boolean"},
+        "rightsDisclosureAttested": {"type": "boolean"},
+        "evidenceUseConsent": {"type": "boolean"},
+        "publicProjectionConsent": {"type": "boolean"},
+        "attestedAt": {"type": "string", "format": "date-time"},
+        "statement": {"type": "string", "maxLength": 3000}
+      }
+    },
+    "status": {"type": "string", "enum": ["draft", "submitted", "under-review", "returned", "accepted", "rejected", "withdrawn", "superseded"]},
+    "reviewRefs": {"$ref": "#/$defs/idList"},
+    "wardenDecisionRef": {"type": "string", "maxLength": 200},
+    "riverosEvidenceEventRefs": {"$ref": "#/$defs/idList"},
+    "resultingCreationPassportRef": {"type": "string", "maxLength": 200},
+    "submittedAt": {"type": "string", "format": "date-time"},
+    "acceptedAt": {"type": "string", "format": "date-time"},
+    "rejectedAt": {"type": "string", "format": "date-time"},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"enum": ["submitted", "under-review", "returned", "accepted", "rejected"]}}, "required": ["status"]},
+      "then": {"required": ["submittedAt", "evidenceRefs"]}
+    },
+    {
+      "if": {"properties": {"status": {"const": "accepted"}}, "required": ["status"]},
+      "then": {"required": ["acceptedAt", "reviewRefs", "wardenDecisionRef", "riverosEvidenceEventRefs"]}
+    },
+    {
+      "if": {"properties": {"publicationRequest": {"const": "public"}}, "required": ["publicationRequest"]},
+      "then": {"properties": {"attestation": {"properties": {"publicProjectionConsent": {"const": true}}}}, "required": ["publicProjection"]}
+    }
+  ],
+  "$defs": {
+    "idList": {"type": "array", "minItems": 1, "uniqueItems": true, "maxItems": 1000, "items": {"type": "string", "minLength": 3, "maxLength": 1000}},
+    "stringList": {"type": "array", "minItems": 1, "uniqueItems": true, "maxItems": 500, "items": {"type": "string", "minLength": 1, "maxLength": 500}},
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 1000}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"$ref": "#/$defs/idList"}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

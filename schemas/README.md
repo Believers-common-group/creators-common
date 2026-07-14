@@ -3,7 +3,7 @@
 **Core schema release:** CC-SCHEMAS-V0.2  
 **Asset Lab schema release:** CC-ASSET-LAB-SCHEMAS-V0.1  
 **Governance schema release:** CC-GOVERNANCE-SCHEMAS-V0.1  
-**Trust schema release:** CC-TRUST-SCHEMAS-V0.1  
+**Trust schema release:** CC-TRUST-SCHEMAS-V0.2  
 **Status:** Draft controlled contracts for implementation and review  
 **JSON Schema dialect:** Draft 2020-12
 
@@ -42,7 +42,7 @@ This directory converts the Creators Common Canon and its Asset Lab, RiverOS, Wa
 | [`warden-policy-decision.schema.json`](warden-policy-decision.schema.json) | Warden Policy Decision | One deterministic permit, deny or conditional decision for a governed request |
 | [`empireos-licence-event.schema.json`](empireos-licence-event.schema.json) | EmpireOS Licence Lifecycle Event | Append-only issuance, amendment, renewal, suspension, expiry, termination, revocation and supersession events |
 
-## Trusted-key and signature schemas
+## Trusted-key, custody and signature schemas
 
 | Schema | Registry object | Purpose |
 |---|---|---|
@@ -50,6 +50,8 @@ This directory converts the Creators Common Canon and its Asset Lab, RiverOS, Wa
 | [`signer-authority.schema.json`](signer-authority.schema.json) | Signer Authority | Permitted keys, record types, signing actions, scopes, purposes and assurance conditions |
 | [`key-lifecycle-event.schema.json`](key-lifecycle-event.schema.json) | Key Lifecycle Event | Append-only registration, activation, rotation, suspension, revocation, expiry and retirement |
 | [`signature-verification.schema.json`](signature-verification.schema.json) | Signature Verification | Cryptographic result, trust result, overall disposition and conformance vector |
+| [`key-custody-attestation.schema.json`](key-custody-attestation.schema.json) | Key Custody Attestation | Security-boundary, provider, device, fingerprint and non-exportability assertions |
+| [`signing-operation.schema.json`](signing-operation.schema.json) | Signing Operation | Signing request, authority, custody evidence, message digest, signature and verification linkage |
 
 ## Identifier families
 
@@ -75,23 +77,30 @@ This directory converts the Creators Common Canon and its Asset Lab, RiverOS, Wa
 - Signer Authority: `CC-SA-...`
 - Key Lifecycle Event: `CC-KE-...`
 - Signature Verification: `CC-SV-...`
+- Key Custody Attestation: `CC-KA-...`
+- Signing Operation: `CC-SO-...`
 
 Identifiers are permanent. Corrections and substantive changes create controlled versions or append-only events; they do not silently overwrite historical evidence.
 
 ## Integrity and signature profiles
 
-Digest-bound records use `CC-CJSON-0.1`:
+Digest-bound records use `CC-CJSON-0.1`: duplicate keys, non-standard constants and floating-point values are rejected; object keys are recursively sorted; array order is preserved; JSON is serialized as UTF-8 without insignificant whitespace; and SHA-256 is calculated over the canonical bytes.
 
-- duplicate object keys and non-standard constants are rejected;
-- floating-point values are rejected in digest-bound payloads;
-- object keys are recursively sorted and array order is preserved;
-- JSON is serialised as UTF-8 without insignificant whitespace;
-- SHA-256 is calculated over the canonical bytes.
+Envelope signatures use `CC-SIG-0.1`, a domain-separated LF-delimited message containing the envelope identifier, subject identity, canonicalization profile and payload digest.
 
-Ed25519 envelope signatures use `CC-SIG-0.1`, a domain-separated LF-delimited message containing the envelope identifier, subject identity, canonicalisation profile and payload digest. See:
+Implemented verification profiles:
+
+- Ed25519 with raw 32-byte public keys;
+- ES256 with P-256, SHA-256 and 64-byte JOSE `r || s` signatures;
+- RS256 with RSA keys of at least 2048 bits, PKCS1-v1_5 padding and SHA-256.
+
+For ES256 and RS256, public-key fingerprints are `SHA-256(DER SubjectPublicKeyInfo)`.
+
+See:
 
 - [`CC-SIGNED-ENVELOPES-V0.1`](../docs/architecture/CC-SIGNED-ENVELOPES-V0.1.md)
 - [`CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1`](../docs/security/CC-TRUSTED-KEYS-AND-SIGNATURES-V0.1.md)
+- [`CC-HARDWARE-CUSTODY-AND-MULTI-ALGORITHM-SIGNATURES-V0.1`](../docs/security/CC-HARDWARE-CUSTODY-AND-MULTI-ALGORITHM-SIGNATURES-V0.1.md)
 
 ## Design rules
 
@@ -101,30 +110,28 @@ Ed25519 envelope signatures use `CC-SIG-0.1`, a domain-separated LF-delimited me
 4. `additionalProperties` is disabled at each governed record boundary.
 5. Cross-record relationships use permanent identifiers and resolvable references.
 6. Lifecycle stage, validation, claim status, release, access, licence and signature trust remain separate concepts.
-7. A digest detects change but does not prove factual truth or lawful authority.
-8. Cryptographic validity and trust-policy validity must be evaluated separately.
-9. A cryptographically valid signature made with a revoked, expired or unauthorised key fails overall verification.
+7. Cryptographic validity and trust-policy validity must be evaluated separately.
+8. A mathematically valid signature made with a revoked, expired or unauthorized key fails overall verification.
+9. Synthetic custody attestations are restricted to named conformance purposes and environments.
 10. Private keys are not registry records and must not be committed to the repository.
-11. A Warden permit is contextual and does not create broader rights.
-12. A proposed EmpireOS event does not change a Licence Record until separately authorised and effective.
-13. A licence, policy decision, signature or release gate does not substitute for legally required approval, certification, accreditation or authorisation.
+11. A licence, policy decision, signature, attestation or release gate does not substitute for legally required approval, certification, accreditation or authorization.
 
 ## Automated validation
 
-`tools/validate_registry.py` checks:
+`tools/validate_registry.py` validates the original twenty-two registry, Asset Lab, RiverOS, Warden, EmpireOS and trust schemas and their linked fixtures.
 
-- all twenty-two schemas against JSON Schema Draft 2020-12;
-- unique schema `$id` values and governed identifiers;
-- every JSON fixture under `examples/`;
-- Asset Lab, Warden, EmpireOS, RiverOS and core registry references;
-- envelope subject-to-payload consistency and CC-CJSON-0.1 digests;
-- trusted-key public-key length and SHA-256 fingerprints;
-- applied key registration, rotation and revocation event continuity;
-- signer-authority key, record-type, action, purpose, environment and scope permissions;
-- Ed25519 signature verification under `CC-SIG-0.1`;
-- positive, tampered-message and revoked-key conformance vectors;
-- prohibition on verified synthetic signatures;
-- the requirement that an issued envelope has a matching successful verification record.
+`tools/validate_advanced_trust.py` additionally validates:
+
+- the Key Custody Attestation and Signing Operation schemas;
+- P-256 and RSA public-key type and size requirements;
+- DER SubjectPublicKeyInfo fingerprints;
+- valid and tampered ES256 vectors;
+- valid and tampered RS256 vectors;
+- synthetic non-exportable custody assertions;
+- hardware-bound signing-operation evidence; and
+- fail-closed confinement of synthetic attestations to the conformance environment.
+
+The GitHub Actions workflow runs both validators.
 
 ## Controlled implementation sequence
 
@@ -138,13 +145,14 @@ Ed25519 envelope signatures use `CC-SIG-0.1`, a domain-separated LF-delimited me
 6. EmpireOS append-only licence lifecycle events.
 7. Trusted Key, Signer Authority and Key Lifecycle Event contracts.
 8. Ed25519 verification with positive and negative conformance vectors.
+9. Key Custody Attestation and Signing Operation contracts.
+10. ES256 and RS256 verification with positive and negative vectors.
 
 ### Next
 
-9. Hardware-backed production key custody and attestation contracts.
-10. ES256 and RS256 verification profiles.
 11. Synnergyze Asset Draft APIs and collaborative persistence.
 12. Creator and Creation registration workflows.
 13. Virtual Silk Road discovery projections.
+14. Production hardware attestation-chain verification and trusted-time integration.
 
-These schemas are an architecture baseline and are not legal advice, intellectual-property registration, scientific validation, identity certification, safety approval or regulated-product authorisation.
+These schemas are an architecture baseline and are not legal advice, intellectual-property registration, scientific validation, identity certification, hardware certification, safety approval or regulated-product authorization.

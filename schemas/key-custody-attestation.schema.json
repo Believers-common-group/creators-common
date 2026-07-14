@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/key-custody-attestation.schema.json",
+  "title": "Creators Common Key Custody Attestation",
+  "description": "Governed assertion describing the security boundary, public-key binding and verification status of a private-key custody arrangement.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "attestationId", "recordVersion", "keyRef", "attestationType", "status", "claims", "issuedAt", "verifier", "issuer", "createdAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "attestationId": {"type": "string", "pattern": "^CC-KA-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "recordVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "keyRef": {"type": "string", "pattern": "^CC-TK-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "attestationType": {"type": "string", "enum": ["hardware-security-module", "trusted-platform-module", "secure-enclave", "cloud-kms", "external-custodian", "synthetic-test"]},
+    "status": {"type": "string", "enum": ["draft", "verified", "failed", "expired", "revoked", "synthetic"]},
+    "provider": {"type": "object", "additionalProperties": false, "required": ["providerId", "name"], "properties": {"providerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "service": {"type": "string", "maxLength": 240}, "region": {"type": "string", "maxLength": 160}}},
+    "device": {"type": "object", "additionalProperties": false, "properties": {"manufacturer": {"type": "string", "maxLength": 240}, "model": {"type": "string", "maxLength": 240}, "serialHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "firmwareVersion": {"type": "string", "maxLength": 160}, "certificationRefs": {"$ref": "#/$defs/stringList"}}},
+    "claims": {"type": "object", "additionalProperties": false, "required": ["keyGeneratedInBoundary", "privateKeyExportable", "signingOccursInBoundary", "publicKeyFingerprint"], "properties": {"keyGeneratedInBoundary": {"type": "boolean"}, "privateKeyExportable": {"type": "boolean"}, "signingOccursInBoundary": {"type": "boolean"}, "userPresenceSupported": {"type": "boolean"}, "multiPartyControlSupported": {"type": "boolean"}, "publicKeyFingerprint": {"$ref": "#/$defs/fingerprint"}}},
+    "nonceHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidenceRefs": {"$ref": "#/$defs/stringList"},
+    "issuedAt": {"type": "string", "format": "date-time"},
+    "validUntil": {"type": "string", "format": "date-time"},
+    "verifier": {"type": "object", "additionalProperties": false, "required": ["verifierId", "name", "method"], "properties": {"verifierId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "method": {"type": "string", "enum": ["manufacturer-chain", "provider-api", "certificate-chain", "manual-review", "synthetic-conformance"]}, "verificationRef": {"type": "string", "maxLength": 1000}}},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {"if": {"properties": {"attestationType": {"const": "synthetic-test"}}, "required": ["attestationType"]}, "then": {"properties": {"status": {"const": "synthetic"}}}},
+    {"if": {"properties": {"status": {"const": "verified"}}, "required": ["status"]}, "then": {"not": {"properties": {"attestationType": {"const": "synthetic-test"}}, "required": ["attestationType"]}}}
+  ],
+  "$defs": {
+    "fingerprint": {"type": "object", "additionalProperties": false, "required": ["algorithm", "value"], "properties": {"algorithm": {"type": "string", "const": "sha-256"}, "value": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}},
+    "stringList": {"type": "array", "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 1, "maxLength": 1000}},
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 500}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"$ref": "#/$defs/stringList"}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

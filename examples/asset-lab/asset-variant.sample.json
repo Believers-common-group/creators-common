@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "0.1.0",
+  "assetVariantId": "CC-AV-HIGH-RECYCLED-001",
+  "recordVersion": "0.1.0",
+  "assetDraftId": "CC-AD-MATERIAL-DEMO-001",
+  "name": "Higher recovered-content variant",
+  "objective": "Increase recovered fibre content while retaining prototype processability and target shell performance.",
+  "changeSet": [
+    {
+      "path": "/composition/recovered-textile-fibre/proportion",
+      "operation": "replace",
+      "value": "76",
+      "reason": "Evaluate higher recycled content."
+    },
+    {
+      "path": "/composition/bio-based-binder/proportion",
+      "operation": "replace",
+      "value": "24",
+      "reason": "Maintain total composition at 100 percent."
+    }
+  ],
+  "componentRefs": ["CC-AC-SHELL-DEMO-001"],
+  "materialSpecificationRefs": ["CC-MS-RECYCLED-COMPOSITE-001"],
+  "processRecipeRefs": ["CC-PR-COMPRESSION-DEMO-001"],
+  "validationRunRefs": ["CC-VR-FLEXURAL-DEMO-001"],
+  "claimRefs": ["CC-CL-RECYCLED-CONTENT-001"],
+  "status": "testing",
+  "issuer": {
+    "issuerId": "CC-INST-CREATORS-COMMON",
+    "name": "Creators Common",
+    "authorityRef": "docs/product/CC-ASSET-LAB-PRD-V0.1.md"
+  },
+  "createdAt": "2026-07-14T09:30:00Z",
+  "updatedAt": "2026-07-14T09:30:00Z"
+}

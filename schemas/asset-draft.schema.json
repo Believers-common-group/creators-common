@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creators-common.org/schemas/asset-draft.schema.json",
+  "title": "Creators Common Asset Draft",
+  "description": "Editable creation workspace state before conversion into a controlled Creation Passport.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "assetDraftId", "draftVersion", "title", "assetType", "status", "ownerCreatorId", "visibility", "issuer", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "0.1.0"},
+    "assetDraftId": {"type": "string", "pattern": "^CC-AD-[A-Z0-9][A-Z0-9._-]{5,95}$"},
+    "draftVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
+    "title": {"type": "string", "minLength": 1, "maxLength": 300},
+    "assetType": {"type": "string", "enum": ["material", "physical-product", "apparel", "molecular", "electronics", "software", "media-design", "organisational", "hybrid"]},
+    "summary": {"type": "string", "maxLength": 5000},
+    "status": {"type": "string", "enum": ["draft", "in-review", "approved", "converted", "withdrawn", "superseded"]},
+    "ownerCreatorId": {"type": "string", "minLength": 3, "maxLength": 200},
+    "collaboratorRefs": {"$ref": "#/$defs/idList"},
+    "requirementRefs": {"$ref": "#/$defs/references"},
+    "componentRefs": {"$ref": "#/$defs/idList"},
+    "materialSpecificationRefs": {"$ref": "#/$defs/idList"},
+    "processRecipeRefs": {"$ref": "#/$defs/idList"},
+    "variantRefs": {"$ref": "#/$defs/idList"},
+    "validationRunRefs": {"$ref": "#/$defs/idList"},
+    "claimRefs": {"$ref": "#/$defs/idList"},
+    "releaseGateRefs": {"$ref": "#/$defs/idList"},
+    "creationPassportRef": {"type": "string", "maxLength": 200},
+    "workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "activeLab": {"type": "string", "enum": ["material", "product", "apparel", "molecular", "electronics", "software", "media-design", "organisational"]},
+        "canvasMode": {"type": "string", "enum": ["graph", "table", "2d", "3d", "workflow", "board", "document"]},
+        "lastSavedBy": {"type": "string", "maxLength": 200},
+        "lastSavedAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "visibility": {"type": "string", "enum": ["public", "member", "restricted", "confidential"]},
+    "issuer": {"$ref": "#/$defs/issuer"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "idList": {"type": "array", "uniqueItems": true, "maxItems": 5000, "items": {"type": "string", "minLength": 3, "maxLength": 200}},
+    "reference": {"type": "object", "additionalProperties": false, "required": ["ref"], "properties": {"ref": {"type": "string", "minLength": 1, "maxLength": 1000}, "label": {"type": "string", "maxLength": 240}, "hash": {"type": "string", "maxLength": 256}, "mediaType": {"type": "string", "maxLength": 120}, "visibility": {"type": "string", "enum": ["public", "member", "restricted", "confidential"]}}},
+    "references": {"type": "array", "maxItems": 2000, "items": {"$ref": "#/$defs/reference"}},
+    "issuer": {"type": "object", "additionalProperties": false, "required": ["issuerId", "name"], "properties": {"issuerId": {"type": "string", "minLength": 3, "maxLength": 200}, "name": {"type": "string", "minLength": 1, "maxLength": 240}, "authorityRef": {"type": "string", "maxLength": 500}}},
+    "provenance": {"type": "object", "additionalProperties": false, "properties": {"previousVersionRef": {"type": "string", "maxLength": 500}, "sourceRecordRefs": {"$ref": "#/$defs/references"}, "changeReason": {"type": "string", "maxLength": 3000}}}
+  }
+}

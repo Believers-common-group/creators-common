@@ -2,5 +2,5 @@
   "service": "creators-common-web",
   "status": "ok",
   "source": "github",
-  "branch": "main"
+  "productionBranch": "main"
 }

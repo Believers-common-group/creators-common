@@ -1,0 +1,6 @@
+{
+  "service": "creators-common-web",
+  "status": "ok",
+  "source": "github",
+  "productionBranch": "main"
+}

@@ -1,0 +1,29 @@
+name: Validate static site
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate required files and JSON
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f index.html
+          test -f vercel.json
+          test -f health.json
+          python -m json.tool vercel.json >/dev/null
+          python -m json.tool health.json >/dev/null
+          grep -qi '<title>Creators Common</title>' index.html
+          grep -qi '<h1>Welcome to the Commons</h1>' index.html

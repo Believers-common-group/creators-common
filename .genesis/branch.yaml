@@ -1,0 +1,13 @@
+genesis_branch:
+  repository: Believers-common-group/creators-common
+  role: creator_authority_and_common_governance_surface
+  integration_branch: genesis
+  release_branch: main
+  source_authority: Believers-common-group/genesis-stack
+  first_point_of_contact: true
+  production_branch: false
+  workstream_pattern: genesis/<workstream>
+  promotion:
+    requires_validation: true
+    target: main
+  release_rule: Creator Common changes integrate here before promotion.

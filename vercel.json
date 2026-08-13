@@ -29,6 +29,10 @@
     {
       "source": "/health",
       "destination": "/health.json"
+    },
+    {
+      "source": "/.well-known/estate-site",
+      "destination": "/estate-site.json"
     }
   ]
 }

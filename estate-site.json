@@ -1,13 +1,18 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "site_id": "cc",
+  "app_id": "APP-CC-001",
   "name": "Creators Common",
   "canonical_url": "https://creators-common.org",
   "role": "creator-and-shared-commons",
   "alpha_node_id": "ALPHA-NODE-001",
   "registry_object": "REG-SITE-001",
+  "app_registry_object": "REG-SITE-APP-001",
+  "handoff_registry_object": "REG-SITE-HANDOFF-001",
+  "registration_contact": "warden@believerscommon.com",
   "authority_boundary": "WARDEN",
   "session_policy": "NO_SHARED_CROSS_DOMAIN_COOKIE",
+  "handoff_status": "SCAFFOLDED_NOT_ACTIVATED",
   "connected_sites": [
     {
       "site_id": "bc",

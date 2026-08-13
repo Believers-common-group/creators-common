@@ -2,6 +2,19 @@
 
 Canonical source repository for the Creators Common public web surface.
 
+## Site federation
+
+Creators Common participates in `REG-SITE-001` with Believers Common and Virtual Silk Road.
+
+- Site id: `cc`
+- Canonical domain: `https://creators-common.org`
+- Containing node: `ALPHA-NODE-001`
+- Authority boundary: `WARDEN`
+- Federation metadata: `/.well-known/estate-site`
+- Health endpoint: `/health`
+
+The public site is a projection. It must not self-issue DigitalMe identity, Warden authority, Registry truth, or cross-domain session credentials.
+
 ## Deployment contract
 
 - Default and production source branch: `main`
@@ -14,9 +27,9 @@ Canonical source repository for the Creators Common public web surface.
 ## Safe release path
 
 1. Open a pull request into `main`.
-2. Review the Vercel preview generated for the pull request.
-3. Verify `/` and `/health` on the preview URL.
-4. Merge only after the preview is healthy.
+2. Review the Vercel preview generated for the pull request when a Vercel project is connected.
+3. Verify `/`, `/health`, and `/.well-known/estate-site` on the preview URL.
+4. Merge only after validation is healthy.
 5. Confirm that the production domain resolves to the merged `main` deployment.
 
 ## Vercel settings

@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "site_id": "cc",
+  "name": "Creators Common",
+  "canonical_url": "https://creators-common.org",
+  "role": "creator-and-shared-commons",
+  "alpha_node_id": "ALPHA-NODE-001",
+  "registry_object": "REG-SITE-001",
+  "authority_boundary": "WARDEN",
+  "session_policy": "NO_SHARED_CROSS_DOMAIN_COOKIE",
+  "connected_sites": [
+    {
+      "site_id": "bc",
+      "url": "https://believerscommon.com"
+    },
+    {
+      "site_id": "vsr",
+      "url": "https://virtualsilkroad.com"
+    }
+  ]
+}

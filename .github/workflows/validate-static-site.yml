@@ -1,4 +1,4 @@
-name: Validate static site
+name: Validate Creators Common app
 
 on:
   pull_request:
@@ -10,24 +10,19 @@ permissions:
   contents: read
 
 jobs:
-  validate:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate required files and JSON
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f index.html
-          test -f vercel.json
-          test -f health.json
-          test -f estate-site.json
-          python -m json.tool vercel.json >/dev/null
-          python -m json.tool health.json >/dev/null
-          python -m json.tool estate-site.json >/dev/null
-          grep -qi '<title>Creators Common</title>' index.html
-          grep -qi '<h1>Creators Common</h1>' index.html
-          grep -q 'https://believerscommon.com' index.html
-          grep -q 'https://virtualsilkroad.com' index.html
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Verify application
+        run: npm run verify

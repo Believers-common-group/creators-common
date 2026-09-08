@@ -14,13 +14,7 @@
   "session_policy": "NO_SHARED_CROSS_DOMAIN_COOKIE",
   "handoff_status": "SCAFFOLDED_NOT_ACTIVATED",
   "connected_sites": [
-    {
-      "site_id": "bc",
-      "url": "https://believerscommon.com"
-    },
-    {
-      "site_id": "vsr",
-      "url": "https://virtualsilkroad.com"
-    }
+    { "site_id": "bc", "url": "https://believerscommon.com" },
+    { "site_id": "vsr", "url": "https://virtualsilkroad.com" }
   ]
 }

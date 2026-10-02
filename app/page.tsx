@@ -31,6 +31,15 @@ export default function HomePage() {
       <section className="section">
         <div className="shell">
           <div className="section-head">
+            <div><div className="eyebrow">Proposed flagship programme</div><h2>Be Your Own Hero.</h2></div>
+            <div><p>Create, build, solve and contribute through multidisciplinary mission concepts. Explore the proposed programme and its future participation pathways. Applications are not yet open.</p><Link className="button secondary" href="/programs/be-your-own-hero">Explore Be Your Own Hero</Link></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="shell">
+          <div className="section-head">
             <div><div className="eyebrow">System grammar</div><h2>From creator to surface.</h2></div>
             <p>Creators Common keeps the canonical creative relationship legible while runtime platforms remain authoritative for their own execution and native commerce.</p>
           </div>

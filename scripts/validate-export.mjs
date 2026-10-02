@@ -9,6 +9,7 @@ const required = [
   "out/studio.html",
   "out/registry.html",
   "out/commons.html",
+  "out/programs/be-your-own-hero.html",
   "out/about.html",
   "out/health.json",
   "out/estate-site.json",
@@ -24,6 +25,14 @@ const home = readFileSync("out/index.html", "utf8");
 for (const expected of ["Creators Common", "Create work", "Explore the Common"]) {
   if (!home.includes(expected)) {
     console.error(`Homepage export missing expected text: ${expected}`);
+    process.exit(1);
+  }
+}
+
+const byoh = readFileSync("out/programs/be-your-own-hero.html", "utf8");
+for (const phrase of ["Be Your Own Hero", "Proposed", "not open"]) {
+  if (!byoh.includes(phrase)) {
+    console.error(`BYOH export missing required text: ${phrase}`);
     process.exit(1);
   }
 }

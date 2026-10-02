@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ObjectCard } from "@/components/object-card";
 import { PageIntro } from "@/components/page-intro";
 
@@ -12,7 +13,9 @@ export default function CommonsPage() {
   return (
     <>
       <PageIntro eyebrow="Commons" title="Collaboration without a social graph.">The Common organizes programs and production relationships. R0.1 intentionally introduces no follower graph, feed, messaging, or engagement scoring.</PageIntro>
-      <section className="section"><div className="shell"><div className="grid two">
+      <section className="section"><div className="shell">
+        <div className="section-head"><div><div className="eyebrow">Flagship programme · Proposed</div><h2>Be Your Own Hero</h2></div><div><p>Multidisciplinary missions connecting creators, engineers, inventors, institutions and resource providers. The pilot programme is in preparation; enrolment is not open.</p><Link className="button secondary" href="/programs/be-your-own-hero">Explore the proposed programme</Link></div></div>
+        <div className="grid two">
         {programs.map(([title, summary]) => <ObjectCard key={title} kind="Collaboration pattern" title={title} summary={summary} status="Planned" />)}
       </div></div></section>
     </>

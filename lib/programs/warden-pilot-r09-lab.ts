@@ -114,7 +114,7 @@ export class SyntheticEsomoireRegistryLab {
   private readonly db: DatabaseSync;
   constructor(path: string, private readonly trustedPublicKey: KeyObject,
     private readonly trustedNow: () => number) {
-    if (typeof path !== "string" || (!path.startsWith(":memory:") && !path.endsWith(".synthetic.sqlite"))) {
+    if (typeof path !== "string" || (path !== ":memory:" && !path.endsWith(".synthetic.sqlite"))) {
       deny("only memory or explicitly named synthetic SQLite paths allowed");
     }
     this.db = new DatabaseSync(path);

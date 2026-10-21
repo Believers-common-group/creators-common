@@ -40,6 +40,15 @@ export default function HomePage() {
       <section className="section">
         <div className="shell">
           <div className="section-head">
+            <div><div className="eyebrow">Proposed first Warden product pilot</div><h2>Warden pilot partners.</h2></div>
+            <div><p>Explore the proposed Warden + VSR + DigitalMe entry experience for qualified independent pilot providers. Applications and licences are not open, and no pilot service has been authorized.</p><Link className="button secondary" href="/programs/warden-pilot">Review the Warden pilot proposal</Link></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="shell">
+          <div className="section-head">
             <div><div className="eyebrow">System grammar</div><h2>From creator to surface.</h2></div>
             <p>Creators Common keeps the canonical creative relationship legible while runtime platforms remain authoritative for their own execution and native commerce.</p>
           </div>

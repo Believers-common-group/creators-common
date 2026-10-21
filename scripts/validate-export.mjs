@@ -9,6 +9,7 @@ const required = [
   "out/studio.html",
   "out/registry.html",
   "out/commons.html",
+  "out/programs/warden-pilot.html",
   "out/programs/be-your-own-hero.html",
   "out/about.html",
   "out/health.json",
@@ -35,6 +36,18 @@ for (const phrase of ["Be Your Own Hero", "Proposed", "not open"]) {
     console.error(`BYOH export missing required text: ${phrase}`);
     process.exit(1);
   }
+}
+
+const warden = readFileSync("out/programs/warden-pilot.html", "utf8");
+for (const phrase of ["Warden pilot partners", "Virtual Silk Road", "DigitalMe", "applications are not open", "Esomoire"]) {
+  if (!warden.toLowerCase().includes(phrase.toLowerCase())) {
+    console.error(`Warden pilot export missing review-only content: ${phrase}`);
+    process.exit(1);
+  }
+}
+if (!warden.includes('noindex')) {
+  console.error("Warden pilot preview must remain noindex before approval");
+  process.exit(1);
 }
 
 const estate = JSON.parse(readFileSync("out/estate-site.json", "utf8"));

@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:creators-common:warden-pilot:r0.7:company-application-proposal",
+  "title": "Warden pilot candidate application - proposal-only schema",
+  "description": "Review template only. Do not deploy as intake or solicit private contact details until privacy and contract approval.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "applicationStatus",
+    "company",
+    "classification",
+    "proposedService",
+    "commercial",
+    "consentAndData"
+  ],
+  "properties": {
+    "kind": {
+      "const": "WARDEN_PILOT_CANDIDATE_PROPOSAL"
+    },
+    "applicationStatus": {
+      "const": "SYNTHETIC_EXAMPLE"
+    },
+    "company": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "displayName",
+        "jurisdiction"
+      ],
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "jurisdiction": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "legalIdentityEvidenceRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "signatoryAuthorityEvidenceRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base",
+        "thirdPartyRoles"
+      ],
+      "properties": {
+        "base": {
+          "enum": [
+            "G-C",
+            "NG-C",
+            "G-E",
+            "NG-E"
+          ]
+        },
+        "thirdPartyRoles": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "stack",
+              "production",
+              "both",
+              "distribution"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "proposedService": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "scope",
+        "excludedActions"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 150
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 1500
+        },
+        "excludedActions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "commercial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "customerContracting",
+        "customerInvoicing",
+        "esomoirePaymentRole"
+      ],
+      "properties": {
+        "customerContracting": {
+          "const": "pilot_company_direct"
+        },
+        "customerInvoicing": {
+          "const": "pilot_company_direct"
+        },
+        "esomoirePaymentRole": {
+          "const": "none_without_separate_authorization"
+        },
+        "draftAgreementRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "consentAndData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "noCredentialsSubmitted",
+        "customerDataSubmitted",
+        "approvedIntakeEnabled"
+      ],
+      "properties": {
+        "noCredentialsSubmitted": {
+          "const": true
+        },
+        "customerDataSubmitted": {
+          "const": false
+        },
+        "approvedIntakeEnabled": {
+          "const": false
+        },
+        "dataFlowReviewRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

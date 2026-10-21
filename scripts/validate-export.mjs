@@ -9,6 +9,7 @@ const required = [
   "out/studio.html",
   "out/registry.html",
   "out/commons.html",
+  "out/programs/warden-pilot.html",
   "out/programs/be-your-own-hero.html",
   "out/about.html",
   "out/health.json",

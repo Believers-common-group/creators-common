@@ -135,9 +135,10 @@ export function validateSyntheticPilotApplication(candidate: unknown): asserts c
   boundedString(service.scope, 1500, "service scope");
   requireCondition(service.title.startsWith("Synthetic ") &&
     service.scope.toLowerCase().includes("fictional"), "service must be explicitly synthetic");
-  requireCondition(Array.isArray(service.excludedActions) &&
-    noCustomerDataActions.every(x => service.excludedActions.includes(x)) &&
-    service.excludedActions.every(x => typeof x === "string"), "required no-action exclusions missing");
+  const excludedActions = service.excludedActions;
+  requireCondition(Array.isArray(excludedActions) &&
+    noCustomerDataActions.every(x => excludedActions.includes(x)) &&
+    excludedActions.every(x => typeof x === "string"), "required no-action exclusions missing");
   exactly(candidate.commercial, ["customerContracting", "customerInvoicing",
     "esomoirePaymentRole", "draftAgreementRef"], "commercial");
   const commercial = candidate.commercial;

@@ -25,7 +25,7 @@ function grant(
   const claims = {
     issuer: "EXAMPLE-LOCAL-LAB",
     audience: "CC-WARDEN-PILOT-R0.9-LAB",
-    subject, tenant, role, action,
+    subject, tenant, resource: candidate, role, action,
     jti: "EXAMPLE-GRANT-" + String(++sequence).padStart(4, "0"),
     iat: now - 1, exp: now + 60,
     ...options,
@@ -123,9 +123,33 @@ describe("R0.9 local synthetic tenant and grant lab", () => {
     const db = lab();
     const one = grant("candidate:create", tenantA);
     db.create(one, candidate, examplePilotApplication);
-    expect(() => db.create(one, "EXAMPLE-PILOT-002", examplePilotApplication)).toThrow(/replayed/);
+    expect(() => db.create(one, candidate, examplePilotApplication)).toThrow(/replayed/);
     expect(() => db.create(grant("candidate:create"), candidate, examplePilotApplication)).toThrow();
     expect(db.verifyLocalAudit(tenantA)).toBe(true);
+  });
+
+  it("restricts administrative visibility to the signed candidate reference", () => {
+    const db = lab();
+    db.create(grant("candidate:create"), candidate, examplePilotApplication);
+    db.create(grant("candidate:create", tenantA, providerA, "pilot",
+      { resource: "EXAMPLE-PILOT-002" }), "EXAMPLE-PILOT-002", examplePilotApplication);
+    expect(() => db.readAdministrative(
+      grant("admin:read", tenantA, esomoire, "esomoire", { resource: "EXAMPLE-PILOT-002" }),
+      candidate,
+    )).toThrow(/resource scope/);
+    expect(db.readAdministrative(
+      grant("admin:read", tenantA, esomoire, "esomoire", { resource: "EXAMPLE-PILOT-002" }),
+      "EXAMPLE-PILOT-002",
+    )?.candidateId).toBe("EXAMPLE-PILOT-002");
+  });
+
+  it("denies duplicated token ID across separately signed tenants", () => {
+    const db = lab();
+    const first = grant("candidate:create", tenantA, providerA, "pilot", { jti: "EXAMPLE-SAME-JTI" });
+    db.create(first, candidate, examplePilotApplication);
+    const sameIdOtherTenant = grant("candidate:create", tenantB, providerA, "pilot",
+      { jti: "EXAMPLE-SAME-JTI" });
+    expect(() => db.create(sameIdOtherTenant, candidate, examplePilotApplication)).toThrow(/replayed/);
   });
 
   it("does not permit a read token to create and an Esomoire admin to mutate", () => {

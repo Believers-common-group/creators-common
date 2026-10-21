@@ -94,6 +94,7 @@ export default function WardenPilotPage() {
             </div>
           </div>
           <div className="actions">
+            <Link className="button secondary" href="/programs/warden-pilot/administration">Preview Esomoire administration (synthetic)</Link>
             <Link className="button secondary" href="/commons">Explore the Commons</Link>
             <Link className="button secondary" href="/about">About the estate</Link>
           </div>

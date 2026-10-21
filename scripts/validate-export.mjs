@@ -10,6 +10,7 @@ const required = [
   "out/registry.html",
   "out/commons.html",
   "out/programs/warden-pilot.html",
+  "out/programs/warden-pilot/administration.html",
   "out/programs/be-your-own-hero.html",
   "out/about.html",
   "out/health.json",
@@ -47,6 +48,26 @@ for (const phrase of ["Warden pilot partners", "Virtual Silk Road", "DigitalMe",
 }
 if (!warden.includes('noindex')) {
   console.error("Warden pilot preview must remain noindex before approval");
+  process.exit(1);
+}
+
+const esomoire = readFileSync("out/programs/warden-pilot/administration.html", "utf8");
+for (const phrase of [
+  "Synthetic demonstration only",
+  "Esomoire",
+  "NOT BOOKABLE",
+  "NOT PUBLISHED",
+  "NOT_ADMITTED",
+  "Warden",
+  "DigitalMe",
+]) {
+  if (!esomoire.includes(phrase)) {
+    console.error(`Esomoire administrative preview missing: ${phrase}`);
+    process.exit(1);
+  }
+}
+if (!esomoire.includes("noindex")) {
+  console.error("Esomoire preview must remain noindex");
   process.exit(1);
 }
 

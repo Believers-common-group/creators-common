@@ -1,0 +1,95 @@
+{
+  "kind": "PROPOSAL_ONLY_WARDEN_PILOT_INTAKE_GATE",
+  "document": "R0.7",
+  "effective": false,
+  "intakeEnabled": false,
+  "executionEnabled": false,
+  "publicListingEnabled": false,
+  "status": "HOLD",
+  "programme": "Creators Common",
+  "entryPackage": [
+    "Warden",
+    "VSR",
+    "DigitalMe"
+  ],
+  "supportedConditions": [
+    "G-C",
+    "NG-C",
+    "G-E",
+    "NG-E"
+  ],
+  "separation": {
+    "registrar": "Esomoire (proposed administrative function only)",
+    "contractingParty": "Independent pilot service company",
+    "invoiceIssuer": "Independent pilot service company",
+    "productOwnership": "Not inferred from administration or registrations",
+    "thirdPartyParticipation": "Additional independent role, not a replacement for base condition"
+  },
+  "gates": [
+    {
+      "id": "PROGRAMME_AUTHORITY",
+      "state": "HOLD",
+      "evidenceRef": null,
+      "reviewedBy": null
+    },
+    {
+      "id": "RIGHTS_AND_PILOT_GRANT",
+      "state": "HOLD",
+      "evidenceRef": null,
+      "reviewedBy": null
+    },
+    {
+      "id": "SECURE_APPLICATION_CHANNEL",
+      "state": "HOLD",
+      "evidenceRef": null,
+      "reviewedBy": null
+    },
+    {
+      "id": "PRIVACY_CONSENT",
+      "state": "HOLD",
+      "evidenceRef": null,
+      "reviewedBy": null
+    },
+    {
+      "id": "PILOT_CONTRACTS",
+      "state": "HOLD",
+      "evidenceRef": null,
+      "reviewedBy": null
+    },
+    {
+      "id": "PROVIDER_QUALIFICATION",
+      "state": "HOLD",
+      "evidenceRef": null,
+      "reviewedBy": null
+    },
+    {
+      "id": "WARDEN_AUTHORITY_TESTS",
+      "state": "HOLD",
+      "evidenceRef": null,
+      "reviewedBy": null
+    },
+    {
+      "id": "RIVER_EVIDENCE_TESTS",
+      "state": "HOLD",
+      "evidenceRef": null,
+      "reviewedBy": null
+    },
+    {
+      "id": "DEPLOYMENT_VERIFICATION",
+      "state": "HOLD",
+      "evidenceRef": null,
+      "reviewedBy": null
+    },
+    {
+      "id": "PUBLIC_OUTREACH_APPROVAL",
+      "state": "HOLD",
+      "evidenceRef": null,
+      "reviewedBy": null
+    }
+  ],
+  "approvedApplicationEndpoint": null,
+  "applicationController": null,
+  "firstPilotCompany": null,
+  "operationalRightsGrant": null,
+  "approvalRecord": null
+}

@@ -57,7 +57,7 @@ for (const phrase of [
   "Esomoire",
   "NOT BOOKABLE",
   "NOT PUBLISHED",
-  "NOT ADMITTED",
+  "NOT_ADMITTED",
   "Warden",
   "DigitalMe",
 ]) {

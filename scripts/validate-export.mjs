@@ -38,6 +38,18 @@ for (const phrase of ["Be Your Own Hero", "Proposed", "not open"]) {
   }
 }
 
+const warden = readFileSync("out/programs/warden-pilot.html", "utf8");
+for (const phrase of ["Warden pilot partners", "Virtual Silk Road", "DigitalMe", "applications are not open", "Esomoire"]) {
+  if (!warden.toLowerCase().includes(phrase.toLowerCase())) {
+    console.error(`Warden pilot export missing review-only content: ${phrase}`);
+    process.exit(1);
+  }
+}
+if (!warden.includes('noindex')) {
+  console.error("Warden pilot preview must remain noindex before approval");
+  process.exit(1);
+}
+
 const estate = JSON.parse(readFileSync("out/estate-site.json", "utf8"));
 if (estate.authority_boundary !== "WARDEN" || estate.session_policy !== "NO_SHARED_CROSS_DOMAIN_COOKIE") {
   console.error("Estate authority contract changed unexpectedly");

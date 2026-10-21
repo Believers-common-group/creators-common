@@ -190,7 +190,7 @@ describe("R0.9 local synthetic tenant and grant lab", () => {
     one.close(); resources.splice(resources.indexOf(one), 1);
     const reopened = lab(path);
     expect(reopened.readOwned(grant("candidate:read"), candidate)?.status).toBe("PREVIEW_ONLY");
-    expect(() => reopened.create(issue, "EXAMPLE-PILOT-099", examplePilotApplication)).toThrow(/replayed/);
+    expect(() => reopened.create(issue, candidate, examplePilotApplication)).toThrow(/replayed/);
     expect(reopened.verifyLocalAudit(tenantA)).toBe(true);
   });
 

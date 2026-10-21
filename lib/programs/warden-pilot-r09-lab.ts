@@ -161,6 +161,7 @@ export class SyntheticEsomoireRegistryLab {
   /** Always fail closed. A single-use signed fixture grant is consumed atomically. */
   create(grant: unknown, candidateId: unknown, application: unknown): void {
     const actor = this.auth(grant, "candidate:create", candidateId);
+    idValue(candidateId);
     validateSyntheticPilotApplication(application);
     const preview = buildEsomoirePreview(application, candidateId);
     this.db.exec("BEGIN IMMEDIATE;");
@@ -179,6 +180,7 @@ export class SyntheticEsomoireRegistryLab {
   /** Provider reads only its own synthetic record, even within its tenant. */
   readOwned(grant: unknown, candidateId: unknown): LabReader | null {
     const actor = this.auth(grant, "candidate:read", candidateId);
+    idValue(candidateId);
     const row = this.db.prepare(
       "SELECT status,payload FROM candidates WHERE tenant=? AND candidate=? AND owner=?"
     ).get(actor.tenant, candidateId, actor.subject) as { status: LabReader["status"]; payload: string } | undefined;
@@ -188,6 +190,7 @@ export class SyntheticEsomoireRegistryLab {
   /** Esomoire sees references only, not customer, billing, contact or company proposal data. */
   readAdministrative(grant: unknown, candidateId: unknown): AdminProjection | null {
     const actor = this.auth(grant, "admin:read", candidateId);
+    idValue(candidateId);
     const row = this.db.prepare(
       "SELECT status,projection FROM candidates WHERE tenant=? AND candidate=?"
     ).get(actor.tenant, candidateId) as { status: AdminProjection["recordState"]; projection: string } | undefined;
@@ -202,6 +205,7 @@ export class SyntheticEsomoireRegistryLab {
   }
   withdraw(grant: unknown, candidateId: unknown): void {
     const actor = this.auth(grant, "candidate:withdraw", candidateId);
+    idValue(candidateId);
     this.db.exec("BEGIN IMMEDIATE;");
     try {
       this.consumed(actor);

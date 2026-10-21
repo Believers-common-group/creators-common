@@ -16,6 +16,7 @@ type Claims = {
   audience: "CC-WARDEN-PILOT-R0.9-LAB";
   subject: string;
   tenant: string;
+  resource: string;
   role: Role;
   action: Action;
   jti: string;
@@ -45,7 +46,7 @@ const roleActions: Record<Role, readonly Action[]> = {
   pilot: ["candidate:create", "candidate:read", "candidate:withdraw"],
   esomoire: ["admin:read"],
 };
-const claimKeys = ["issuer", "audience", "subject", "tenant", "role", "action", "jti", "iat", "exp"];
+const claimKeys = ["issuer", "audience", "subject", "tenant", "resource", "role", "action", "jti", "iat", "exp"];
 const example = /^EXAMPLE-[A-Z0-9]+(?:-[A-Z0-9]+)*$/;
 function deny(reason: string): never { throw new Error("R0.9_DENY: " + reason); }
 function isPlain(value: unknown): value is Record<string, unknown> {
@@ -69,8 +70,9 @@ function requireClaimFields(payload: unknown): asserts payload is Claims {
   if (!isPlain(payload) || !matchesKeys(payload, claimKeys)) deny("invalid signed claim shape");
   if (payload.issuer !== "EXAMPLE-LOCAL-LAB" ||
       payload.audience !== "CC-WARDEN-PILOT-R0.9-LAB") deny("invalid issuer/audience");
-  if (!synthetic(payload.subject) || !synthetic(payload.tenant) || !synthetic(payload.jti)) {
-    deny("synthetic tenant, subject and token ID required");
+  if (!synthetic(payload.subject) || !synthetic(payload.tenant) ||
+      !synthetic(payload.resource) || !synthetic(payload.jti)) {
+    deny("synthetic tenant, subject, resource and token ID required");
   }
   if (payload.role !== "pilot" && payload.role !== "esomoire") deny("unknown actor role");
   if (!roleActions[payload.role as Role].includes(payload.action as Action)) deny("role/action mismatch");
@@ -134,8 +136,11 @@ export class SyntheticEsomoireRegistryLab {
     );
   }
   close(): void { this.db.close(); }
-  private auth(grant: unknown, action: Action): Readonly<Claims> {
-    return checkGrant(grant, this.trustedPublicKey, this.trustedNow(), action);
+  private auth(grant: unknown, action: Action, candidateId: unknown): Readonly<Claims> {
+    idValue(candidateId);
+    const actor = checkGrant(grant, this.trustedPublicKey, this.trustedNow(), action);
+    if (actor.resource !== candidateId) deny("resource scope mismatch");
+    return actor;
   }
   private addEvent(actor: Claims, candidateId: string, event: string): void {
     const previous = this.db.prepare(
@@ -155,8 +160,7 @@ export class SyntheticEsomoireRegistryLab {
   }
   /** Always fail closed. A single-use signed fixture grant is consumed atomically. */
   create(grant: unknown, candidateId: unknown, application: unknown): void {
-    const actor = this.auth(grant, "candidate:create");
-    idValue(candidateId);
+    const actor = this.auth(grant, "candidate:create", candidateId);
     validateSyntheticPilotApplication(application);
     const preview = buildEsomoirePreview(application, candidateId);
     this.db.exec("BEGIN IMMEDIATE;");
@@ -174,8 +178,7 @@ export class SyntheticEsomoireRegistryLab {
   }
   /** Provider reads only its own synthetic record, even within its tenant. */
   readOwned(grant: unknown, candidateId: unknown): LabReader | null {
-    const actor = this.auth(grant, "candidate:read");
-    idValue(candidateId);
+    const actor = this.auth(grant, "candidate:read", candidateId);
     const row = this.db.prepare(
       "SELECT status,payload FROM candidates WHERE tenant=? AND candidate=? AND owner=?"
     ).get(actor.tenant, candidateId, actor.subject) as { status: LabReader["status"]; payload: string } | undefined;
@@ -184,8 +187,7 @@ export class SyntheticEsomoireRegistryLab {
   }
   /** Esomoire sees references only, not customer, billing, contact or company proposal data. */
   readAdministrative(grant: unknown, candidateId: unknown): AdminProjection | null {
-    const actor = this.auth(grant, "admin:read");
-    idValue(candidateId);
+    const actor = this.auth(grant, "admin:read", candidateId);
     const row = this.db.prepare(
       "SELECT status,projection FROM candidates WHERE tenant=? AND candidate=?"
     ).get(actor.tenant, candidateId) as { status: AdminProjection["recordState"]; projection: string } | undefined;
@@ -199,8 +201,7 @@ export class SyntheticEsomoireRegistryLab {
     };
   }
   withdraw(grant: unknown, candidateId: unknown): void {
-    const actor = this.auth(grant, "candidate:withdraw");
-    idValue(candidateId);
+    const actor = this.auth(grant, "candidate:withdraw", candidateId);
     this.db.exec("BEGIN IMMEDIATE;");
     try {
       this.consumed(actor);

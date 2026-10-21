@@ -51,6 +51,26 @@ if (!warden.includes('noindex')) {
   process.exit(1);
 }
 
+const esomoire = readFileSync("out/programs/warden-pilot/administration.html", "utf8");
+for (const phrase of [
+  "Synthetic demonstration only",
+  "Esomoire",
+  "NOT BOOKABLE",
+  "NOT PUBLISHED",
+  "NOT ADMITTED",
+  "Warden",
+  "DigitalMe",
+]) {
+  if (!esomoire.includes(phrase)) {
+    console.error(`Esomoire administrative preview missing: ${phrase}`);
+    process.exit(1);
+  }
+}
+if (!esomoire.includes("noindex")) {
+  console.error("Esomoire preview must remain noindex");
+  process.exit(1);
+}
+
 const estate = JSON.parse(readFileSync("out/estate-site.json", "utf8"));
 if (estate.authority_boundary !== "WARDEN" || estate.session_policy !== "NO_SHARED_CROSS_DOMAIN_COOKIE") {
   console.error("Estate authority contract changed unexpectedly");

@@ -200,6 +200,6 @@ describe("R0.9 local synthetic tenant and grant lab", () => {
 
   it("keeps synthetic-only file naming and rejects real database paths", () => {
     expect(() => lab("/var/live-app.db")).toThrow();
-    expect(() => lab(":memory:pretending-to-be-memory")).not.toThrow();
+    expect(() => lab(":memory:pretending-to-be-memory")).toThrow();
   });
 });

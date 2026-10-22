@@ -187,6 +187,8 @@ export class SyntheticCustodyFixture {
           stored.subject !== ack.subject || stored.state !== "RESERVED") {
         reject("reservation mismatch, missing or already committed");
       }
+      if (this.db.prepare("SELECT 1 FROM subject_revocations WHERE tenant=? AND subject=?")
+        .get(ack.tenant, ack.subject)) reject("synthetic subject revoked before commit");
       this.db.prepare("UPDATE custody_claims SET state='COMMITTED' WHERE tenant=? AND candidate=?")
         .run(ack.tenant, ack.candidateId);
       row = { ...stored, state: "COMMITTED" };
@@ -222,14 +224,37 @@ export class SyntheticCustodyFixture {
 export function syntheticProtectedCreate(
   fixtureCustody: SyntheticCustodyFixture, localRegistry: SyntheticEsomoireRegistryLab,
   grant: SignedLabGrant, candidateId: string, application: unknown,
-  options: { simulateLostCommitAcknowledgement?: boolean } = {},
+  options: { simulateCrashBeforeCommit?: boolean; simulateLostPostCommitAck?: boolean } = {},
 ): { custodyReservation: SignedCustodyReceipt; custodyCommit: SignedCustodyReceipt | null; state: "COMMITTED_SYNTHETIC" | "HOLD_UNRECONCILED" } {
   const reservation = fixtureCustody.reserve(grant, candidateId, application);
   localRegistry.create(grant, candidateId, application);
-  if (options.simulateLostCommitAcknowledgement) {
+  if (options.simulateCrashBeforeCommit) {
+    // Simulate process loss before custody commit. Reservation persists.
     return { custodyReservation: reservation, custodyCommit: null, state: "HOLD_UNRECONCILED" };
   }
   // Fails closed if custodian is unavailable, with local state possibly written.
   const commit = fixtureCustody.commit(reservation);
+  if (options.simulateLostPostCommitAck) {
+    // Commit persisted at custody but the response was lost to the actor.
+    return { custodyReservation: reservation, custodyCommit: null, state: "HOLD_UNRECONCILED" };
+  }
   return { custodyReservation: reservation, custodyCommit: commit, state: "COMMITTED_SYNTHETIC" };
+}
+
+/**
+ * Read-only diagnostic: NEVER resubmit a lost effect or release the HOLD.
+ * This can only inspect the same-host synthetic custody store.
+ */
+export function inspectSyntheticRecovery(
+  custody: SyntheticCustodyFixture, reservation: SignedCustodyReceipt,
+): "RESERVED_REQUIRES_REVIEW" | "COMMITTED_REQUIRES_REVIEW" | "CUSTODY_MISSING_HOLD" | "CUSTODY_MISMATCH_HOLD" {
+  const expected = verifyCustodyReceipt(reservation, custody.receiptVerificationKey);
+  if (expected.state !== "RESERVED") reject("recovery needs reservation receipt");
+  const head = custody.attestSyntheticHead(expected.tenant, expected.candidateId);
+  if (!head) return "CUSTODY_MISSING_HOLD";
+  const current = verifyCustodyReceipt(head, custody.receiptVerificationKey);
+  if (expected.grantId !== current.grantId ||
+      expected.subject !== current.subject ||
+      expected.effectDigest !== current.effectDigest) return "CUSTODY_MISMATCH_HOLD";
+  return current.state === "COMMITTED" ? "COMMITTED_REQUIRES_REVIEW" : "RESERVED_REQUIRES_REVIEW";
 }

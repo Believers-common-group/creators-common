@@ -124,12 +124,6 @@ function reserve(msg) {
   return snapshot({tenant:c.tenant,candidate:msg.candidateId,subject:c.subject,jti:c.jti,digest:msg.effectDigest},
     "EXAMPLE-CUSTODY-IPC","RESERVED");
 }
-function observe(msg) {
-  exact(msg,["op","candidateId","reservation"]);
-  const c=verifyReceipt(msg.reservation,signingKey(msg.custodyPublicPem??""),"EXAMPLE-CUSTODY-IPC");
-  // custodyPublicPem is not accepted by exact(); see witness INIT trusted custody key below.
-  return c;
-}
 let pinnedCustodyKey;
 function witnessObserve(msg) {
   exact(msg,["op","candidateId","reservation"]);
